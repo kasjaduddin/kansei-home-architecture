@@ -7,7 +7,7 @@ public class DisplayDesignManager : MonoBehaviour
 {
     [SerializeField] private Transform contentParent;
     [SerializeField] private GameObject designUIPrefab;
-    [SerializeField] private List<HomeDesignData> homeDesigns;
+    [SerializeField] private HomeDesignCollection homeDesignCollection;
     [SerializeField] private DisplayMiniDesign displayMiniDesign;
     private List<Button> instantiatedButtons = new List<Button>();
 
@@ -25,28 +25,33 @@ public class DisplayDesignManager : MonoBehaviour
         }
         instantiatedButtons.Clear();
 
-        foreach (HomeDesignData design in homeDesigns)
+        foreach (HomeDesignGroup group in homeDesignCollection.homeDesignGroups)
         {
-            GameObject newUI = Instantiate(designUIPrefab, contentParent);
-
-            // Dapatkan komponen tombol langsung dari prefab
-            Button button = newUI.GetComponent<Button>();
-            if (button != null)
+            foreach (HomeDesignData design in group.homeDesigns)
             {
-                instantiatedButtons.Add(button);
+                GameObject newUI = Instantiate(designUIPrefab, contentParent);
 
-                // Capture data desain untuk digunakan dalam listener
-                HomeDesignData capturedDesign = design;
-                button.onClick.AddListener(() => OnDesignButtonClicked(capturedDesign));
-            }
+                // Get the Button component from the prefab
+                Button button = newUI.GetComponent<Button>();
+                if (button != null)
+                {
+                    instantiatedButtons.Add(button);
 
-            // Update tampilan UI prefab menggunakan komponen lain
-            HomeDesignUIOption uiOption = newUI.GetComponent<HomeDesignUIOption>();
-            if (uiOption != null)
-            {
-                string roomCapacity = design.roomAmount.ToString();
-                string bathroomCapacity = design.bathroomAmount.ToString();
-                uiOption.UpdateProperty(null, design.homeDesignName, roomCapacity, bathroomCapacity);
+                    // Capture data for the button click listener
+                    HomeDesignData capturedDesign = design;
+                    button.onClick.AddListener(() => OnDesignButtonClicked(capturedDesign));
+                }
+
+                // Update the prefab UI with design details
+                HomeDesignUIOption uiOption = newUI.GetComponent<HomeDesignUIOption>();
+                if (uiOption != null)
+                {
+                    // UpdateProperty now requires a Sprite. Replace "null" with the actual sprite if available.
+                    Sprite placeholderSprite = null; // Replace this with your logic to assign a proper sprite
+                    string roomCapacity = design.roomAmount.ToString();
+                    string bathroomCapacity = design.bathroomAmount.ToString();
+                    uiOption.UpdateProperty(placeholderSprite, design.homeDesignName, roomCapacity, bathroomCapacity);
+                }
             }
         }
     }

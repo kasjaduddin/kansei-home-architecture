@@ -1,0 +1,168 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a67e272094608c43b0131a00dce0289, type: 3}
+  m_Name: MaterialsSO
+  m_EditorClassIdentifier: 
+  floorMaterials:
+  - materialName: Marble tile 1
+    material: {fileID: 2100000, guid: 48341319586e80f4fb193394ac3196b0, type: 2}
+    materialCategory: 14
+    reflectivity: 0
+    isTransparent: 0
+  - materialName: Marble tile 2
+    material: {fileID: 2100000, guid: 7ffed4264eef4da49beae54b43b1a59e, type: 2}
+    materialCategory: 14
+    reflectivity: 0
+    isTransparent: 0
+  - materialName: Marble tile 3
+    material: {fileID: 2100000, guid: de230bb0757a45f4bbfd069ad8725755, type: 2}
+    materialCategory: 14
+    reflectivity: 0
+    isTransparent: 0
+  - materialName: Marble tile 4
+    material: {fileID: 2100000, guid: b7174eb63ba39cf4a99c711762c5dbe1, type: 2}
+    materialCategory: 14
+    reflectivity: 0
+    isTransparent: 0
+  - materialName: Marble tile 5
+    material: {fileID: 2100000, guid: 6c03b118d75720d459d65e336b654afe, type: 2}
+    materialCategory: 14
+    reflectivity: 0
+    isTransparent: 0
+  - materialName: Marble tile 6
+    material: {fileID: 2100000, guid: 12176afecbb33834886dfa8326e0b36e, type: 2}
+    materialCategory: 14
+    reflectivity: 0
+    isTransparent: 0
+  - materialName: Marble tile 7
+    material: {fileID: 2100000, guid: 39a779148c6a92e4b9d63b36ccaa11ba, type: 2}
+    materialCategory: 14
+    reflectivity: 0
+    isTransparent: 0
+  - materialName: Marble tile 8
+    material: {fileID: 2100000, guid: 9f8971833b3df5a47a791deff4e10f78, type: 2}
+    materialCategory: 14
+    reflectivity: 0
+    isTransparent: 0
+  - materialName: Marble tile 9
+    material: {fileID: 2100000, guid: d056c6cea188c744aad01ae4def80d12, type: 2}
+    materialCategory: 14
+    reflectivity: 0
+    isTransparent: 0
+  - materialName: Marble tile 10
+    material: {fileID: 2100000, guid: 2e874816e339ec64381b168b90ad0224, type: 2}
+    materialCategory: 14
+    reflectivity: 0
+    isTransparent: 0
+  - materialName: Marble tile vibrant colored 11
+    material: {fileID: 2100000, guid: dc378072e7d7e1b4591f86ac631eb8e4, type: 2}
+    materialCategory: 14
+    reflectivity: 0
+    isTransparent: 0
+  - materialName: Marble tile vibrant colored 12
+    material: {fileID: 2100000, guid: 1e0f6b03569b95b4da93e3c6858a56f9, type: 2}
+    materialCategory: 14
+    reflectivity: 0
+    isTransparent: 0
+  wallMaterials:
+  - materialName: Wood 1
+    material: {fileID: 2100000, guid: 26f1b36be16f30d409f9ab1a7d20a8a5, type: 2}
+    materialCategory: 0
+    reflectivity: 0
+    isTransparent: 0
+  - materialName: Wood 2
+    material: {fileID: 2100000, guid: a64c40f22fb83f041b7c584055b61c8f, type: 2}
+    materialCategory: 0
+    reflectivity: 0
+    isTransparent: 0
+  - materialName: Concrete
+    material: {fileID: 2100000, guid: 1e98ebe0ed4d9894d9610d836de5f478, type: 2}
+    materialCategory: 5
+    reflectivity: 0
+    isTransparent: 0
+  - materialName: Straight Wood
+    material: {fileID: 2100000, guid: 1d9071227a1fd4549b9efffb122bbeb7, type: 2}
+    materialCategory: 0
+    reflectivity: 0
+    isTransparent: 0
+  - materialName: White Wood
+    material: {fileID: 2100000, guid: 693a082bdb248ea48b75807240e1dc78, type: 2}
+    materialCategory: 0
+    reflectivity: 0
+    isTransparent: 0
+  - materialName: Wood Fine
+    material: {fileID: 2100000, guid: 98d32ad184097e64b8c098b9cea5a018, type: 2}
+    materialCategory: 0
+    reflectivity: 0
+    isTransparent: 0
+  - materialName: Wood Planks
+    material: {fileID: 2100000, guid: 15ba4fc0d8013c54db0e73cc9fdf3906, type: 2}
+    materialCategory: 0
+    reflectivity: 0
+    isTransparent: 0
+  ceilingMaterials:
+  - materialName: Gradient Beige
+    material: {fileID: 2100000, guid: eb0f168ce60c9424896bd8c33ac3f2c9, type: 2}
+    materialCategory: 7
+    reflectivity: 0
+    isTransparent: 0
+  - materialName: Gradient Black
+    material: {fileID: 2100000, guid: 7f64eac4bd640ef44ae0187dbfcb4089, type: 2}
+    materialCategory: 7
+    reflectivity: 0
+    isTransparent: 0
+  - materialName: Gradient Blue
+    material: {fileID: 2100000, guid: 35261150e5398c0439d6fd7481f62b62, type: 2}
+    materialCategory: 7
+    reflectivity: 0
+    isTransparent: 0
+  - materialName: Metalic black
+    material: {fileID: 2100000, guid: 31e87d42f3ffa2546b1f527e7a0a4b9d, type: 2}
+    materialCategory: 7
+    reflectivity: 0
+    isTransparent: 0
+  glassMaterials:
+  - materialName: Glass
+    material: {fileID: 2100000, guid: 88b88f875cf0af442996954ba27bdf64, type: 2}
+    materialCategory: 2
+    reflectivity: 0
+    isTransparent: 0
+  - materialName: Mirror
+    material: {fileID: 2100000, guid: 97cb562e985012a4f8db1dfe9f95115b, type: 2}
+    materialCategory: 2
+    reflectivity: 0
+    isTransparent: 0
+  - materialName: Dirty Glass
+    material: {fileID: 2100000, guid: 83fed050d17dbde42b6cbd5871197c81, type: 2}
+    materialCategory: 2
+    reflectivity: 0
+    isTransparent: 0
+  - materialName: Glass Dark
+    material: {fileID: 2100000, guid: 2ca8c1f089c06d146b7ae324e4dbeb3b, type: 2}
+    materialCategory: 2
+    reflectivity: 0
+    isTransparent: 0
+  - materialName: Glass Faded
+    material: {fileID: 2100000, guid: a122f1f7919c9e04bb73269738422ca2, type: 2}
+    materialCategory: 2
+    reflectivity: 0
+    isTransparent: 0
+  - materialName: Glass Faded 2
+    material: {fileID: 2100000, guid: f16b29304c8a02d438afcb81820eee53, type: 2}
+    materialCategory: 2
+    reflectivity: 0
+    isTransparent: 0
+  - materialName: Glass Gloss
+    material: {fileID: 2100000, guid: 5418740241a1ece42bf101ecae547c44, type: 2}
+    materialCategory: 2
+    reflectivity: 0
+    isTransparent: 0

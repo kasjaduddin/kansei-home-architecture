@@ -2,13 +2,33 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "NewHomeDesign", menuName = "ScriptableObjects/HomeDesignData", order = 1)]
-public class HomeDesignData : ScriptableObject
+[CreateAssetMenu(fileName = "HomeDesignCollection", menuName = "ScriptableObjects/HomeDesignCollection", order = 1)]
+public class HomeDesignCollection : ScriptableObject
 {
-    public string homeDesignName;
-    public string homeType;
-    public int roomAmount;
-    public int bathroomAmount;
+    public List<HomeDesignGroup> homeDesignGroups; 
+}
 
-    public GameObject homePrefab;
+[System.Serializable]
+public class HomeDesignGroup
+{
+    public string homeType; 
+    public HomeStyle homeStyle; 
+    public List<HomeDesignData> homeDesigns; 
+}
+
+[System.Serializable]
+public class HomeDesignData
+{
+    public string homeDesignName;    
+    public int roomAmount;           
+    public int bathroomAmount;       
+    public GameObject homePrefab;    
+}
+
+public enum HomeStyle
+{
+    Modern,        
+    Minimalist,     
+    Traditional,  
+    Other           
 }

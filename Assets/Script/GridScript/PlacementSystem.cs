@@ -62,11 +62,6 @@ public class PlacementSystem : MonoBehaviour
         buildingState.OnAction(gridPosition);
     }
 
-    //private bool CheckPlacementValidity(Vector3Int gridPosition, int selectedObjectIndex)
-    //{
-    //    GridData selectedData = database.objectData[selectedObjectIndex].ID == 0 ? floorData : furnitureData;
-    //    return selectedData.CanPlacedObjectAt(gridPosition, database.objectData[selectedObjectIndex].Size);
-    //}
 
     private void StopPlacement()
     {
