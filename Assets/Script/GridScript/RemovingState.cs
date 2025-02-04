@@ -36,42 +36,43 @@ public class RemovingState : IBuildingState
 
     public void OnAction(Vector3Int gridPosition)
     {
-        GridData selectedData = null;
-        if (furnitureData.CanPlacedObjectAt(gridPosition, Vector2Int.one) == false)
-        {
-            selectedData = furnitureData;
-
-        }
-        else if (floorData.CanPlacedObjectAt(gridPosition, Vector2Int.one) == false)
-        {
-            selectedData = floorData;
-        }
+        GridData selectedData = GetOccupiedGridData(gridPosition);
 
         if (selectedData == null)
         {
-            //sound
+            // Play error sound if needed (no object to remove)
+            return;
         }
-        else
-        {
-            gameObjectIndex = selectedData.GetRepresentationIndex(gridPosition);
-            if (gameObjectIndex == -1)
-                return;
-            selectedData.RemoveObjectAt(gridPosition);
-            objectPlacer.RemoveObjectAt(gameObjectIndex);
-        }
+
+        gameObjectIndex = selectedData.GetRepresentationIndex(gridPosition);
+        if (gameObjectIndex == -1)
+            return;
+
+        selectedData.RemoveObjectAt(gridPosition); // Remove from GridData
+        objectPlacer.RemoveObjectAt(gameObjectIndex); // Remove GameObject from scene
+
         Vector3 cellPosition = grid.CellToWorld(gridPosition);
         previewSystem.UpdatePosition(cellPosition, CheckIfSelectionIsValid(gridPosition));
     }
 
+    private GridData GetOccupiedGridData(Vector3Int gridPosition)
+    {
+        if (furnitureData.GetRepresentationIndex(gridPosition) != -1)
+            return furnitureData;
+        if (floorData.GetRepresentationIndex(gridPosition) != -1)
+            return floorData;
+
+        return null; // No object is placed here
+    }
+
     private bool CheckIfSelectionIsValid(Vector3Int gridPosition)
     {
-        return !(furnitureData.CanPlacedObjectAt(gridPosition, Vector2Int.one) && floorData.CanPlacedObjectAt(gridPosition, Vector2Int.one));
+        return GetOccupiedGridData(gridPosition) != null;
     }
 
     public void UpdateState(Vector3Int gridPosition)
     {
         bool validity = CheckIfSelectionIsValid(gridPosition);
         previewSystem.UpdatePosition(grid.CellToWorld(gridPosition), validity);
-
     }
 }

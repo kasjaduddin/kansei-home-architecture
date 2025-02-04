@@ -23,10 +23,10 @@ public class FurnitureData
     public FurniturePlacement furniturePlacement;    // Cara furniture diletakkan
     public GameObject furniturePrefab;               // Prefab Unity untuk furniture
     public Vector3 defaultSize;                      // Ukuran default furniture
+    public Vector2Int size;
     public Vector3 defaultPositionOffset;            // Posisi offset default (relatif terhadap titik peletakan)
     public bool isMovable;                           // Apakah furniture bisa dipindahkan
 }
-
 public enum FurniturePlacement
 {
     OnFloor,        // Diletakkan di atas lantai

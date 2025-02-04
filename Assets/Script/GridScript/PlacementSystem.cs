@@ -9,7 +9,7 @@ public class PlacementSystem : MonoBehaviour
 
     [SerializeField] private Grid grid;
 
-    [SerializeField] private ObjectsDatabaseSO database;
+    [SerializeField] private FurnitureCollectionSO furnitureDatabase;
 
 
     [SerializeField] private GameObject gridVisualization;
@@ -31,19 +31,45 @@ public class PlacementSystem : MonoBehaviour
         furnitureData = new();
     }
 
-    public void StartPlacement(int ID)
+    public void StartPlacement(int furnitureID)
     {
         StopPlacement();
         gridVisualization.SetActive(true);
-        buildingState = new PlacementState(ID,
-                                           grid,
-                                           preview,
-                                           database,
-                                           floorData,
-                                           furnitureData,
-                                           objectPlacer);
+
+        FurnitureData selectedFurniture = FindFurnitureByID(furnitureID);
+        if (selectedFurniture == null)
+        {
+            Debug.LogError($"Furniture with ID {furnitureID} not found.");
+            return;
+        }
+
+        buildingState = new PlacementState(
+            selectedFurniture,
+            grid,
+            preview,
+            floorData,
+            furnitureData,
+            objectPlacer);
+
         inputManager.OnClicked += PlaceStructure;
         inputManager.OnExit += StopPlacement;
+    }
+    private FurnitureData FindFurnitureByID(int id)
+    {
+        List<FurnitureData> allFurniture = GetAllFurniture();
+        if (id >= 0 && id < allFurniture.Count)
+            return allFurniture[id];
+
+        return null;
+    }
+    private List<FurnitureData> GetAllFurniture()
+    {
+        List<FurnitureData> allFurniture = new List<FurnitureData>();
+        allFurniture.AddRange(furnitureDatabase.floorFurniture);
+        allFurniture.AddRange(furnitureDatabase.wallFurniture);
+        allFurniture.AddRange(furnitureDatabase.ceilingFurniture);
+        allFurniture.AddRange(furnitureDatabase.embeddedFurniture);
+        return allFurniture;
     }
     public void StartRemoving()
     {
@@ -85,6 +111,16 @@ public class PlacementSystem : MonoBehaviour
         {
             buildingState.UpdateState(gridPosition);
             lastDetectedPosition= gridPosition;
+        }
+        if (Input.GetKeyDown(KeyCode.LeftArrow))
+        {
+            preview.RotateLeft();
+            buildingState.UpdateState(gridPosition);
+        }
+        if (Input.GetKeyDown(KeyCode.RightArrow))
+        {
+            preview.RotateRight();
+            buildingState.UpdateState(gridPosition);
         }
     }
 }

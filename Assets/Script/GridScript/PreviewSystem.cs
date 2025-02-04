@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PreviewSystem : MonoBehaviour
@@ -13,6 +14,10 @@ public class PreviewSystem : MonoBehaviour
     private Material previewMaterialInstance;
 
     private Renderer cellIndicatorRenderer;
+    private Vector3 bottomLeftOffset = Vector3.zero;
+    private int rotationAngle = 0; // Track rotation in 90° steps
+    private Vector2Int originalSize;
+
     private void Start()
     {
         previewMaterialInstance = new Material(previewMaterialPrefab);
@@ -22,12 +27,44 @@ public class PreviewSystem : MonoBehaviour
 
     public void StartShowingPlacementPreview(GameObject prefab, Vector2Int size)
     {
+        if (previewObject != null)
+        {
+            Destroy(previewObject);
+        }
+
         previewObject = Instantiate(prefab);
+        previewObject.SetActive(true);
+
+        originalSize = size; // Store unrotated size
+        CalculatePivotOffset(previewObject);
+
         PreparePreview(previewObject);
-        PrepareCursor(size);
+        UpdatePreviewSize(); // Adjust preview for rotation
         cellIndicator.SetActive(true);
+
+        rotationAngle = 0; // Reset rotation
     }
 
+    private void CalculatePivotOffset(GameObject obj)
+    {
+        bottomLeftOffset = Vector3.zero;
+        Renderer objectRenderer = obj.GetComponentInChildren<Renderer>();
+        if (objectRenderer != null)
+        {
+            float rotationY = obj.transform.eulerAngles.y;
+            print("rotasinya bang " + rotationY);
+            bottomLeftOffset = objectRenderer.bounds.min - obj.transform.position;
+        }
+    }
+    private void UpdatePreviewSize()
+    {
+        Vector2Int adjustedSize = GetRotatedSize();
+        cellIndicator.transform.localScale = new Vector3(adjustedSize.x, 1, adjustedSize.y);
+    }
+    private Vector2Int GetRotatedSize()
+    {
+        return (rotationAngle % 180 == 0) ? originalSize : new Vector2Int(originalSize.y, originalSize.x);
+    }
     private void PrepareCursor(Vector2Int size)
     {
         if (size.x > 0 || size.y > 0)
@@ -49,6 +86,14 @@ public class PreviewSystem : MonoBehaviour
             renderer.materials = materials;
         }
     }
+    /* private void PreparePreview(GameObject previewObject)
+     {
+         Renderer[] renderers = previewObject.GetComponentsInChildren<Renderer>();
+         foreach (Renderer renderer in renderers)
+         {
+             renderer.sharedMaterial = previewMaterialInstance; 
+         }
+     }*/
 
     public void StopShowingPreview()
     {
@@ -89,7 +134,29 @@ public class PreviewSystem : MonoBehaviour
 
     private void MovePreview(Vector3 position)
     {
-        previewObject.transform.position = new Vector3(position.x,position.y+previewOffset, position.z);
+        previewObject.transform.position = position - bottomLeftOffset + Vector3.up * previewOffset;
+        previewObject.transform.rotation = Quaternion.Euler(0, rotationAngle, 0);
+    }
+    public void RotateLeft()
+    {
+        rotationAngle -= 90;
+        if (previewObject != null)
+        {
+            previewObject.transform.rotation = Quaternion.Euler(0, rotationAngle, 0);
+            UpdatePreviewSize();
+            CalculatePivotOffset(previewObject);
+        }
+    }
+
+    public void RotateRight()
+    {
+        rotationAngle += 90;
+        if (previewObject != null)
+        {
+            previewObject.transform.rotation = Quaternion.Euler(0, rotationAngle, 0);
+            UpdatePreviewSize();
+            CalculatePivotOffset(previewObject);
+        }
     }
 
     internal void StartShowingRemovePreview()
@@ -97,5 +164,15 @@ public class PreviewSystem : MonoBehaviour
         cellIndicator.SetActive(true);
         PrepareCursor(Vector2Int.one);
         ApplyFeedbackToCursor(false);
+    }
+
+    public Quaternion GetRotation()
+    {
+        return Quaternion.Euler(0, rotationAngle, 0);
+    }
+
+    public Vector2Int GetAdjustedSize()
+    {
+        return GetRotatedSize();
     }
 }

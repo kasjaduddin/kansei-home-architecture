@@ -8,10 +8,20 @@ public class ObjectPlacer : MonoBehaviour
     [SerializeField] 
     private List<GameObject> placedGameObject = new();
     [SerializeField] private GameObject buildingParent;
-    internal int PlaceObject(GameObject prefab, Vector3 position)
+    internal int PlaceObject(GameObject prefab, Vector3 position, Quaternion rotation)
     {
-        GameObject newObject = Instantiate(prefab, buildingParent.transform);
-        newObject.transform.position = position;
+        GameObject newObject = Instantiate(prefab);
+            
+        newObject.transform.rotation = rotation;
+        Renderer objectRenderer = newObject.GetComponentInChildren<Renderer>();
+        if (objectRenderer != null)
+        {
+            Vector3 bottomLeftOffset = objectRenderer.bounds.min - newObject.transform.position;
+            newObject.transform.position = position - bottomLeftOffset;
+        }
+
+        
+
         placedGameObject.Add(newObject);
         return placedGameObject.Count - 1;
     }
