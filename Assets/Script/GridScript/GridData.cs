@@ -8,21 +8,55 @@ using UnityEngine;
 public class GridData
 {
     Dictionary<Vector3Int, PlacementData> placedObjects = new();
-
+ 
     public void AddObjectAt(Vector3Int gridPosition, Vector2Int objectSize, int ID, int placedObjectIndex, int rotationAngle)
     {
         rotationAngle =  Mathf.RoundToInt(rotationAngle / 90f) * 90;
         List<Vector3Int> positionToOccupy = CalculatePosition(gridPosition, objectSize, rotationAngle);
         PlacementData data = new PlacementData(positionToOccupy, ID, placedObjectIndex);
+        Debug.Log($"Taruh object di  {gridPosition} dengan ukuran {objectSize}");
+
         foreach (var pos in positionToOccupy)
         {
             if (placedObjects.ContainsKey(pos))
             {
-                throw new Exception($"Dictionary already contains this cell position {pos}");
+                Debug.LogWarning($"Position {pos} is already occupied, skipping.");
+                continue;
             }
+            Debug.Log($"Placing object furniture at {pos}");
             placedObjects[pos] = data;
         }
+        foreach (var obj in placedObjects)
+        {
+            Debug.Log($"data placed object furniture {obj}");
+        }
     }
+    public void AddInitialObjectAt(Vector3Int gridPosition, Vector2Int objectSize)
+    {
+        List <Vector3Int> positionToOccupy = CalculatePosition(gridPosition, objectSize, 0);
+
+        // Store in dictionary only if the position is NOT already occupied
+        PlacementData data = new PlacementData(positionToOccupy, -1, -1);
+        Debug.Log($"Taruh wall di  {gridPosition} dengan ukuran {objectSize}");
+
+        foreach (var pos in positionToOccupy)
+        {
+            if (placedObjects.ContainsKey(pos))
+            {
+                Debug.Log($"Position {pos} is already occupied, skipping this position but continuing.");
+                continue; // Skip this position but continue with the rest
+            }
+            Debug.Log($"Placing object at {pos}");
+
+            placedObjects[pos] = data;
+            //data.occupiedPositions.Add(pos); // Track only positions that were actually stored
+        }
+        foreach (var obj in placedObjects)
+        {
+            Debug.Log($"data placed object {obj}");
+        }
+    }
+
 
     private List<Vector3Int> CalculatePosition(Vector3Int gridPosition, Vector2Int objectSize, int rotationAngle)
     {
@@ -36,13 +70,6 @@ public class GridData
         }
         return returnVal;
     }
-
-    /*private Vector2Int GetRotatedSize(Vector2Int objectSize, int rotationAngle)
-    {
-        Debug.Log("di get rotated " + rotationAngle + " Rotation sizenya " + objectSize);
-        return (rotationAngle % 180 == 0) ? objectSize : new Vector2Int(objectSize.y, objectSize.x);
-    }*/
-
     public bool CanPlacedObjectAt(Vector3Int gridPosition, Vector2Int objectSize, int rotationAngle)
     {
         List<Vector3Int> positionToOccupy = CalculatePosition(gridPosition, objectSize, rotationAngle);

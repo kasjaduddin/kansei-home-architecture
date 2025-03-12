@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 public class PlacementSystem : MonoBehaviour
@@ -14,7 +15,7 @@ public class PlacementSystem : MonoBehaviour
 
     [SerializeField] private GameObject gridVisualization;
 
-    private GridData floorData, furnitureData;
+    private GridData floorData, furnitureData, wallData, ceilingData;
 
     [SerializeField] private PreviewSystem preview;
 
@@ -22,13 +23,19 @@ public class PlacementSystem : MonoBehaviour
 
     [SerializeField] private ObjectPlacer objectPlacer;
 
+    [SerializeField] private Transform wallParent;
+
     IBuildingState buildingState;
 
     private void Start()
     {
         StopPlacement();
         floorData = new();
+        wallData = new();
+        ceilingData = new();
         furnitureData = new();
+        //StartPlacingWall(wallParent);
+
     }
 
     public void StartPlacement(int furnitureID)
@@ -48,8 +55,12 @@ public class PlacementSystem : MonoBehaviour
             grid,
             preview,
             floorData,
+            wallData,
+            ceilingData,
             furnitureData,
-            objectPlacer);
+            objectPlacer,
+            wallParent
+            );
 
         inputManager.OnClicked += PlaceStructure;
         inputManager.OnExit += StopPlacement;
@@ -75,7 +86,13 @@ public class PlacementSystem : MonoBehaviour
     {
         StopPlacement();
         gridVisualization.SetActive(true);
-        buildingState = new RemovingState(grid, preview, floorData, furnitureData, objectPlacer);
+        buildingState = new RemovingState(grid,
+                                          preview,
+                                          floorData,
+                                          wallData,
+                                          ceilingData,
+                                          furnitureData,
+                                          objectPlacer);
         inputManager.OnClicked += PlaceStructure;
         inputManager.OnExit += StopPlacement;
     }

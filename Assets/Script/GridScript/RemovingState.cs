@@ -11,18 +11,24 @@ public class RemovingState : IBuildingState
     Grid grid;
     PreviewSystem previewSystem;
     GridData floorData;
+    GridData wallData;
+    GridData ceilingData;
     GridData furnitureData;
     ObjectPlacer objectPlacer;
 
     public RemovingState(Grid grid,
                          PreviewSystem previewSystem,
                          GridData floorData,
+                         GridData wallData,
+                         GridData ceilingData,
                          GridData furnitureData,
                          ObjectPlacer objectPlacer)
     {
         this.grid = grid;
         this.previewSystem = previewSystem;
         this.floorData = floorData;
+        this.wallData = wallData;
+        this.ceilingData = ceilingData;
         this.furnitureData = furnitureData;
         this.objectPlacer = objectPlacer;
 
@@ -57,11 +63,33 @@ public class RemovingState : IBuildingState
 
     private GridData GetOccupiedGridData(Vector3Int gridPosition)
     {
-        if (furnitureData.GetRepresentationIndex(gridPosition) != -1)
-            return furnitureData;
-        if (floorData.GetRepresentationIndex(gridPosition) != -1)
-            return floorData;
+        Debug.Log($"Checking grid position: {gridPosition}");
 
+        if (furnitureData.GetRepresentationIndex(gridPosition) != -1)
+        {
+            Debug.Log("Furniture object found.");
+            return furnitureData;
+        }
+
+        if (floorData.GetRepresentationIndex(gridPosition) != -1)
+        {
+            Debug.Log("Floor object found.");
+            return floorData;
+        }
+
+        if (wallData.GetRepresentationIndex(gridPosition) != -1)
+        {
+            Debug.Log("Wall object found.");
+            return wallData;
+        }
+
+        if (ceilingData.GetRepresentationIndex(gridPosition) != -1)
+        {
+            Debug.Log("Ceiling object found.");
+            return ceilingData;
+        }
+
+        Debug.Log("No object found at grid position.");
         return null; // No object is placed here
     }
 
@@ -75,4 +103,9 @@ public class RemovingState : IBuildingState
         bool validity = CheckIfSelectionIsValid(gridPosition);
         previewSystem.UpdatePosition(grid.CellToWorld(gridPosition), validity);
     }
+
+    /*public void SaveInitialObject(Vector3Int gridPosition, Vector2Int objectSize)
+    {
+        
+    }*/
 }
