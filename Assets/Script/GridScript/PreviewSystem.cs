@@ -59,7 +59,7 @@ public class PreviewSystem : MonoBehaviour
     private void UpdatePreviewSize()
     {
         Vector2Int adjustedSize = GetRotatedSize();
-        cellIndicator.transform.localScale = new Vector3(adjustedSize.x/10, 1, adjustedSize.y/10);
+        cellIndicator.transform.localScale = new Vector3(adjustedSize.x/20, 1, adjustedSize.y/20);
     }
     private Vector2Int GetRotatedSize()
     {

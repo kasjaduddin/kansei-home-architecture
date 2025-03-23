@@ -51,7 +51,40 @@ public class PlacementState : IBuildingState
             Debug.LogError("[PlacementState] Selected furniture is NULL!");
         }
         GridData selectedData = GetSelectedGridData(selectedFurniture.furniturePlacement);
-        foreach (Transform wall in wallReference)
+
+        foreach (Transform child in wallReference) // Iterate over children
+        {
+            Vector3 basePosition = child.localPosition;
+
+
+            foreach (Transform children in child) // Iterate over grandchildren
+            {
+                Debug.Log("Ukuran wallnya  " + children.localScale.x * 20 + " , " + children.localScale.z * 20);
+
+                Vector3 worldPos =  children.localPosition + basePosition;
+                Vector3Int gridPos = grid.WorldToCell(worldPos);
+                gridPos.y = 0;
+                    
+                Vector2Int childrenSize = new Vector2Int(
+                    Mathf.RoundToInt(children.localScale.x * 20),
+                    Mathf.RoundToInt(children.localScale.z * 20)
+                );
+
+
+                // Calculate the bottom-left offset for the pivot in grid units
+                Vector3Int bottomLeftOffset = new Vector3Int(
+                    Mathf.FloorToInt(childrenSize.x / 2f),
+                    0,
+                    Mathf.FloorToInt(childrenSize.y / 2f)
+                );
+
+                gridPos -= bottomLeftOffset; // Align pivot to bottom-left
+
+                // Mark the grid as occupied
+                selectedData.AddInitialObjectAt(gridPos, childrenSize);
+            }
+        }
+        /*foreach (Transform wall in wallReference)
         {
             Debug.Log("Ukuran wallnya  " + wall.localScale.x * 10 + " , " + wall.localScale.z * 10);
 
@@ -76,7 +109,7 @@ public class PlacementState : IBuildingState
             // Mark the grid as occupied
             selectedData.AddInitialObjectAt(gridPos, wallSize);
             //buildingState.SaveInitialObject(gridPos, wallSize);
-        }
+        }*/
     }
     private GridData GetSelectedGridData(FurniturePlacement placement)
     {

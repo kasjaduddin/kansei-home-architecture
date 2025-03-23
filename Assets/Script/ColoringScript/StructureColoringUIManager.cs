@@ -69,6 +69,7 @@ public class StructureColoringUIManager : MonoBehaviour
                     if (coloringSystem != null && materialData.material != null)
                     {
                         coloringSystem.ChangeRoomMaterial(materialData.material, currentObjectType);
+
                     }
                     else
                     {
