@@ -14,7 +14,7 @@ public class PlacementState : IBuildingState
     GridData ceilingData;
     GridData furnitureData; // Class field
     ObjectPlacer objectPlacer;
-    Transform wallReference;
+    List<Transform> wallReference;
 
     private int currentRotationAngle = 0;
     public PlacementState(FurnitureData selectedFurnitureData,
@@ -25,7 +25,7 @@ public class PlacementState : IBuildingState
                       GridData ceilingData,
                       GridData furnitureGridData,
                       ObjectPlacer objectPlacer,
-                      Transform wallReference)
+                      List<Transform> wallReference)
     {
         this.selectedFurniture = selectedFurnitureData;
         this.grid = grid;
@@ -52,38 +52,12 @@ public class PlacementState : IBuildingState
         }
         GridData selectedData = GetSelectedGridData(selectedFurniture.furniturePlacement);
 
-        foreach (Transform child in wallReference) // Iterate over children
+        foreach (Transform wall in wallReference)
         {
-            Vector3 basePosition = child.localPosition;
-
-
-            foreach (Transform children in child) // Iterate over grandchildren
-            {
-                Debug.Log("Ukuran wallnya  " + children.localScale.x * 20 + " , " + children.localScale.z * 20);
-
-                Vector3 worldPos =  children.localPosition + basePosition;
-                Vector3Int gridPos = grid.WorldToCell(worldPos);
-                gridPos.y = 0;
-                    
-                Vector2Int childrenSize = new Vector2Int(
-                    Mathf.RoundToInt(children.localScale.x * 20),
-                    Mathf.RoundToInt(children.localScale.z * 20)
-                );
-
-
-                // Calculate the bottom-left offset for the pivot in grid units
-                Vector3Int bottomLeftOffset = new Vector3Int(
-                    Mathf.FloorToInt(childrenSize.x / 2f),
-                    0,
-                    Mathf.FloorToInt(childrenSize.y / 2f)
-                );
-
-                gridPos -= bottomLeftOffset; // Align pivot to bottom-left
-
-                // Mark the grid as occupied
-                selectedData.AddInitialObjectAt(gridPos, childrenSize);
-            }
+            PopulateWallObjects(wall, selectedData);
         }
+
+
         /*foreach (Transform wall in wallReference)
         {
             Debug.Log("Ukuran wallnya  " + wall.localScale.x * 10 + " , " + wall.localScale.z * 10);
@@ -111,6 +85,39 @@ public class PlacementState : IBuildingState
             //buildingState.SaveInitialObject(gridPos, wallSize);
         }*/
     }
+
+    private void PopulateWallObjects(Transform obj, GridData selectedData)
+    {
+        // If the object is in the "Wall" layer, process it
+        if (obj.gameObject.layer == LayerMask.NameToLayer("Wall"))
+        {
+            Vector3 worldPos = obj.position;
+            Vector3Int gridPos = grid.WorldToCell(worldPos);
+            gridPos.y = 0;
+
+            Vector2Int wallSize = new Vector2Int(
+                Mathf.RoundToInt(obj.localScale.x * 10),
+                Mathf.RoundToInt(obj.localScale.z * 10)
+            );
+
+            Vector3Int bottomLeftOffset = new Vector3Int(
+                Mathf.FloorToInt(wallSize.x / 2f),
+                0,
+                Mathf.FloorToInt(wallSize.y / 2f)
+            );
+
+            gridPos -= bottomLeftOffset;
+            selectedData.AddInitialObjectAt(gridPos, wallSize);
+        }
+
+        // Recursively process all children
+        foreach (Transform child in obj)
+        {
+            PopulateWallObjects(child, selectedData);
+        }
+    }
+
+
     private GridData GetSelectedGridData(FurniturePlacement placement)
     {
         switch (placement)

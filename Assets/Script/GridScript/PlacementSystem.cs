@@ -23,7 +23,7 @@ public class PlacementSystem : MonoBehaviour
 
     [SerializeField] private ObjectPlacer objectPlacer;
 
-    [SerializeField] private Transform wallParent;
+    [SerializeField] private List<Transform> wallParent;
 
     IBuildingState buildingState;
 
