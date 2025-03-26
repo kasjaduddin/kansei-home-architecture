@@ -7,6 +7,10 @@ public class WindowManager : MonoBehaviour
     private List<GameObject> cubeObjectsUp = new List<GameObject>();
     private List<GameObject> cubeObjectsDown = new List<GameObject>();
     [SerializeField] private Shader customShader;
+
+
+    public Material currentMaterialUp;
+    public Material currentMaterialDown;
     private void UpdateCubeReferences()
     {
         // Clear previous references
@@ -38,6 +42,21 @@ public class WindowManager : MonoBehaviour
             }
         }
     }
+    public void UpdatePrefabWallColor()
+    {
+        if (currentMaterialUp != null)
+        {
+            UpdateCubeReferences();
+            ChangeAllCubeColors(currentMaterialUp, "up");
+        }
+
+        // Check and apply down material if it exists
+        if (currentMaterialDown != null)
+        {
+            UpdateCubeReferences();
+            ChangeAllCubeColors(currentMaterialDown, "down");
+        }
+    }
 
     public void ChangeWindowPrefab(GameObject newPrefab)
     {
@@ -49,9 +68,6 @@ public class WindowManager : MonoBehaviour
 
         // Instantiate new prefab as child
         GameObject newInstance = Instantiate(newPrefab, this.transform);
-
-        // Update references after changing prefab
-        UpdateCubeReferences();
     }
 
     public void ChangeAllCubeColors(Material newMaterial, string direction)
@@ -60,6 +76,15 @@ public class WindowManager : MonoBehaviour
         UpdateCubeReferences();
 
         List<GameObject> targetCubes = direction.ToLower() == "up" ? cubeObjectsUp : cubeObjectsDown;
+
+        if (direction.ToLower() == "up")
+        {
+            currentMaterialUp = newMaterial;
+        }
+        else
+        {
+            currentMaterialDown = newMaterial;
+        }
 
         foreach (GameObject cube in targetCubes)
         {

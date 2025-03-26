@@ -53,6 +53,8 @@ public class ChangeObjectUIManager : MonoBehaviour
                     else if (objectType == EmbededObjectType.Window)
                     {
                         ChangeRoomWindows(prefabData.objectPrefab);
+
+                        
                     }
                     else
                     {

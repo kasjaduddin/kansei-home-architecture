@@ -5,10 +5,18 @@ using UnityEngine;
 public class DoorManager : MonoBehaviour
 {
     [SerializeField] private GameObject handleDoorPrefab;
+    private bool isOpen = false;
+    private float targetYRotation;
+    private float rotationSpeed = 85f;
 
+    // Add these to track the door's open/close states
+    private float closedRotationY;
+    private float openRotationY;
 
     private List<GameObject> cubeObjectsUp = new List<GameObject>();
     private List<GameObject> cubeObjectsDown = new List<GameObject>();
+
+
     [SerializeField] private Shader customShader;
     private void UpdateCubeReferences()
     {
@@ -38,6 +46,43 @@ public class DoorManager : MonoBehaviour
     }
 
 
+    private void Start()
+    {
+        // Store the initial rotation as closed state
+        closedRotationY = handleDoorPrefab.transform.localEulerAngles.y;
+
+        // Determine open rotation based on door's initial rotation
+        if (Mathf.Round(transform.localEulerAngles.y) == 270) // -90 equivalent
+        {
+            openRotationY = closedRotationY + 85f;
+        }
+        else
+        {
+            openRotationY = closedRotationY - 85f;
+        }
+    }
+
+    public void OpenDoor()
+    {
+        if (handleDoorPrefab == null)
+        {
+            Debug.LogError("handleDoorPrefab is null!");
+            return;
+        }
+
+        isOpen = !isOpen; // Toggle state
+
+        // Determine target rotation
+        targetYRotation = isOpen ? openRotationY : closedRotationY;
+
+        // Set the rotation immediately (or you could lerp it over time)
+        Vector3 currentRotation = handleDoorPrefab.transform.localEulerAngles;
+        handleDoorPrefab.transform.localEulerAngles = new Vector3(
+            currentRotation.x,
+            targetYRotation,
+            currentRotation.z
+        );
+    }
 
     public void ChangeDoorPrefab(GameObject newPrefab)
     {

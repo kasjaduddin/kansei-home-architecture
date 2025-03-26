@@ -79,6 +79,78 @@ public class ColoringManager : MonoBehaviour
             }
         }
     }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            OpenClosestDoor();
+        }
+    }
+
+    private void OpenClosestDoor()
+    {
+        RoomReference nearestRoom = GetNearestRoom();
+
+        if (nearestRoom == null)
+        {
+            Debug.LogWarning("No nearest room found!");
+            return;
+        }
+
+        if (nearestRoom.doorObject == null || nearestRoom.doorObject.Count == 0)
+        {
+            Debug.LogWarning("No doors found in the nearest room!");
+            return;
+        }
+
+        doorData closestDoor = null;
+        float minDistance = Mathf.Infinity;
+
+        // Get all cameras in the scene
+        Camera[] allCameras = Camera.allCameras;
+        Camera activeCamera = null;
+
+        // Find the first enabled camera
+        foreach (Camera cam in allCameras)
+        {
+            if (cam.isActiveAndEnabled)
+            {
+                activeCamera = cam;
+                break;
+            }
+        }
+
+        Vector3 playerPosition = activeCamera.transform.position;
+
+        foreach (doorData door in nearestRoom.doorObject)
+        {
+            if (door == null || door.objectPrefab == null) continue;
+
+            float distance = Vector3.Distance(playerPosition, door.objectPrefab.transform.position);
+            if (distance < minDistance)
+            {
+                minDistance = distance;
+                closestDoor = door;
+            }
+        }
+
+        if (closestDoor == null || closestDoor.objectPrefab == null)
+        {
+            Debug.LogWarning("No valid closest door found!");
+            return;
+        }
+
+        DoorManager doorManager = closestDoor.objectPrefab.GetComponent<DoorManager>();
+        if (doorManager == null)
+        {
+            Debug.LogError("DoorManager script is missing on " + closestDoor.objectPrefab.name);
+            return;
+        }
+
+        doorManager.OpenDoor();
+        Debug.Log("Opened door: " + closestDoor.objectPrefab.name);
+    }
     private void ChangeWindowAndDoorWallMaterial(RoomReference room, Material newMaterial)
     {
         // Change material of walls inside window objects
