@@ -45,21 +45,6 @@ public class WindowManager : MonoBehaviour
             }
         }
     }
-    public void UpdatePrefabWallColor()
-    {
-        if (currentMaterialUp != null)
-        {
-            UpdateCubeReferences();
-            ChangeAllCubeColors(currentMaterialUp, "up");
-        }
-
-        // Check and apply down material if it exists
-        if (currentMaterialDown != null)
-        {
-            UpdateCubeReferences();
-            ChangeAllCubeColors(currentMaterialDown, "down");
-        }
-    }
 
     public void ChangeWindowPrefab(GameObject newPrefab)
     {
