@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class WindowManager : MonoBehaviour
 {
     private List<GameObject> cubeObjectsUp = new List<GameObject>();
@@ -11,6 +12,8 @@ public class WindowManager : MonoBehaviour
 
     public Material currentMaterialUp;
     public Material currentMaterialDown;
+
+
     private void UpdateCubeReferences()
     {
         // Clear previous references
@@ -60,6 +63,10 @@ public class WindowManager : MonoBehaviour
 
     public void ChangeWindowPrefab(GameObject newPrefab)
     {
+        // Store current materials before destroying
+        Material tempUp = currentMaterialUp;
+        Material tempDown = currentMaterialDown;
+
         // Destroy existing children safely
         for (int i = this.transform.childCount - 1; i >= 0; i--)
         {
@@ -68,6 +75,21 @@ public class WindowManager : MonoBehaviour
 
         // Instantiate new prefab as child
         GameObject newInstance = Instantiate(newPrefab, this.transform);
+
+        // Wait for one frame to ensure the new prefab is fully initialized
+        StartCoroutine(DelayedMaterialUpdate(tempUp, tempDown));
+
+        UpdateCubeReferences();
+    }
+
+    private IEnumerator DelayedMaterialUpdate(Material upMat, Material downMat)
+    {
+        // Wait for end of frame to ensure all components are initialized
+        yield return new WaitForEndOfFrame();
+        
+        // Reapply materials
+        if (upMat != null) ChangeAllCubeColors(upMat, "up");
+        if (downMat != null) ChangeAllCubeColors(downMat, "down");
     }
 
     public void ChangeAllCubeColors(Material newMaterial, string direction)

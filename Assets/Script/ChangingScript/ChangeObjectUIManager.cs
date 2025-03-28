@@ -119,6 +119,7 @@ public class ChangeObjectUIManager : MonoBehaviour
             Debug.LogWarning("No nearest room found!");
             return;
         }
+
         foreach (windowData window in room.windowObject)
         {
             if (window != null && window.objectPrefab != null)
@@ -126,7 +127,16 @@ public class ChangeObjectUIManager : MonoBehaviour
                 WindowManager windowManager = window.objectPrefab.GetComponent<WindowManager>();
                 if (windowManager != null)
                 {
+                    // Store current materials before changing prefab
+                    Material upMat = windowManager.currentMaterialUp;
+                    Material downMat = windowManager.currentMaterialDown;
+
                     windowManager.ChangeWindowPrefab(newWindowsPrefab);
+
+                    // Update the room reference to point to the new prefab
+                    window.objectPrefab = windowManager.gameObject;
+
+                    // Materials will be reapplied by the WindowManager's delayed update
                 }
             }
         }

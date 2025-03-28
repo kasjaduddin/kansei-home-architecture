@@ -151,7 +151,7 @@ public class ColoringManager : MonoBehaviour
         doorManager.OpenDoor();
         Debug.Log("Opened door: " + closestDoor.objectPrefab.name);
     }
-    private void ChangeWindowAndDoorWallMaterial(RoomReference room, Material newMaterial)
+    public void ChangeWindowAndDoorWallMaterial(RoomReference room, Material newMaterial)
     {
         // Change material of walls inside window objects
         foreach (windowData window in room.windowObject)
