@@ -41,27 +41,10 @@ public class PlacementState : IBuildingState
         this.wallReference = wallReference;
         this.mainCamera = Camera.main;
 
-        if (selectedFurniture != null)
-        {
-            Debug.Log($"[PlacementState] Showing preview for {selectedFurniture.furnitureName}");
-
-            previewSystem.StartShowingPlacementPreview(
-                selectedFurniture.furniturePrefab,
-                selectedFurniture.size
-            );
-        }
-        else
-        {
-            Debug.LogError("[PlacementState] Selected furniture is NULL!");
-        }
-
-        GridData selectedData = GetSelectedGridData(selectedFurniture.furniturePlacement);
-        foreach (Transform wall in wallReference)
-        {
-            PopulateWallObjects(wall, floorData);
-            PopulateWallObjects(wall, ceilingData);
-            PopulateWallObjects(wall, wallData);
-        }
+        previewSystem.StartShowingPlacementPreview(
+            selectedFurniture.furniturePrefab,
+            selectedFurniture.size
+        );
     }
 
     private void PopulateWallObjects(Transform obj, GridData selectedData)
@@ -157,6 +140,11 @@ public class PlacementState : IBuildingState
         }
         else // For non-wall objects
         {
+            if (IsPartiallyOnWall(gridPosition, rotatedSize, rotationAngle))
+            {
+                Debug.Log("Placement failed: Object not on wall");
+                return false;
+            }
             if (!selectedData.CanPlacedObjectAt(gridPosition, rotatedSize, rotationAngle))
             {
                 return false;

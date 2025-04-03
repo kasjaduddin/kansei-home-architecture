@@ -25,20 +25,71 @@ public class PlacementSystem : MonoBehaviour
 
     [SerializeField] private List<Transform> wallParent;
 
+    private bool wallsInitialized = false;
+
     IBuildingState buildingState;
 
     private void Start()
     {
+        InitializeGridData();
+        InitializeWalls();
         StopPlacement();
-        floorData = new();
-        wallData = new();
-        objectOnWallData = new();
-        ceilingData = new();
-        furnitureData = new();
+    }
+
+    private void InitializeGridData()
+    {
+        floorData = new GridData();
+        wallData = new GridData();
+        objectOnWallData = new GridData();
+        ceilingData = new GridData();
+        furnitureData = new GridData();
+    }
+
+    private void InitializeWalls()
+    {
+        if (wallsInitialized || wallParent == null) return;
+
+        Debug.Log("Initializing wall data...");
+        foreach (Transform wall in wallParent)
+        {
+            PopulateWallObjects(wall, wallData);
+        }
+        wallsInitialized = true;
+
+    }
+
+    private void PopulateWallObjects(Transform obj, GridData targetGrid)
+    {
+        if (obj.gameObject.layer == LayerMask.NameToLayer("Wall"))
+        {
+            Vector3 worldPos = obj.position;
+            Vector3Int gridPos = grid.WorldToCell(worldPos);
+            gridPos.y = 0;
+
+            Vector2Int wallSize = new Vector2Int(
+                Mathf.RoundToInt(obj.localScale.x * 10),
+                Mathf.RoundToInt(obj.localScale.z * 10)
+            );
+
+            Vector3Int bottomLeftOffset = new Vector3Int(
+                Mathf.FloorToInt(wallSize.x / 2f),
+                0,
+                Mathf.FloorToInt(wallSize.y / 2f)
+            );
+
+            gridPos -= bottomLeftOffset;
+            targetGrid.AddInitialObjectAt(gridPos, wallSize);
+        }
+
+        foreach (Transform child in obj)
+        {
+            PopulateWallObjects(child, targetGrid);
+        }
     }
 
     public void StartPlacement(int furnitureID)
     {
+        InitializeWalls(); // Ensure walls are initialized
         StopPlacement();
         gridVisualization.SetActive(true);
 
@@ -60,7 +111,7 @@ public class PlacementSystem : MonoBehaviour
             furnitureData,
             objectPlacer,
             wallParent
-            );
+        );
 
         inputManager.OnClicked += PlaceStructure;
         inputManager.OnExit += StopPlacement;
