@@ -12,6 +12,7 @@ public class RemovingState : IBuildingState
     PreviewSystem previewSystem;
     GridData floorData;
     GridData wallData;
+    GridData objectOnWallData;
     GridData ceilingData;
     GridData furnitureData;
     ObjectPlacer objectPlacer;
@@ -20,6 +21,7 @@ public class RemovingState : IBuildingState
                          PreviewSystem previewSystem,
                          GridData floorData,
                          GridData wallData,
+                         GridData objectOnWallData,
                          GridData ceilingData,
                          GridData furnitureData,
                          ObjectPlacer objectPlacer)
@@ -28,6 +30,7 @@ public class RemovingState : IBuildingState
         this.previewSystem = previewSystem;
         this.floorData = floorData;
         this.wallData = wallData;
+        this.objectOnWallData = objectOnWallData;
         this.ceilingData = ceilingData;
         this.furnitureData = furnitureData;
         this.objectPlacer = objectPlacer;
@@ -77,10 +80,10 @@ public class RemovingState : IBuildingState
             return floorData;
         }
 
-        if (wallData.GetRepresentationIndex(gridPosition) != -1)
+        if (objectOnWallData.GetRepresentationIndex(gridPosition) != -1)
         {
             Debug.Log("Wall object found.");
-            return wallData;
+            return objectOnWallData;
         }
 
         if (ceilingData.GetRepresentationIndex(gridPosition) != -1)

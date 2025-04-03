@@ -15,7 +15,7 @@ public class PlacementSystem : MonoBehaviour
 
     [SerializeField] private GameObject gridVisualization;
 
-    private GridData floorData, furnitureData, wallData, ceilingData;
+    private GridData floorData, furnitureData, wallData, objectOnWallData, ceilingData;
 
     [SerializeField] private PreviewSystem preview;
 
@@ -32,10 +32,9 @@ public class PlacementSystem : MonoBehaviour
         StopPlacement();
         floorData = new();
         wallData = new();
+        objectOnWallData = new();
         ceilingData = new();
         furnitureData = new();
-        //StartPlacingWall(wallParent);
-
     }
 
     public void StartPlacement(int furnitureID)
@@ -56,6 +55,7 @@ public class PlacementSystem : MonoBehaviour
             preview,
             floorData,
             wallData,
+            objectOnWallData,
             ceilingData,
             furnitureData,
             objectPlacer,
@@ -79,7 +79,6 @@ public class PlacementSystem : MonoBehaviour
         allFurniture.AddRange(furnitureDatabase.floorFurniture);
         allFurniture.AddRange(furnitureDatabase.wallFurniture);
         allFurniture.AddRange(furnitureDatabase.ceilingFurniture);
-        allFurniture.AddRange(furnitureDatabase.embeddedFurniture);
         return allFurniture;
     }
     public void StartRemoving()
@@ -90,6 +89,7 @@ public class PlacementSystem : MonoBehaviour
                                           preview,
                                           floorData,
                                           wallData,
+                                          objectOnWallData,
                                           ceilingData,
                                           furnitureData,
                                           objectPlacer);

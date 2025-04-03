@@ -31,6 +31,11 @@ public class GridData
             Debug.Log($"data placed object furniture {obj}");
         }
     }
+
+    public bool IsPositionOccupied(Vector3Int gridPosition)
+    {
+        return placedObjects.ContainsKey(gridPosition);
+    }
     public void AddInitialObjectAt(Vector3Int gridPosition, Vector2Int objectSize)
     {
         List <Vector3Int> positionToOccupy = CalculatePosition(gridPosition, objectSize, 0);
@@ -56,14 +61,40 @@ public class GridData
             Debug.Log($"data placed object {obj}");
         }
     }
+    public bool IsPositionOnWall(Vector3Int gridPosition, Vector2Int size, int rotationAngle)
+    {
+        // Check all grid cells that would be occupied by this object
+        List<Vector3Int> positionsToCheck = CalculatePosition(gridPosition, size, rotationAngle);
 
+        foreach (Vector3Int pos in positionsToCheck)
+        {
+            if (!placedObjects.ContainsKey(pos))
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+    public bool IsWallPosition(Vector3Int gridPosition)
+    {
+        if (!placedObjects.ContainsKey(gridPosition))
+            return false;
 
-    private List<Vector3Int> CalculatePosition(Vector3Int gridPosition, Vector2Int objectSize, int rotationAngle)
+        // Check if this is actually a wall (ID = -1 for walls in your current implementation)
+        return placedObjects[gridPosition].ID == -1;
+    }
+    public List<Vector3Int> CalculatePosition(Vector3Int gridPosition, Vector2Int objectSize, int rotationAngle)
     {
         List<Vector3Int> returnVal = new();
-        for (int x = 0; x < objectSize.x; x++)
+        rotationAngle = Mathf.RoundToInt(rotationAngle / 90f) * 90;
+
+        bool isRotated = rotationAngle % 180 != 0;
+        int width = isRotated ? objectSize.y : objectSize.x;
+        int height = isRotated ? objectSize.x : objectSize.y;
+
+        for (int x = 0; x < width; x++)
         {
-            for (int y = 0; y < objectSize.y; y++)
+            for (int y = 0; y < height; y++)
             {
                 returnVal.Add(gridPosition + new Vector3Int(x, 0, y));
             }

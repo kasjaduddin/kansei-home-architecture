@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting.FullSerializer;
 using UnityEngine;
 
 public class PlacementState : IBuildingState
@@ -11,10 +10,12 @@ public class PlacementState : IBuildingState
     PreviewSystem previewSystem;
     GridData floorData;
     GridData wallData;
+    GridData objectOnWallData;
     GridData ceilingData;
-    GridData furnitureData; // Class field
+    GridData furnitureData;
     ObjectPlacer objectPlacer;
     List<Transform> wallReference;
+    private Camera mainCamera;
 
     private int currentRotationAngle = 0;
     public PlacementState(FurnitureData selectedFurnitureData,
@@ -22,6 +23,7 @@ public class PlacementState : IBuildingState
                       PreviewSystem previewSystem,
                       GridData floorData,
                       GridData wallData,
+                      GridData objectOnWallData,
                       GridData ceilingData,
                       GridData furnitureGridData,
                       ObjectPlacer objectPlacer,
@@ -32,10 +34,12 @@ public class PlacementState : IBuildingState
         this.previewSystem = previewSystem;
         this.floorData = floorData;
         this.wallData = wallData;
+        this.objectOnWallData = objectOnWallData;
         this.ceilingData = ceilingData;
         this.furnitureData = furnitureGridData;
         this.objectPlacer = objectPlacer;
         this.wallReference = wallReference;
+        this.mainCamera = Camera.main;
 
         if (selectedFurniture != null)
         {
@@ -50,45 +54,18 @@ public class PlacementState : IBuildingState
         {
             Debug.LogError("[PlacementState] Selected furniture is NULL!");
         }
-        GridData selectedData = GetSelectedGridData(selectedFurniture.furniturePlacement);
 
+        GridData selectedData = GetSelectedGridData(selectedFurniture.furniturePlacement);
         foreach (Transform wall in wallReference)
         {
-            PopulateWallObjects(wall, selectedData);
+            PopulateWallObjects(wall, floorData);
+            PopulateWallObjects(wall, ceilingData);
+            PopulateWallObjects(wall, wallData);
         }
-
-
-        /*foreach (Transform wall in wallReference)
-        {
-            Debug.Log("Ukuran wallnya  " + wall.localScale.x * 10 + " , " + wall.localScale.z * 10);
-
-            Vector3 worldPos = wall.position;
-            Vector3Int gridPos = grid.WorldToCell(worldPos);
-            gridPos.y = 0;
-            Vector2Int wallSize = new Vector2Int(
-                Mathf.RoundToInt(wall.localScale.x * 10),
-                Mathf.RoundToInt(wall.localScale.z * 10)
-            );
-            // Calculate the bottom-left offset for the pivot in grid units
-            Vector3Int bottomLeftOffset = new Vector3Int(
-                Mathf.FloorToInt(wallSize.x / 2f), // Half the width (X-axis)
-                0,
-                Mathf.FloorToInt(wallSize.y / 2f)  // Half the height (Z-axis)
-            );
-
-            // Shift the gridPos to align the pivot to the bottom-left corner
-            gridPos -= bottomLeftOffset;
-            // Determine the size of the wall in grid units
-
-            // Mark the grid as occupied
-            selectedData.AddInitialObjectAt(gridPos, wallSize);
-            //buildingState.SaveInitialObject(gridPos, wallSize);
-        }*/
     }
 
     private void PopulateWallObjects(Transform obj, GridData selectedData)
     {
-        // If the object is in the "Wall" layer, process it
         if (obj.gameObject.layer == LayerMask.NameToLayer("Wall"))
         {
             Vector3 worldPos = obj.position;
@@ -110,13 +87,11 @@ public class PlacementState : IBuildingState
             selectedData.AddInitialObjectAt(gridPos, wallSize);
         }
 
-        // Recursively process all children
         foreach (Transform child in obj)
         {
             PopulateWallObjects(child, selectedData);
         }
     }
-
 
     private GridData GetSelectedGridData(FurniturePlacement placement)
     {
@@ -125,11 +100,11 @@ public class PlacementState : IBuildingState
             case FurniturePlacement.OnFloor:
                 return floorData;
             case FurniturePlacement.OnWall:
-                return wallData;
+                return objectOnWallData;
             case FurniturePlacement.OnCeiling:
                 return ceilingData;
             case FurniturePlacement.EmbeddedInWall:
-                return furnitureData; // Adjust if a separate grid is needed
+                return furnitureData;
             default:
                 Debug.LogError($"[PlacementState] Unknown FurniturePlacement: {placement}");
                 return null;
@@ -150,17 +125,14 @@ public class PlacementState : IBuildingState
         bool placementValidity = CheckPlacementValidity(gridPosition);
         if (!placementValidity) return;
 
-        int index = objectPlacer.PlaceObject(
-            selectedFurniture.furniturePrefab,
-            grid.CellToWorld(gridPosition) + selectedFurniture.defaultPositionOffset,
-            rotation
-        );
-
-        GridData selectedData = GetSelectedGridData(selectedFurniture.furniturePlacement);
-        rotationAngle = (int)previewSystem.GetRotation().eulerAngles.y;
-        Debug.Log("ini nih rotation angle " + rotationAngle);
-        selectedData.AddObjectAt(gridPosition, rotatedSize, (int)selectedFurniture.furnitureType, index, rotationAngle);
-        previewSystem.UpdatePosition(grid.CellToWorld(gridPosition), false);
+        if (selectedFurniture.furniturePlacement == FurniturePlacement.OnWall)
+        {
+            PlaceWallObject(gridPosition, rotation);
+        }
+        else
+        {
+            PlaceRegularObject(gridPosition, rotation);
+        }
     }
 
     private bool CheckPlacementValidity(Vector3Int gridPosition)
@@ -168,12 +140,108 @@ public class PlacementState : IBuildingState
         Vector2Int rotatedSize = previewSystem.GetAdjustedSize();
         int rotationAngle = (int)previewSystem.GetRotation().eulerAngles.y;
         GridData selectedData = GetSelectedGridData(selectedFurniture.furniturePlacement);
-        return selectedData.CanPlacedObjectAt(gridPosition, rotatedSize, rotationAngle);
+
+        // Special check for wall objects
+        if (selectedFurniture.furniturePlacement == FurniturePlacement.OnWall)
+        {
+            // Check if at least one position overlaps with a wall
+            if (!IsPartiallyOnWall(gridPosition, rotatedSize, rotationAngle))
+            {
+                Debug.Log("Placement failed: Object not on wall");
+                return false;
+            }
+            if (!objectOnWallData.CanPlacedObjectAt(gridPosition, rotatedSize, rotationAngle))
+            {
+                return false;
+            }
+        }
+        else // For non-wall objects
+        {
+            if (!selectedData.CanPlacedObjectAt(gridPosition, rotatedSize, rotationAngle))
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private bool IsPartiallyOnWall(Vector3Int gridPosition, Vector2Int size, int rotationAngle)
+    {
+        List<Vector3Int> positionsToCheck = wallData.CalculatePosition(gridPosition, size, rotationAngle);
+
+        foreach (Vector3Int pos in positionsToCheck)
+        {
+            // Check if this grid cell contains a wall (ID -1)
+            if (wallData.IsPositionOccupied(pos) &&
+                wallData.GetPlacementData(pos).ID == -1)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+    private void PlaceWallObject(Vector3Int gridPosition, Quaternion rotation)
+    {
+        int index = objectPlacer.PlaceObject(
+            selectedFurniture.furniturePrefab,
+            grid.CellToWorld(gridPosition) + selectedFurniture.defaultPositionOffset,
+            rotation
+        );
+
+        GridData selectedData = GetSelectedGridData(selectedFurniture.furniturePlacement);
+        int rotationAngle = (int)previewSystem.GetRotation().eulerAngles.y;
+        Vector2Int rotatedSize = previewSystem.GetAdjustedSize();
+
+        selectedData.AddObjectAt(
+            gridPosition,
+            rotatedSize,
+            (int)selectedFurniture.furnitureType,
+            index,
+            rotationAngle
+        );
+
+        previewSystem.UpdatePosition(grid.CellToWorld(gridPosition), false);
+    }
+
+    private void PlaceRegularObject(Vector3Int gridPosition, Quaternion rotation)
+    {
+        int index = objectPlacer.PlaceObject(
+            selectedFurniture.furniturePrefab,
+            grid.CellToWorld(gridPosition) + selectedFurniture.defaultPositionOffset,
+            rotation
+        );
+
+        GridData selectedData = GetSelectedGridData(selectedFurniture.furniturePlacement);
+        int rotationAngle = (int)previewSystem.GetRotation().eulerAngles.y;
+        Vector2Int rotatedSize = previewSystem.GetAdjustedSize();
+
+        selectedData.AddObjectAt(
+            gridPosition,
+            rotatedSize,
+            (int)selectedFurniture.furnitureType,
+            index,
+            rotationAngle
+        );
+
+        previewSystem.UpdatePosition(grid.CellToWorld(gridPosition), false);
     }
 
     public void UpdateState(Vector3Int gridPosition)
     {
         bool placementValidity = CheckPlacementValidity(gridPosition);
-        previewSystem.UpdatePosition(grid.CellToWorld(gridPosition), placementValidity);
+
+        // For wall objects, adjust the preview position slightly
+        if (selectedFurniture.furniturePlacement == FurniturePlacement.OnWall && placementValidity)
+        {
+            Vector3 worldPos = grid.CellToWorld(gridPosition);
+            worldPos += selectedFurniture.defaultPositionOffset;
+            previewSystem.UpdatePosition(worldPos, placementValidity);
+        }
+        else
+        {
+            previewSystem.UpdatePosition(grid.CellToWorld(gridPosition), placementValidity);
+        }
     }
+    
 }
