@@ -43,8 +43,7 @@ public class SunSimulationManager : MonoBehaviour
 
     private void UpdateSunRotation(int directionIndex, float hoursSince6AM)
     {
-        // Calculate the sun's angle (X-axis) from 0° (sunrise) to 180° (sunset)
-        float xRotation = Mathf.Lerp(0, 180, hoursSince6AM / 12f);
+        float xRotation = hoursSince6AM * 15f;
 
         // Get Y rotation based on the dropdown selection (0° = North, 90° = East, etc.)
         float yRotation = directionIndex * 90f;
