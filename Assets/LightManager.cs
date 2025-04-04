@@ -16,4 +16,14 @@ public class LightManager : MonoBehaviour
         GameObject newInstance = Instantiate(newPrefab, this.transform);
         newInstance.transform.localPosition = Vector3.zero; // Reset position
     }
+    public void ChangeLightIntensity(float intensity)
+    {
+        // Get all Light components in the children
+        Light[] lights = GetComponentsInChildren<Light>();
+
+        foreach (Light light in lights)
+        {
+            light.intensity = intensity; // Change intensity
+        }
+    }
 }

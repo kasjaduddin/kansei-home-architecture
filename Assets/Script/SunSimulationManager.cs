@@ -2,12 +2,15 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
+using static ColoringManager;
 
 public class SunSimulationManager : MonoBehaviour
 {
     [SerializeField] private TMP_Dropdown sunDirectionDropdown;
     [SerializeField] private TextMeshProUGUI timeText;
+    [SerializeField] private ColoringManager roomReference;  //to get the RoomReference 
     [SerializeField] private Slider timeSlider;
+    [SerializeField] private Slider lightSlider;
     [SerializeField] private Light sunLight;
 
     private void Start()
@@ -22,10 +25,31 @@ public class SunSimulationManager : MonoBehaviour
         timeSlider.maxValue = 12;   // 18:00 (180°)
         timeSlider.wholeNumbers = true;
         timeSlider.onValueChanged.AddListener(OnTimeChanged);
-
+        lightSlider.onValueChanged.AddListener(OnIntensityChange);
         // Set initial state
         UpdateSunRotation(0, 6); // Start at 6 AM facing North
     }
+    private void OnIntensityChange(float lightIntensity)
+    {
+        ColoringManager.RoomReference room = roomReference.GetNearestRoom();
+        if (room == null)
+        {
+            Debug.LogWarning("No nearest room found!");
+            return;
+        }
+        foreach (GameObject light in room.lampsObjects)
+        {
+            if (light != null)
+            {
+                LightManager lightManager = light.GetComponent<LightManager>();
+                if (lightManager != null)
+                {
+                    lightManager.ChangeLightIntensity(lightIntensity);
+                }
+            }
+        }
+    }
+
 
     private void OnDirectionChanged(int directionIndex)
     {
