@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using static ColoringManager;
+using static HomeStructureManager;
 
 public class ChangeObjectUIManager : MonoBehaviour
 {
     [SerializeField] private EmbededCollectionSO embededDatabase; // Reference to the database
     [SerializeField] private GameObject buttonPrefab; // Prefab for each button
     [SerializeField] private Transform buttonContainer; // UI Panel to hold buttons
-    [SerializeField] private ColoringManager roomReference;  //to get the RoomReference 
+    [SerializeField] private HomeStructureManager homeManager;
     [SerializeField] private Button doorsButton;
     [SerializeField] private Button windowsButton;
     [SerializeField] private Button lampsButton;
@@ -53,8 +54,6 @@ public class ChangeObjectUIManager : MonoBehaviour
                     else if (objectType == EmbededObjectType.Window)
                     {
                         ChangeRoomWindows(prefabData.objectPrefab);
-
-                        
                     }
                     else
                     {
@@ -71,7 +70,7 @@ public class ChangeObjectUIManager : MonoBehaviour
 
     private void ChangeRoomDoors( GameObject newDoorPrefab)
     {
-        ColoringManager.RoomReference room = roomReference.GetNearestRoom();
+        var room = homeManager.GetNearestRoom();
         if (room == null)
         {
             Debug.LogWarning("No nearest room found!");
@@ -92,7 +91,7 @@ public class ChangeObjectUIManager : MonoBehaviour
 
     private void ChangeRoomLight(GameObject newLightPrefab)
     {
-        ColoringManager.RoomReference room = roomReference.GetNearestRoom();
+        var room = homeManager.GetNearestRoom();
         if (room == null)
         {
             Debug.LogWarning("No nearest room found!");
@@ -113,7 +112,7 @@ public class ChangeObjectUIManager : MonoBehaviour
 
     private void ChangeRoomWindows(GameObject newWindowsPrefab)
     {
-        ColoringManager.RoomReference room = roomReference.GetNearestRoom();
+        var room = homeManager.GetNearestRoom();
         if (room == null)
         {
             Debug.LogWarning("No nearest room found!");

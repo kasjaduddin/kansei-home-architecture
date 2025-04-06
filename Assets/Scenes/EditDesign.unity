@@ -918,7 +918,7 @@ MonoBehaviour:
   buttonPrefab: {fileID: 2940262871397609554, guid: 1ab3474af77527f4d87246e7c66d93b9,
     type: 3}
   buttonContainer: {fileID: 1844888314}
-  roomReference: {fileID: 1557390923}
+  homeManager: {fileID: 1002468638}
   doorsButton: {fileID: 500470872}
   windowsButton: {fileID: 293055202}
   lampsButton: {fileID: 298886892}
@@ -1891,8 +1891,8 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1145823816}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMin: {x: 0.5, y: 0}
+  m_AnchorMax: {x: 0.5, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -8158,7 +8158,7 @@ PrefabInstance:
     - target: {fileID: 9159402344231290386, guid: 7b4a6f8fec977a647a3070bde797d69b,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 1.45
+      value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: 9159402344231290386, guid: 7b4a6f8fec977a647a3070bde797d69b,
         type: 3}
@@ -8311,7 +8311,7 @@ Transform:
   m_GameObject: {fileID: 525760091}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1, y: 1.75, z: 2.8}
+  m_LocalPosition: {x: -1, y: 1.75, z: 2.85}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -8449,7 +8449,7 @@ Transform:
   m_GameObject: {fileID: 571829245}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 3.04, y: 0, z: -1.72}
+  m_LocalPosition: {x: 3, y: 0, z: -0.75}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -9096,10 +9096,7 @@ MonoBehaviour:
   gridVisualization: {fileID: 635253650}
   preview: {fileID: 1168469781}
   objectPlacer: {fileID: 1285118825}
-  wallParent:
-  - {fileID: 81400845}
-  - {fileID: 791525339}
-  - {fileID: 1471018870}
+  homeManager: {fileID: 1002468638}
 --- !u!1001 &646012240
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -17395,8 +17392,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1001861712}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.040646143, y: 1.1339954, z: 1.1555505}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -17405,7 +17402,7 @@ Transform:
   - {fileID: 571829246}
   - {fileID: 1318916340}
   - {fileID: 1385689866}
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 1002468637}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1002468636
 GameObject:
@@ -17416,6 +17413,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1002468637}
+  - component: {fileID: 1002468638}
   m_Layer: 0
   m_Name: HomeDesign
   m_TagString: Untagged
@@ -17436,6 +17434,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 1001861713}
   - {fileID: 81400845}
   - {fileID: 1414621811}
   - {fileID: 790136029}
@@ -17444,6 +17443,135 @@ Transform:
   - {fileID: 791525339}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1002468638
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1002468636}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f87fdec0ec8d944baa03f4a2449ec33, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  roomStructure:
+  - roomName: Room 1
+    wallObject:
+    - {fileID: 940499496}
+    - {fileID: 888775174}
+    - {fileID: 880757579}
+    - {fileID: 1485463670}
+    - {fileID: 699468541}
+    - {fileID: 679420067}
+    ceilingObject:
+    - {fileID: 1968193803}
+    floorObject:
+    - {fileID: 958168900}
+    doorObject:
+    - doorSide: up
+      objectPrefab: {fileID: 634313005}
+    windowObject:
+    - windowSide: down
+      objectPrefab: {fileID: 8137791672810450689}
+    - windowSide: up
+      objectPrefab: {fileID: 12589471}
+    lampsObjects:
+    - {fileID: 1903375082832362709}
+    roomPosition: {fileID: 1379242446}
+  - roomName: Room 2
+    wallObject:
+    - {fileID: 830274802}
+    - {fileID: 1084002369}
+    - {fileID: 11713204}
+    - {fileID: 1605040867}
+    - {fileID: 448231943}
+    ceilingObject:
+    - {fileID: 1627362787}
+    floorObject:
+    - {fileID: 162166100}
+    doorObject:
+    - doorSide: down
+      objectPrefab: {fileID: 1910026147}
+    windowObject:
+    - windowSide: down
+      objectPrefab: {fileID: 452484030}
+    lampsObjects:
+    - {fileID: 480670974}
+    roomPosition: {fileID: 1983603144}
+  - roomName: Bathroom
+    wallObject:
+    - {fileID: 384756585}
+    - {fileID: 436316015}
+    - {fileID: 275252759}
+    - {fileID: 270330226}
+    - {fileID: 489057496}
+    ceilingObject:
+    - {fileID: 997377047}
+    floorObject:
+    - {fileID: 728272270}
+    doorObject:
+    - doorSide: up
+      objectPrefab: {fileID: 1724654719}
+    windowObject:
+    - windowSide: down
+      objectPrefab: {fileID: 646012242}
+    lampsObjects:
+    - {fileID: 1937712934}
+    roomPosition: {fileID: 1318916340}
+  - roomName: Kitchen
+    wallObject:
+    - {fileID: 642422833}
+    - {fileID: 527482324}
+    - {fileID: 1096872556}
+    - {fileID: 1777434942}
+    - {fileID: 284920466}
+    - {fileID: 1622668198}
+    ceilingObject:
+    - {fileID: 22772004}
+    floorObject:
+    - {fileID: 1936233557}
+    doorObject: []
+    windowObject:
+    - windowSide: down
+      objectPrefab: {fileID: 1891454024}
+    - windowSide: down
+      objectPrefab: {fileID: 1257904911}
+    lampsObjects:
+    - {fileID: 1525496429}
+    roomPosition: {fileID: 571829246}
+  - roomName: Living Room
+    wallObject:
+    - {fileID: 1749113904}
+    - {fileID: 1512293361}
+    - {fileID: 1359694770}
+    - {fileID: 147268781}
+    - {fileID: 1862559459}
+    - {fileID: 1306697808}
+    - {fileID: 918606923}
+    - {fileID: 999093507}
+    - {fileID: 283341659}
+    ceilingObject:
+    - {fileID: 1487893621}
+    floorObject:
+    - {fileID: 1459068137}
+    doorObject:
+    - doorSide: down
+      objectPrefab: {fileID: 634313005}
+    - doorSide: down
+      objectPrefab: {fileID: 1724654719}
+    - doorSide: up
+      objectPrefab: {fileID: 1910026147}
+    windowObject:
+    - windowSide: down
+      objectPrefab: {fileID: 1279135597}
+    - windowSide: down
+      objectPrefab: {fileID: 12589471}
+    - windowSide: up
+      objectPrefab: {fileID: 1257904911}
+    lampsObjects:
+    - {fileID: 517433064}
+    roomPosition: {fileID: 1385689866}
 --- !u!1 &1002930538
 GameObject:
   m_ObjectHideFlags: 0
@@ -21060,7 +21188,7 @@ Transform:
   m_GameObject: {fileID: 1318916339}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 3.04, y: 0, z: 0.82}
+  m_LocalPosition: {x: 3, y: 0, z: 2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -22311,7 +22439,7 @@ Transform:
   m_GameObject: {fileID: 1379242445}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2.45, y: 0, z: -1.94}
+  m_LocalPosition: {x: -2.45, y: 0, z: -0.75}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -22514,7 +22642,7 @@ Transform:
   m_GameObject: {fileID: 1385689865}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.53, y: 0, z: -1.11}
+  m_LocalPosition: {x: 0.5, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -24842,125 +24970,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44f07d4e52bd507468ec8da3f48370c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  roomStructure:
-  - roomName: Room 1
-    wallObject:
-    - {fileID: 940499496}
-    - {fileID: 880757579}
-    - {fileID: 888775174}
-    - {fileID: 699468541}
-    - {fileID: 679420067}
-    - {fileID: 1485463670}
-    ceilingObject:
-    - {fileID: 1968193803}
-    floorObject:
-    - {fileID: 958168900}
-    doorObject:
-    - doorSide: up
-      objectPrefab: {fileID: 634313005}
-    windowObject:
-    - windowSide: down
-      objectPrefab: {fileID: 8137791672810450689}
-    - windowSide: up
-      objectPrefab: {fileID: 12589471}
-    lampsObjects:
-    - {fileID: 1903375082832362709}
-    roomPosition: {fileID: 1379242446}
-  - roomName: Room 2
-    wallObject:
-    - {fileID: 830274802}
-    - {fileID: 1605040867}
-    - {fileID: 11713204}
-    - {fileID: 1084002369}
-    - {fileID: 448231943}
-    ceilingObject:
-    - {fileID: 1627362787}
-    floorObject:
-    - {fileID: 162166100}
-    doorObject:
-    - doorSide: down
-      objectPrefab: {fileID: 1910026147}
-    windowObject:
-    - windowSide: down
-      objectPrefab: {fileID: 452484030}
-    lampsObjects:
-    - {fileID: 480670974}
-    roomPosition: {fileID: 1983603144}
-  - roomName: BathRoom
-    wallObject:
-    - {fileID: 270330226}
-    - {fileID: 384756585}
-    - {fileID: 489057496}
-    - {fileID: 275252759}
-    - {fileID: 436316015}
-    ceilingObject:
-    - {fileID: 997377047}
-    floorObject:
-    - {fileID: 728272270}
-    doorObject:
-    - doorSide: up
-      objectPrefab: {fileID: 1724654719}
-    windowObject:
-    - windowSide: down
-      objectPrefab: {fileID: 646012242}
-    lampsObjects:
-    - {fileID: 1937712934}
-    roomPosition: {fileID: 1318916340}
-  - roomName: Kitchen
-    wallObject:
-    - {fileID: 642422833}
-    - {fileID: 284920466}
-    - {fileID: 527482324}
-    - {fileID: 1096872556}
-    - {fileID: 1622668198}
-    - {fileID: 1777434942}
-    ceilingObject:
-    - {fileID: 22772004}
-    floorObject:
-    - {fileID: 1936233557}
-    doorObject: []
-    windowObject:
-    - windowSide: down
-      objectPrefab: {fileID: 1257904911}
-    - windowSide: down
-      objectPrefab: {fileID: 1891454024}
-    lampsObjects:
-    - {fileID: 1525496429}
-    roomPosition: {fileID: 571829246}
-  - roomName: LivingRoom
-    wallObject:
-    - {fileID: 1512293361}
-    - {fileID: 283341659}
-    - {fileID: 918606923}
-    - {fileID: 1862559459}
-    - {fileID: 1749113904}
-    - {fileID: 147268781}
-    - {fileID: 1359694770}
-    - {fileID: 1306697808}
-    - {fileID: 1862559459}
-    - {fileID: 999093507}
-    - {fileID: 918606923}
-    ceilingObject:
-    - {fileID: 1487893621}
-    floorObject:
-    - {fileID: 1459068137}
-    doorObject:
-    - doorSide: down
-      objectPrefab: {fileID: 634313005}
-    - doorSide: up
-      objectPrefab: {fileID: 1910026147}
-    - doorSide: down
-      objectPrefab: {fileID: 1724654719}
-    windowObject:
-    - windowSide: down
-      objectPrefab: {fileID: 1279135597}
-    - windowSide: down
-      objectPrefab: {fileID: 12589471}
-    - windowSide: up
-      objectPrefab: {fileID: 1257904911}
-    lampsObjects:
-    - {fileID: 517433064}
-    roomPosition: {fileID: 1385689866}
+  homeManager: {fileID: 1002468638}
   customShader: {fileID: -6465566751694194690, guid: ed3c33acc7f78ae4c8f2b4733c748c57,
     type: 3}
 --- !u!1 &1569762855
@@ -28245,7 +28255,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1819340060
 RectTransform:
   m_ObjectHideFlags: 0
@@ -28285,7 +28295,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sunDirectionDropdown: {fileID: 651467639}
   timeText: {fileID: 1863817695}
-  roomReference: {fileID: 1557390923}
+  homeManager: {fileID: 1002468638}
   timeSlider: {fileID: 1337590715}
   lightSlider: {fileID: 834557994}
   sunLight: {fileID: 714493192}
@@ -28616,7 +28626,7 @@ RectTransform:
   m_Father: {fileID: 1042824189}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 0.5, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 10, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -29339,7 +29349,7 @@ RectTransform:
   m_Father: {fileID: 1421181471}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 10, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -34954,7 +34964,7 @@ Transform:
   m_GameObject: {fileID: 1983603143}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2.45, y: 0, z: 1.18}
+  m_LocalPosition: {x: -2.45, y: 0, z: 2.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -35459,7 +35469,7 @@ RectTransform:
   m_Father: {fileID: 723518081}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -35998,7 +36008,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &2111802704
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -36732,5 +36742,4 @@ SceneRoots:
   - {fileID: 1949198194}
   - {fileID: 917542810}
   - {fileID: 499158269}
-  - {fileID: 1001861713}
   - {fileID: 1002468637}

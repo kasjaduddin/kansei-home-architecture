@@ -8,7 +8,7 @@ public class SunSimulationManager : MonoBehaviour
 {
     [SerializeField] private TMP_Dropdown sunDirectionDropdown;
     [SerializeField] private TextMeshProUGUI timeText;
-    [SerializeField] private ColoringManager roomReference;  //to get the RoomReference 
+    [SerializeField] private HomeStructureManager homeManager;
     [SerializeField] private Slider timeSlider;
     [SerializeField] private Slider lightSlider;
     [SerializeField] private Light sunLight;
@@ -31,7 +31,7 @@ public class SunSimulationManager : MonoBehaviour
     }
     private void OnIntensityChange(float lightIntensity)
     {
-        ColoringManager.RoomReference room = roomReference.GetNearestRoom();
+        var room = homeManager.GetNearestRoom();
         if (room == null)
         {
             Debug.LogWarning("No nearest room found!");

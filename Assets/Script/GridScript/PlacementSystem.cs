@@ -23,7 +23,10 @@ public class PlacementSystem : MonoBehaviour
 
     [SerializeField] private ObjectPlacer objectPlacer;
 
-    [SerializeField] private List<Transform> wallParent;
+    private List<Transform> wallReference;
+
+    [SerializeField] private HomeStructureManager homeManager;
+
 
     private bool wallsInitialized = false;
 
@@ -34,6 +37,7 @@ public class PlacementSystem : MonoBehaviour
         InitializeGridData();
         InitializeWalls();
         StopPlacement();
+        wallReference = homeManager.GetRoomObjectTransforms();
     }
 
     private void InitializeGridData()
@@ -47,10 +51,10 @@ public class PlacementSystem : MonoBehaviour
 
     private void InitializeWalls()
     {
-        if (wallsInitialized || wallParent == null) return;
+        if (wallsInitialized || wallReference == null) return;
 
         Debug.Log("Initializing wall data...");
-        foreach (Transform wall in wallParent)
+        foreach (Transform wall in wallReference)
         {
             PopulateWallObjects(wall, wallData);
         }
@@ -110,7 +114,7 @@ public class PlacementSystem : MonoBehaviour
             ceilingData,
             furnitureData,
             objectPlacer,
-            wallParent
+            wallReference
         );
 
         inputManager.OnClicked += PlaceStructure;
