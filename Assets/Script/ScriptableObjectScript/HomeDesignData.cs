@@ -11,7 +11,7 @@ public class HomeDesignCollection : ScriptableObject
 [System.Serializable]
 public class HomeDesignGroup
 {
-    public string homeType; 
+    public homeType homeType; 
     public HomeStyle homeStyle; 
     public List<HomeDesignData> homeDesigns; 
 }
@@ -25,6 +25,13 @@ public class HomeDesignData
     public GameObject homePrefab;    
 }
 
+public enum homeType
+{
+    Type_36,
+    Type_45,
+    Type_54,
+    Type_70
+}
 public enum HomeStyle
 {
     Modern,        

@@ -23,9 +23,9 @@ public class PlacementSystem : MonoBehaviour
 
     [SerializeField] private ObjectPlacer objectPlacer;
 
-    private List<Transform> wallReference;
+    public List<Transform> wallReference;
 
-    [SerializeField] private HomeStructureManager homeManager;
+    //[SerializeField] private HomeStructureManager homeManager;
 
 
     private bool wallsInitialized = false;
@@ -35,9 +35,8 @@ public class PlacementSystem : MonoBehaviour
     private void Start()
     {
         InitializeGridData();
-        InitializeWalls();
+        //InitializeWalls();
         StopPlacement();
-        wallReference = homeManager.GetRoomObjectTransforms();
     }
 
     private void InitializeGridData()
@@ -93,6 +92,10 @@ public class PlacementSystem : MonoBehaviour
 
     public void StartPlacement(int furnitureID)
     {
+        if (HomeDesignParentManager.Instance != null)
+        {
+            wallReference = HomeDesignParentManager.Instance.GetCurrentWallReference();
+        }
         InitializeWalls(); // Ensure walls are initialized
         StopPlacement();
         gridVisualization.SetActive(true);

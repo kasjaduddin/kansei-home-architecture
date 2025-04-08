@@ -10,7 +10,7 @@ public class ChangeObjectUIManager : MonoBehaviour
     [SerializeField] private EmbededCollectionSO embededDatabase; // Reference to the database
     [SerializeField] private GameObject buttonPrefab; // Prefab for each button
     [SerializeField] private Transform buttonContainer; // UI Panel to hold buttons
-    [SerializeField] private HomeStructureManager homeManager;
+    //[SerializeField] private HomeStructureManager homeManager;
     [SerializeField] private Button doorsButton;
     [SerializeField] private Button windowsButton;
     [SerializeField] private Button lampsButton;
@@ -70,74 +70,112 @@ public class ChangeObjectUIManager : MonoBehaviour
 
     private void ChangeRoomDoors( GameObject newDoorPrefab)
     {
-        var room = homeManager.GetNearestRoom();
-        if (room == null)
+        HomeDesignParentManager parentManager = FindObjectOfType<HomeDesignParentManager>();
+        if (parentManager != null)
         {
-            Debug.LogWarning("No nearest room found!");
-            return;
-        }
-        foreach (doorData door in room.doorObject)
-        {
-            if (door != null && door.objectPrefab != null)
+            HomeStructureManager homeManager = parentManager.GetCurrentHomeStructureManager();
+            if (homeManager != null)
             {
-                DoorManager doorManager = door.objectPrefab.GetComponent<DoorManager>();
-                if (doorManager != null)
+                var room = homeManager.GetNearestRoom();
+                if (room == null)
                 {
-                    doorManager.ChangeDoorPrefab(newDoorPrefab);
+                    Debug.LogWarning("No nearest room found!");
+                    return;
+                }
+                foreach (doorData door in room.doorObject)
+                {
+                    if (door != null && door.objectPrefab != null)
+                    {
+                        DoorManager doorManager = door.objectPrefab.GetComponent<DoorManager>();
+                        if (doorManager != null)
+                        {
+                            doorManager.ChangeDoorPrefab(newDoorPrefab);
+                        }
+                    }
                 }
             }
         }
+        else
+        {
+            Debug.LogError("HomeDesignParentManager not found in the scene!");
+        }
+        
     }
 
     private void ChangeRoomLight(GameObject newLightPrefab)
     {
-        var room = homeManager.GetNearestRoom();
-        if (room == null)
+        HomeDesignParentManager parentManager = FindObjectOfType<HomeDesignParentManager>();
+        if (parentManager != null)
         {
-            Debug.LogWarning("No nearest room found!");
-            return;
-        }
-        foreach (GameObject light in room.lampsObjects)
-        {
-            if (light != null)
+            HomeStructureManager homeManager = parentManager.GetCurrentHomeStructureManager();
+            if (homeManager != null)
             {
-                LightManager lightManager = light.GetComponent<LightManager>();
-                if (lightManager != null)
+                var room = homeManager.GetNearestRoom();
+                if (room == null)
                 {
-                    lightManager.ChangeLightPrefab(newLightPrefab);
+                    Debug.LogWarning("No nearest room found!");
+                    return;
+                }
+                foreach (GameObject light in room.lampsObjects)
+                {
+                    if (light != null)
+                    {
+                        LightManager lightManager = light.GetComponent<LightManager>();
+                        if (lightManager != null)
+                        {
+                            lightManager.ChangeLightPrefab(newLightPrefab);
+                        }
+                    }
                 }
             }
         }
+        else
+        {
+            Debug.LogError("HomeDesignParentManager not found in the scene!");
+        }
+        
     }
 
     private void ChangeRoomWindows(GameObject newWindowsPrefab)
     {
-        var room = homeManager.GetNearestRoom();
-        if (room == null)
+        HomeDesignParentManager parentManager = FindObjectOfType<HomeDesignParentManager>();
+        if (parentManager != null)
         {
-            Debug.LogWarning("No nearest room found!");
-            return;
-        }
-
-        foreach (windowData window in room.windowObject)
-        {
-            if (window != null && window.objectPrefab != null)
+            HomeStructureManager homeManager = parentManager.GetCurrentHomeStructureManager();
+            if (homeManager != null)
             {
-                WindowManager windowManager = window.objectPrefab.GetComponent<WindowManager>();
-                if (windowManager != null)
+                var room = homeManager.GetNearestRoom();
+                if (room == null)
                 {
-                    // Store current materials before changing prefab
-                    Material upMat = windowManager.currentMaterialUp;
-                    Material downMat = windowManager.currentMaterialDown;
+                    Debug.LogWarning("No nearest room found!");
+                    return;
+                }
 
-                    windowManager.ChangeWindowPrefab(newWindowsPrefab);
+                foreach (windowData window in room.windowObject)
+                {
+                    if (window != null && window.objectPrefab != null)
+                    {
+                        WindowManager windowManager = window.objectPrefab.GetComponent<WindowManager>();
+                        if (windowManager != null)
+                        {
+                            // Store current materials before changing prefab
+                            Material upMat = windowManager.currentMaterialUp;
+                            Material downMat = windowManager.currentMaterialDown;
 
-                    // Update the room reference to point to the new prefab
-                    window.objectPrefab = windowManager.gameObject;
+                            windowManager.ChangeWindowPrefab(newWindowsPrefab);
 
-                    // Materials will be reapplied by the WindowManager's delayed update
+                            // Update the room reference to point to the new prefab
+                            window.objectPrefab = windowManager.gameObject;
+
+                            // Materials will be reapplied by the WindowManager's delayed update
+                        }
+                    }
                 }
             }
+        }
+        else
+        {
+            Debug.LogError("HomeDesignParentManager not found in the scene!");
         }
     }
 

@@ -16,7 +16,7 @@ public class DisplayDesignManager : MonoBehaviour
         DisplayAllDesigns();
     }
 
-    private void DisplayAllDesigns()
+    public void DisplayAllDesigns()
     {
         // Bersihkan contentParent dan list button
         foreach (Transform child in contentParent)
@@ -55,12 +55,50 @@ public class DisplayDesignManager : MonoBehaviour
             }
         }
     }
+    public void DisplayDesignsByType(homeType selectedType)
+    {
+        foreach (Transform child in contentParent)
+        {
+            Destroy(child.gameObject);
+        }
+        instantiatedButtons.Clear();
+
+        foreach (HomeDesignGroup group in homeDesignCollection.homeDesignGroups)
+        {
+            if (group.homeType == selectedType)
+            {
+                foreach (HomeDesignData design in group.homeDesigns)
+                {
+                    GameObject newUI = Instantiate(designUIPrefab, contentParent);
+
+                    Button button = newUI.GetComponent<Button>();
+                    if (button != null)
+                    {
+                        instantiatedButtons.Add(button);
+                        HomeDesignData capturedDesign = design;
+                        button.onClick.AddListener(() => OnDesignButtonClicked(capturedDesign));
+                    }
+
+                    HomeDesignUIOption uiOption = newUI.GetComponent<HomeDesignUIOption>();
+                    if (uiOption != null)
+                    {
+                        Sprite placeholderSprite = null;
+                        string roomCapacity = design.roomAmount.ToString();
+                        string bathroomCapacity = design.bathroomAmount.ToString();
+                        uiOption.UpdateProperty(placeholderSprite, design.homeDesignName, roomCapacity, bathroomCapacity);
+                    }
+                }
+            }
+        }
+    }
+
 
     private void OnDesignButtonClicked(HomeDesignData design)
     {
         if (design != null && displayMiniDesign != null)
         {
             displayMiniDesign.UpdateHomeDisplay(design.homePrefab);
+            DesignSelectionManager.Instance.SelectedDesignPrefab = design.homePrefab;
         }
     }
 }

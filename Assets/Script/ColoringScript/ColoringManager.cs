@@ -1,10 +1,11 @@
 using System.Collections.Generic;
 using UnityEngine;
+using static HomeStructureManager;
 
 public class ColoringManager : MonoBehaviour
 {
     [Header("Dependencies")]
-    [SerializeField] private HomeStructureManager homeManager;
+    //[SerializeField] private HomeStructureManager homeManager;
 
     [SerializeField] private Shader customShader;
 
@@ -18,39 +19,52 @@ public class ColoringManager : MonoBehaviour
 
     public void ChangeRoomMaterial(Material newMaterial, ObjectType objectType)
     {
-        var nearestRoom = homeManager.GetNearestRoom();
-        if (nearestRoom == null)
+        HomeDesignParentManager parentManager = FindObjectOfType<HomeDesignParentManager>();
+        if (parentManager != null)
         {
-            Debug.LogWarning("No rooms found!");
-            return;
-        }
-
-        List<GameObject> targetObjects = null;
-        switch (objectType)
-        {
-            case ObjectType.Wall:
-                targetObjects = nearestRoom.wallObject;
-                break;
-            case ObjectType.Ceiling:
-                targetObjects = nearestRoom.ceilingObject;
-                break;
-            case ObjectType.Floor:
-                targetObjects = nearestRoom.floorObject;
-                break;
-        }
-
-        if (objectType == ObjectType.Wall)
-        {
-            homeManager.ChangeWindowAndDoorWallMaterial(nearestRoom, newMaterial);
-        }
-
-        if (targetObjects != null)
-        {
-            foreach (GameObject obj in targetObjects)
+            HomeStructureManager homeManager = parentManager.GetCurrentHomeStructureManager();
+            if (homeManager != null)
             {
-                ApplyCustomMaterial(obj, newMaterial);
+                var nearestRoom = homeManager.GetNearestRoom();
+                if (nearestRoom == null)
+                {
+                    Debug.LogWarning("No rooms found!");
+                    return;
+                }
+
+                List<GameObject> targetObjects = null;
+                switch (objectType)
+                {
+                    case ObjectType.Wall:
+                        targetObjects = nearestRoom.wallObject;
+                        break;
+                    case ObjectType.Ceiling:
+                        targetObjects = nearestRoom.ceilingObject;
+                        break;
+                    case ObjectType.Floor:
+                        targetObjects = nearestRoom.floorObject;
+                        break;
+                }
+
+                if (objectType == ObjectType.Wall)
+                {
+                    homeManager.ChangeWindowAndDoorWallMaterial(nearestRoom, newMaterial);
+                }
+
+                if (targetObjects != null)
+                {
+                    foreach (GameObject obj in targetObjects)
+                    {
+                        ApplyCustomMaterial(obj, newMaterial);
+                    }
+                }
             }
         }
+        else
+        {
+            Debug.LogError("HomeDesignParentManager not found in the scene!");
+        }
+        
     }
 
 

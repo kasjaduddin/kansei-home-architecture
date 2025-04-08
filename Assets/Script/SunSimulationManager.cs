@@ -8,7 +8,6 @@ public class SunSimulationManager : MonoBehaviour
 {
     [SerializeField] private TMP_Dropdown sunDirectionDropdown;
     [SerializeField] private TextMeshProUGUI timeText;
-    [SerializeField] private HomeStructureManager homeManager;
     [SerializeField] private Slider timeSlider;
     [SerializeField] private Slider lightSlider;
     [SerializeField] private Light sunLight;
@@ -31,23 +30,37 @@ public class SunSimulationManager : MonoBehaviour
     }
     private void OnIntensityChange(float lightIntensity)
     {
-        var room = homeManager.GetNearestRoom();
-        if (room == null)
+        HomeDesignParentManager parentManager = FindObjectOfType<HomeDesignParentManager>();
+        if (parentManager != null)
         {
-            Debug.LogWarning("No nearest room found!");
-            return;
-        }
-        foreach (GameObject light in room.lampsObjects)
-        {
-            if (light != null)
+            HomeStructureManager homeManager = parentManager.GetCurrentHomeStructureManager();
+            if (homeManager != null)
             {
-                LightManager lightManager = light.GetComponent<LightManager>();
-                if (lightManager != null)
+                var room = homeManager.GetNearestRoom(); // your own method
+
+                if (room == null)
                 {
-                    lightManager.ChangeLightIntensity(lightIntensity);
+                    Debug.LogWarning("No nearest room found!");
+                    return;
+                }
+                foreach (GameObject light in room.lampsObjects)
+                {
+                    if (light != null)
+                    {
+                        LightManager lightManager = light.GetComponent<LightManager>();
+                        if (lightManager != null)
+                        {
+                            lightManager.ChangeLightIntensity(lightIntensity);
+                        }
+                    }
                 }
             }
         }
+        else
+        {
+            Debug.LogError("HomeDesignParentManager not found in the scene!");
+        }
+        
     }
 
 

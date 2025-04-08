@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using System;
+using UnityEngine.SceneManagement;
 
 public class ExploreManager : MonoBehaviour
 {
@@ -11,44 +13,60 @@ public class ExploreManager : MonoBehaviour
     [SerializeField] private Button ContinueButton;
 
     private UICanvasManager canvasManager;
+    private DisplayDesignManager displayManager;
     private void Start()
     {
         canvasManager = FindObjectOfType<UICanvasManager>();
+        displayManager = FindObjectOfType<DisplayDesignManager>();
+
         BackButton.onClick.AddListener(() =>
         {
             canvasManager.ActivateCanvas(UICanvasManager.CanvasType.MainCanvas);
         });
+
         ContinueButton.onClick.AddListener(() =>
         {
-            //next scene editing
+            if (DesignSelectionManager.Instance.SelectedDesignPrefab != null)
+            {
+                Loader.Load(Loader.Scene.EditDesign);
+            }
+            else
+            {
+                Debug.LogWarning("No design selected to proceed!");
+            }
         });
+
+        PopulateDropdownWithEnumValues();
         HomeTypeDropdown.onValueChanged.AddListener(OnDropdownValueChanged);
     }
 
-    private void OnDropdownValueChanged(int value)
+    private void PopulateDropdownWithEnumValues()
     {
-        // Get the selected option text
-        string selectedOption = HomeTypeDropdown.options[value].text;
+        HomeTypeDropdown.ClearOptions();
 
-        Debug.Log($"Selected Option: {selectedOption}");
+        List<string> options = new List<string> { "All Designs" }; // Add this manually
 
-        switch (value)
+        // Add enum names
+        options.AddRange(Enum.GetNames(typeof(homeType)));
+
+        HomeTypeDropdown.AddOptions(options);
+    }
+
+    private void OnDropdownValueChanged(int index)
+    {
+        if (displayManager == null) return;
+
+        if (index == 0)
         {
-            case 0:
-                Debug.Log("tipe rumah 36");
-                break;
-            case 1:
-                Debug.Log("tipe rumah 45");
-                break;
-            case 2:
-                Debug.Log("tipe rumah 54");
-                break;
-            case 3:
-                Debug.Log("tipe rumah 60");
-                break;
-            default:
-                Debug.Log("tidak ada di dropdown");
-                break;
+            // Show all designs
+            Debug.Log("Showing all designs");
+            displayManager.DisplayAllDesigns();
+        }
+        else
+        {
+            homeType selectedType = (homeType)(index - 1); // Adjust for "All Designs" offset
+            Debug.Log($"Selected Home Type: {selectedType}");
+            displayManager.DisplayDesignsByType(selectedType);
         }
     }
 }
