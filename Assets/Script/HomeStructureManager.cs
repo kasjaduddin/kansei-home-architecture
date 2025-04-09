@@ -9,12 +9,6 @@ public class HomeStructureManager : MonoBehaviour
 
     private List<Transform> cachedTransforms = new List<Transform>();
 
-    public enum ObjectType
-    {
-        Wall,
-        Ceiling,
-        Floor
-    }
 
     [System.Serializable]
     public class RoomReference
@@ -199,6 +193,20 @@ public class HomeStructureManager : MonoBehaviour
             if (doorManager != null && (door.doorSide == "up" || door.doorSide == "down"))
             {
                 doorManager.ChangeAllCubeColors(newMaterial, door.doorSide);
+            }
+        }
+    }
+
+    public void SetCeilingVisibility(bool isActive)
+    {
+        foreach (var room in roomStructure)
+        {
+            foreach (var ceiling in room.ceilingObject)
+            {
+                if (ceiling != null)
+                {
+                    ceiling.SetActive(isActive);
+                }
             }
         }
     }

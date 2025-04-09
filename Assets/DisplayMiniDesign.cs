@@ -18,5 +18,14 @@ public class DisplayMiniDesign : MonoBehaviour
         instantiatedDesign.transform.localRotation = Quaternion.identity;
 
         instantiatedDesign.transform.localScale = Vector3.one * 0.1f;
+        var structureManager = instantiatedDesign.GetComponent<HomeStructureManager>();
+        if (structureManager != null)
+        {
+            structureManager.SetCeilingVisibility(false);
+        }
+        else
+        {
+            Debug.LogWarning("HomeStructureManager not found on instantiated design.");
+        }
     }
 }

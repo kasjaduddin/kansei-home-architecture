@@ -80,6 +80,8 @@ public class SunSimulationManager : MonoBehaviour
 
     private void UpdateSunRotation(int directionIndex, float hoursSince6AM)
     {
+        HomeDesignParentManager parentManager = FindObjectOfType<HomeDesignParentManager>();
+        sunLight = parentManager.GetCurrentDirectionalLight();
         float xRotation = hoursSince6AM * 15f;
 
         // Get Y rotation based on the dropdown selection (0° = North, 90° = East, etc.)
