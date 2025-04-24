@@ -12,157 +12,148 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1a67e272094608c43b0131a00dce0289, type: 3}
   m_Name: MaterialsSO
   m_EditorClassIdentifier: 
-  floorMaterials:
-  - materialName: Marble tile 1
+  materials:
+  - materialName: Marble Tile 1
     material: {fileID: 2100000, guid: 14f1f0e80a01de941904d7792366572c, type: 2}
-    materialCategory: 14
-    reflectivity: 0
-    isTransparent: 0
-  - materialName: Marble tile 2
-    material: {fileID: 2100000, guid: 24710f09c588aac4cac2c5bfdd3e4345, type: 2}
-    materialCategory: 14
-    reflectivity: 0
-    isTransparent: 0
-  - materialName: Marble tile 3
+    usage: 2
+    category: 3
+  - materialName: Marble Tile 2
     material: {fileID: 2100000, guid: 5edccaf6710eee54b9c593c980694ddd, type: 2}
-    materialCategory: 14
-    reflectivity: 0
-    isTransparent: 0
-  - materialName: Marble tile 4
+    usage: 2
+    category: 3
+  - materialName: Marble Tile 3
     material: {fileID: 2100000, guid: 61a004fae6665454985003cf80854d43, type: 2}
-    materialCategory: 14
-    reflectivity: 0
-    isTransparent: 0
-  - materialName: Marble tile 5
+    usage: 2
+    category: 3
+  - materialName: Marble Tile 4
     material: {fileID: 2100000, guid: 0ded29692a83a884c8b25391cedb9ff1, type: 2}
-    materialCategory: 14
-    reflectivity: 0
-    isTransparent: 0
-  - materialName: Marble tile 6
+    usage: 2
+    category: 3
+  - materialName: Marble Tile 5
     material: {fileID: 2100000, guid: b49534807a4b16e4bbb7f8826bafcb06, type: 2}
-    materialCategory: 14
-    reflectivity: 0
-    isTransparent: 0
-  - materialName: Marble tile 7
+    usage: 2
+    category: 3
+  - materialName: Marble Tile 6
     material: {fileID: 2100000, guid: be567be229d292b46812b964c0eda21a, type: 2}
-    materialCategory: 14
-    reflectivity: 0
-    isTransparent: 0
-  - materialName: Marble tile 8
+    usage: 2
+    category: 3
+  - materialName: Marble Tile 7
     material: {fileID: 2100000, guid: 3f21947fc19d97149a9ec329afdeb3cd, type: 2}
-    materialCategory: 14
-    reflectivity: 0
-    isTransparent: 0
-  - materialName: Marble tile 9
+    usage: 2
+    category: 3
+  - materialName: Marble Tile 8
     material: {fileID: 2100000, guid: ef550fb3bde5f3c4fba2b2c0915141eb, type: 2}
-    materialCategory: 14
-    reflectivity: 0
-    isTransparent: 0
-  - materialName: Marble tile 10
+    usage: 2
+    category: 3
+  - materialName: Marble Tile 9
     material: {fileID: 2100000, guid: 208116f74fb09d745965cc6dd2dd80e5, type: 2}
-    materialCategory: 14
-    reflectivity: 0
-    isTransparent: 0
-  - materialName: Marble tile vibrant colored 11
+    usage: 2
+    category: 3
+  - materialName: Marble Tile 10
     material: {fileID: 2100000, guid: e529298b7c6ce714c88c7158b0743a22, type: 2}
-    materialCategory: 14
-    reflectivity: 0
-    isTransparent: 0
-  - materialName: Marble tile vibrant colored 12
+    usage: 2
+    category: 3
+  - materialName: Marble Tile 11
     material: {fileID: 2100000, guid: 9b322371bc382e141bae292d8cd81e3f, type: 2}
-    materialCategory: 14
-    reflectivity: 0
-    isTransparent: 0
-  wallMaterials:
-  - materialName: Wood 1
-    material: {fileID: 2100000, guid: 26f1b36be16f30d409f9ab1a7d20a8a5, type: 2}
-    materialCategory: 0
-    reflectivity: 0
-    isTransparent: 0
-  - materialName: Wood 2
-    material: {fileID: 2100000, guid: a64c40f22fb83f041b7c584055b61c8f, type: 2}
-    materialCategory: 0
-    reflectivity: 0
-    isTransparent: 0
+    usage: 2
+    category: 3
   - materialName: Concrete
-    material: {fileID: 2100000, guid: 1e98ebe0ed4d9894d9610d836de5f478, type: 2}
-    materialCategory: 5
-    reflectivity: 0
-    isTransparent: 0
-  - materialName: Straight Wood
-    material: {fileID: 2100000, guid: 1d9071227a1fd4549b9efffb122bbeb7, type: 2}
-    materialCategory: 0
-    reflectivity: 0
-    isTransparent: 0
-  - materialName: White Wood
-    material: {fileID: 2100000, guid: 693a082bdb248ea48b75807240e1dc78, type: 2}
-    materialCategory: 0
-    reflectivity: 0
-    isTransparent: 0
+    material: {fileID: 2100000, guid: ece1173d29be04b42a9a018cdf59fda6, type: 2}
+    usage: 2
+    category: 3
+  - materialName: Wood 1
+    material: {fileID: 2100000, guid: 714ddb9ab8e1baf4b851e3143688056c, type: 2}
+    usage: 3
+    category: 1
+  - materialName: 'Wood dark '
+    material: {fileID: 2100000, guid: 942973589b56c9a4d9bfc2383abce107, type: 2}
+    usage: 3
+    category: 1
+  - materialName: Plywood 1
+    material: {fileID: 2100000, guid: 9d456f91379fafb4f8c2bc042ccc7733, type: 2}
+    usage: 3
+    category: 1
+  - materialName: Plywood 2
+    material: {fileID: 2100000, guid: 8945eb4864be18e45a9c4c216c9b4e8f, type: 2}
+    usage: 3
+    category: 1
   - materialName: Wood Fine
-    material: {fileID: 2100000, guid: 98d32ad184097e64b8c098b9cea5a018, type: 2}
-    materialCategory: 0
-    reflectivity: 0
-    isTransparent: 0
+    material: {fileID: 2100000, guid: 7bcab5d50b9fdc6479a6943e079f1431, type: 2}
+    usage: 3
+    category: 1
   - materialName: Wood Planks
-    material: {fileID: 2100000, guid: 15ba4fc0d8013c54db0e73cc9fdf3906, type: 2}
-    materialCategory: 0
-    reflectivity: 0
-    isTransparent: 0
-  ceilingMaterials:
-  - materialName: Gradient Beige
-    material: {fileID: 2100000, guid: eb0f168ce60c9424896bd8c33ac3f2c9, type: 2}
-    materialCategory: 7
-    reflectivity: 0
-    isTransparent: 0
-  - materialName: Gradient Black
-    material: {fileID: 2100000, guid: 7f64eac4bd640ef44ae0187dbfcb4089, type: 2}
-    materialCategory: 7
-    reflectivity: 0
-    isTransparent: 0
-  - materialName: Gradient Blue
-    material: {fileID: 2100000, guid: 35261150e5398c0439d6fd7481f62b62, type: 2}
-    materialCategory: 7
-    reflectivity: 0
-    isTransparent: 0
-  - materialName: Metalic black
-    material: {fileID: 2100000, guid: 31e87d42f3ffa2546b1f527e7a0a4b9d, type: 2}
-    materialCategory: 7
-    reflectivity: 0
-    isTransparent: 0
-  glassMaterials:
-  - materialName: Glass
-    material: {fileID: 2100000, guid: 88b88f875cf0af442996954ba27bdf64, type: 2}
-    materialCategory: 2
-    reflectivity: 0
-    isTransparent: 0
-  - materialName: Mirror
-    material: {fileID: 2100000, guid: 97cb562e985012a4f8db1dfe9f95115b, type: 2}
-    materialCategory: 2
-    reflectivity: 0
-    isTransparent: 0
-  - materialName: Dirty Glass
-    material: {fileID: 2100000, guid: 83fed050d17dbde42b6cbd5871197c81, type: 2}
-    materialCategory: 2
-    reflectivity: 0
-    isTransparent: 0
-  - materialName: Glass Dark
-    material: {fileID: 2100000, guid: 2ca8c1f089c06d146b7ae324e4dbeb3b, type: 2}
-    materialCategory: 2
-    reflectivity: 0
-    isTransparent: 0
-  - materialName: Glass Faded
-    material: {fileID: 2100000, guid: a122f1f7919c9e04bb73269738422ca2, type: 2}
-    materialCategory: 2
-    reflectivity: 0
-    isTransparent: 0
-  - materialName: Glass Faded 2
-    material: {fileID: 2100000, guid: f16b29304c8a02d438afcb81820eee53, type: 2}
-    materialCategory: 2
-    reflectivity: 0
-    isTransparent: 0
-  - materialName: Glass Gloss
-    material: {fileID: 2100000, guid: 5418740241a1ece42bf101ecae547c44, type: 2}
-    materialCategory: 2
-    reflectivity: 0
-    isTransparent: 0
+    material: {fileID: 2100000, guid: f357f04fa489c2e4b89a4102cfb10f77, type: 2}
+    usage: 3
+    category: 1
+  - materialName: Almond Beige
+    material: {fileID: 2100000, guid: 444bfebbea274834d81742122e82e914, type: 2}
+    usage: -1
+    category: 0
+  - materialName: Ash Gray
+    material: {fileID: 2100000, guid: 39b30082457ec6c4ca3ded0ab466748f, type: 2}
+    usage: -1
+    category: 0
+  - materialName: Champagne Gold
+    material: {fileID: 2100000, guid: 31d4d33ef7c2c9548abfc172b77f8f32, type: 2}
+    usage: -1
+    category: 0
+  - materialName: Charcoal Gray
+    material: {fileID: 2100000, guid: 921031a9f40bcdb4182a1953bf6d2423, type: 2}
+    usage: -1
+    category: 0
+  - materialName: Cloud Blue
+    material: {fileID: 2100000, guid: 028baa990e9c674418225fa0c61f91c8, type: 2}
+    usage: -1
+    category: 0
+  - materialName: Concrete Gray
+    material: {fileID: 2100000, guid: 21ebec41b6d0a7e489a43bff2de46f32, type: 2}
+    usage: -1
+    category: 0
+  - materialName: Cream White
+    material: {fileID: 2100000, guid: c03f0ade301b05c448d082e9bfd2f0a0, type: 2}
+    usage: -1
+    category: 0
+  - materialName: Deep Burgundy
+    material: {fileID: 2100000, guid: 2d48164958297e7459810066cde88698, type: 2}
+    usage: -1
+    category: 0
+  - materialName: Dusty Rose
+    material: {fileID: 2100000, guid: 40733f87cf8bf3f45988379c392dfcfd, type: 2}
+    usage: -1
+    category: 0
+  - materialName: Emerald Green
+    material: {fileID: 2100000, guid: c666e3d19615e8f43a259f7c9c05fb4e, type: 2}
+    usage: -1
+    category: 0
+  - materialName: Pink
+    material: {fileID: 2100000, guid: 0063c5d91fea03a4ba72466a8c4fb36c, type: 2}
+    usage: -1
+    category: 0
+  - materialName: Royal Blue
+    material: {fileID: 2100000, guid: 1e797539ed24b664b8e40a8b6418168c, type: 2}
+    usage: -1
+    category: 0
+  - materialName: Rust Red
+    material: {fileID: 2100000, guid: a60ecbb354c09ae418ba92d4c5936e64, type: 2}
+    usage: -1
+    category: 0
+  - materialName: Slate Blue
+    material: {fileID: 2100000, guid: 8c08e29566a6b1d4c93769b4d0dc5f1c, type: 2}
+    usage: -1
+    category: 0
+  - materialName: Slate Navy
+    material: {fileID: 2100000, guid: fec3a139c2743534295ac0a76f411c82, type: 2}
+    usage: -1
+    category: 0
+  - materialName: Soft White
+    material: {fileID: 2100000, guid: 9076dbb3b4791044ba7ff69cf28feb97, type: 2}
+    usage: -1
+    category: 0
+  - materialName: Toxic Green
+    material: {fileID: 2100000, guid: be456e2f7b8aea440b8d07097ab59703, type: 2}
+    usage: -1
+    category: 0
+  - materialName: Stone Gray
+    material: {fileID: 2100000, guid: f3493768be46c154581aa4f7a61143a1, type: 2}
+    usage: -1
+    category: 0

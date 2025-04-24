@@ -8,7 +8,7 @@ public class ColoringManager : MonoBehaviour
     //[SerializeField] private HomeStructureManager homeManager;
 
     [SerializeField] private Shader customShader;
-
+    private Shader urpShader;
     public enum ObjectType
     {
         Wall,
@@ -16,7 +16,14 @@ public class ColoringManager : MonoBehaviour
         Floor
     }
 
-
+    private void Awake()
+    {
+        // Fallback to URP Lit shader if not assigned
+        if (urpShader == null)
+        {
+            urpShader = Shader.Find("Universal Render Pipeline/Lit");
+        }
+    }
     public void ChangeRoomMaterial(Material newMaterial, ObjectType objectType)
     {
         HomeDesignParentManager parentManager = FindObjectOfType<HomeDesignParentManager>();
@@ -95,42 +102,93 @@ public class ColoringManager : MonoBehaviour
 
     private void ApplyCustomMaterial(GameObject targetObject, Material newMaterial)
     {
-        if (targetObject == null || newMaterial == null)
+        if (targetObject == null)
         {
-            Debug.LogError("Missing references when applying material.");
+            Debug.LogError("Target object is null!");
+            return;
+        }
+
+        if (newMaterial == null)
+        {
+            Debug.LogError("New material is null!");
             return;
         }
 
         Renderer renderer = targetObject.GetComponent<Renderer>();
-        if (renderer == null) return;
-
-        // Case 1: If the new material is a simple color (Standard shader)
-        if (newMaterial.shader.name == "Standard")
+        if (renderer == null)
         {
-            // Option A: Just change the color of the existing material
-            renderer.material.color = newMaterial.color;
-
-            // OR Option B: Create a new material with custom shader but keep the color
-            // Material appliedMaterial = new Material(customShader);
-            // appliedMaterial.color = newMaterial.color;
-            // renderer.material = appliedMaterial;
-
+            Debug.LogError("No Renderer found on " + targetObject.name);
             return;
         }
 
-        // Case 2: Original textured material logic
+        // Case 1: For color-only materials (URP)
+        if (IsColorOnlyMaterial(newMaterial))
+        {
+            ApplyURPMaterial(renderer, newMaterial);
+            return;
+        }
+
+        // Case 2: For custom textured materials
         if (customShader == null)
         {
-            Debug.LogError("Custom shader reference missing!");
+            Debug.LogError("Custom shader not assigned in ColoringManager!");
             return;
         }
 
+        ApplyCustomShaderMaterial(renderer, newMaterial);
+    }
+
+    private bool IsColorOnlyMaterial(Material material)
+    {
+        // Check if this is a simple color material (no texture, standard or URP shader)
+        return material.mainTexture == null &&
+              (material.shader.name.Contains("Standard") ||
+               material.shader.name.Contains("Universal Render Pipeline"));
+    }
+
+    private void ApplyURPMaterial(Renderer renderer, Material sourceMaterial)
+    {
+        Material urpMaterial = new Material(urpShader);
+
+        // Copy color properties
+        if (sourceMaterial.HasProperty("_Color"))
+        {
+            urpMaterial.color = sourceMaterial.color;
+        }
+
+        // Copy metallic/smoothness if available
+        if (sourceMaterial.HasProperty("_Metallic"))
+        {
+            urpMaterial.SetFloat("_Metallic", sourceMaterial.GetFloat("_Metallic"));
+        }
+
+        if (sourceMaterial.HasProperty("_Smoothness"))
+        {
+            urpMaterial.SetFloat("_Smoothness", sourceMaterial.GetFloat("_Smoothness"));
+        }
+
+        renderer.material = urpMaterial;
+    }
+
+    private void ApplyCustomShaderMaterial(Renderer renderer, Material sourceMaterial)
+    {
         Material appliedMaterial = new Material(customShader);
+
+        // Set texture if available
+        if (sourceMaterial.mainTexture != null)
+        {
+            appliedMaterial.SetTexture("_MainTexture", sourceMaterial.mainTexture);
+        }
+
+        // Set color
+        if (sourceMaterial.HasProperty("_Color"))
+        {
+            appliedMaterial.color = sourceMaterial.color;
+        }
+
+        // Set other shader properties
         appliedMaterial.SetFloat("_Tiling", 1f);
         appliedMaterial.SetFloat("_Blend", 1f);
-
-        if (newMaterial.mainTexture != null)
-            appliedMaterial.SetTexture("_MainTexture", newMaterial.mainTexture);
 
         renderer.material = appliedMaterial;
     }

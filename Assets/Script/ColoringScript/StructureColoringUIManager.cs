@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,7 +12,6 @@ public class StructureColoringUIManager : MonoBehaviour
     [SerializeField] private Button floorButton;
     [SerializeField] private Button wallButton;
     [SerializeField] private Button ceilingButton;
-    [SerializeField] private Button colorPickerButton;
 
     private ColoringManager.ObjectType currentObjectType = ColoringManager.ObjectType.Wall;
     private Material customColorMaterial; // Store the custom color material
@@ -23,66 +23,31 @@ public class StructureColoringUIManager : MonoBehaviour
         ceilingButton.onClick.AddListener(() => UpdateMaterialButtons(ColoringManager.ObjectType.Ceiling));
 
         UpdateMaterialButtons(ColoringManager.ObjectType.Wall);
-        colorPickerButton.onClick.AddListener(OpenColorPicker);
 
         // Initialize the custom color material once
         customColorMaterial = new Material(Shader.Find("Standard"));
-    }
-
-    private void OpenColorPicker()
-    {
-        // Get current color or default to white
-        Color initialColor = customColorMaterial != null ? customColorMaterial.color : Color.white;
-
-        ColorPicker.Create(initialColor, "Pick a color!",
-            (Color currentColor) => {
-                // Update the preview in real-time
-                if (customColorMaterial != null)
-                {
-                    customColorMaterial.color = currentColor;
-                }
-            },
-            (Color finalColor) => {
-                Debug.Log("Color chosen: " + ColorUtility.ToHtmlStringRGBA(finalColor));
-
-                // Update the custom material with the final color
-                if (customColorMaterial == null)
-                {
-                    customColorMaterial = new Material(Shader.Find("Standard"));
-                }
-                customColorMaterial.color = finalColor;
-
-                // Apply to the current object type
-                coloringSystem.ChangeRoomMaterial(customColorMaterial, currentObjectType);
-            },
-            true);
     }
 
     private void UpdateMaterialButtons(ColoringManager.ObjectType objectType)
     {
         currentObjectType = objectType;
 
-        // Clear existing buttons
         foreach (Transform child in buttonContainer)
         {
             Destroy(child.gameObject);
         }
 
-        // Get the correct list of materials
-        List<MaterialData> materialList = GetMaterialList(objectType);
+        List<MaterialData> materialList = GetFilteredMaterialsByUsage(objectType);
 
-        // Create a button for each material
         foreach (MaterialData materialData in materialList)
         {
             GameObject newButton = Instantiate(buttonPrefab, buttonContainer);
 
-            // Create a new material instance with the UI/Default shader
             Material uiMaterial = new Material(materialData.material)
             {
                 shader = Shader.Find("UI/Default")
             };
 
-            // Assign the material to the button's Image component
             RawImage buttonImage = newButton.GetComponentInChildren<RawImage>();
             if (buttonImage != null)
             {
@@ -93,7 +58,6 @@ public class StructureColoringUIManager : MonoBehaviour
                 Debug.LogError("Image component not found in button prefab!");
             }
 
-            // Assign click event
             Button buttonComponent = newButton.GetComponentInChildren<Button>();
             if (buttonComponent != null)
             {
@@ -116,17 +80,17 @@ public class StructureColoringUIManager : MonoBehaviour
         }
     }
 
-    private List<MaterialData> GetMaterialList(ColoringManager.ObjectType objectType)
+    private List<MaterialData> GetFilteredMaterialsByUsage(ColoringManager.ObjectType objectType)
     {
-        switch (objectType)
+        MaterialUsage targetUsage = objectType switch
         {
-            case ColoringManager.ObjectType.Floor:
-                return materialsDatabase.floorMaterials;
-            case ColoringManager.ObjectType.Ceiling:
-                return materialsDatabase.ceilingMaterials;
-            case ColoringManager.ObjectType.Wall:
-            default:
-                return materialsDatabase.wallMaterials;
-        }
+            ColoringManager.ObjectType.Floor => MaterialUsage.Floor,
+            ColoringManager.ObjectType.Ceiling => MaterialUsage.Ceiling,
+            _ => MaterialUsage.Wall,
+        };
+
+        return materialsDatabase.materials
+            .Where(mat => (mat.usage & targetUsage) != 0) // bitwise match
+            .ToList();
     }
 }

@@ -4,44 +4,37 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "MaterialCollection", menuName = "Materials/MaterialCollectionSO")]
 public class MaterialCollectionSO : ScriptableObject
 {
-    [Header("Floor Materials")]
-    public List<MaterialData> floorMaterials; // Material untuk lantai
-
-    [Header("Wall Materials")]
-    public List<MaterialData> wallMaterials; // Material untuk dinding
-
-    [Header("Ceiling Materials")]
-    public List<MaterialData> ceilingMaterials; // Material untuk langit-langit
-
-    [Header("Glass Materials")]
-    public List<MaterialData> glassMaterials; // Material untuk kaca
+    public List<MaterialData> materials; // Unified list, usage is defined per entry
 }
 
 [System.Serializable]
 public class MaterialData
 {
-    public string materialName;                // Nama material
-    public Material material;                  // Material Unity
-    public MaterialCategory materialCategory;  // Kategori material
-    public float reflectivity;                 // Reflektivitas material
-    public bool isTransparent;                 // Apakah material transparan
+    public string materialName;                     // Display name
+    public Material material;                       // Unity Material asset
+    public MaterialUsage usage;                     // Where it's used (Wall/Floor/Ceiling/etc)
+    public MaterialCategory category;               // Material type (Wood/Tile/Paint/etc)
+}
+
+[System.Flags]
+public enum MaterialUsage
+{
+    None = 0,
+    Wall = 1 << 0,  // 1
+    Floor = 1 << 1,  // 2
+    Ceiling = 1 << 2,  // 4
 }
 
 public enum MaterialCategory
 {
-    Wood,         // Kayu
-    Metal,        // Logam
-    Glass,        // Kaca
-    Plastic,      // Plastik
-    Stone,        // Batu
-    Concrete,     // Beton
-    Ceramic,      // Keramik
-    Fabric,       // Kain/Tekstil
-    Leather,      // Kulit
-    Water,        // Air
-    Soil,         // Tanah
-    Grass,        // Rumput
-    Paper,        // Kertas
-    Rubber,        // Karet
-    Marmer
+    Paint,
+    Wood,
+    Tile,
+    Marble,
+    Stone,
+    Concrete,
+    Carpet,
+    Wallpaper,
+    Brick,
+    Texture
 }
