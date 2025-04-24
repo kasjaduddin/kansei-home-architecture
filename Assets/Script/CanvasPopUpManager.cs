@@ -8,13 +8,14 @@ public class CanvasPopUpManager : MonoBehaviour
     [SerializeField] private GameObject coloringCanvas;
     [SerializeField] private GameObject embededCanvas;
     [SerializeField] private GameObject simulationCanvas;
+    [SerializeField] private GameObject mainMenuUICanvas;
     [SerializeField] private MenuUIEditorManager menuUICanvas;
 
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.G))
         {
-            menuUICanvas.ShowCanvas(menuUICanvas.gameObject);
+            menuUICanvas.ShowCanvas(mainMenuUICanvas);
 
         }
 

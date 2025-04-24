@@ -22,6 +22,7 @@ public class DisplayMiniDesign : MonoBehaviour
         if (structureManager != null)
         {
             structureManager.SetCeilingVisibility(false);
+            structureManager.SetLampsVisibility(false);
         }
         else
         {

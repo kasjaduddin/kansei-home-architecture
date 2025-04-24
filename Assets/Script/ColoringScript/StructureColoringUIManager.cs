@@ -4,15 +4,17 @@ using UnityEngine.UI;
 
 public class StructureColoringUIManager : MonoBehaviour
 {
-    [SerializeField] private MaterialCollectionSO materialsDatabase; // Reference to the database
-    [SerializeField] private GameObject buttonPrefab; // Prefab for each button
-    [SerializeField] private Transform buttonContainer; // UI Panel to hold buttons
-    [SerializeField] private ColoringManager coloringSystem; // Reference to the placement system
+    [SerializeField] private MaterialCollectionSO materialsDatabase;
+    [SerializeField] private GameObject buttonPrefab;
+    [SerializeField] private Transform buttonContainer;
+    [SerializeField] private ColoringManager coloringSystem;
     [SerializeField] private Button floorButton;
     [SerializeField] private Button wallButton;
     [SerializeField] private Button ceilingButton;
+    [SerializeField] private Button colorPickerButton;
 
-    private ColoringManager.ObjectType currentObjectType = ColoringManager.ObjectType.Wall; // Default to Wall
+    private ColoringManager.ObjectType currentObjectType = ColoringManager.ObjectType.Wall;
+    private Material customColorMaterial; // Store the custom color material
 
     private void Start()
     {
@@ -20,13 +22,44 @@ public class StructureColoringUIManager : MonoBehaviour
         wallButton.onClick.AddListener(() => UpdateMaterialButtons(ColoringManager.ObjectType.Wall));
         ceilingButton.onClick.AddListener(() => UpdateMaterialButtons(ColoringManager.ObjectType.Ceiling));
 
-        // Display wall materials by default
         UpdateMaterialButtons(ColoringManager.ObjectType.Wall);
+        colorPickerButton.onClick.AddListener(OpenColorPicker);
+
+        // Initialize the custom color material once
+        customColorMaterial = new Material(Shader.Find("Standard"));
+    }
+
+    private void OpenColorPicker()
+    {
+        // Get current color or default to white
+        Color initialColor = customColorMaterial != null ? customColorMaterial.color : Color.white;
+
+        ColorPicker.Create(initialColor, "Pick a color!",
+            (Color currentColor) => {
+                // Update the preview in real-time
+                if (customColorMaterial != null)
+                {
+                    customColorMaterial.color = currentColor;
+                }
+            },
+            (Color finalColor) => {
+                Debug.Log("Color chosen: " + ColorUtility.ToHtmlStringRGBA(finalColor));
+
+                // Update the custom material with the final color
+                if (customColorMaterial == null)
+                {
+                    customColorMaterial = new Material(Shader.Find("Standard"));
+                }
+                customColorMaterial.color = finalColor;
+
+                // Apply to the current object type
+                coloringSystem.ChangeRoomMaterial(customColorMaterial, currentObjectType);
+            },
+            true);
     }
 
     private void UpdateMaterialButtons(ColoringManager.ObjectType objectType)
     {
-        // Set the current selected type
         currentObjectType = objectType;
 
         // Clear existing buttons
@@ -69,7 +102,6 @@ public class StructureColoringUIManager : MonoBehaviour
                     if (coloringSystem != null && materialData.material != null)
                     {
                         coloringSystem.ChangeRoomMaterial(materialData.material, currentObjectType);
-
                     }
                     else
                     {

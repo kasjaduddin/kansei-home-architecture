@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "HomeDesignCollection", menuName = "ScriptableObjects/HomeDesignCollection", order = 1)]
+[CreateAssetMenu(fileName = "HomeDesignCollection", menuName = "ScriptableObjects/HomeDesignCollection")]
 public class HomeDesignCollection : ScriptableObject
 {
     public List<HomeDesignGroup> homeDesignGroups; 
@@ -16,8 +16,8 @@ public class HomeDesignGroup
     public List<HomeDesignData> homeDesigns; 
 }
 
-[System.Serializable]
-public class HomeDesignData
+[CreateAssetMenu(fileName = "HomeDesignData", menuName = "ScriptableObjects/HomeDesignData")]
+public class HomeDesignData : ScriptableObject
 {
     public string homeDesignName;    
     public int roomAmount;           
@@ -29,8 +29,7 @@ public enum homeType
 {
     Type_36,
     Type_45,
-    Type_54,
-    Type_70
+    Type_54
 }
 public enum HomeStyle
 {
@@ -38,4 +37,12 @@ public enum HomeStyle
     Minimalist,     
     Traditional,  
     Other           
+}
+
+[System.Serializable]
+public class HomeDesignSelector
+{
+    public homeType selectedHomeType;
+    public HomeStyle selectedHomeStyle;
+    public int selectedDesignIndex;
 }

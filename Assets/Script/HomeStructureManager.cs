@@ -210,4 +210,17 @@ public class HomeStructureManager : MonoBehaviour
             }
         }
     }
+    public void SetLampsVisibility(bool isActive)
+    {
+        foreach (var room in roomStructure)
+        {
+            foreach (var lamp in room.lampsObjects)
+            {
+                if (lamp != null)
+                {
+                    lamp.SetActive(isActive);
+                }
+            }
+        }
+    }
 }

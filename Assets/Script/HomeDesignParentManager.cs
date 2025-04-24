@@ -15,7 +15,7 @@ public class HomeDesignParentManager : MonoBehaviour
     private void Start()
     {
         InstantiateHouse(DesignSelectionManager.Instance.SelectedDesignPrefab);
-        currentDirectionalLight = Instantiate(lightPrefabs, transform);
+        currentDirectionalLight = lightPrefabs;
         ChangeLightIntensity(2);
     }
 

@@ -93,11 +93,9 @@ public class ColoringManager : MonoBehaviour
         }
     }
 
-
-
     private void ApplyCustomMaterial(GameObject targetObject, Material newMaterial)
     {
-        if (customShader == null || newMaterial == null || targetObject == null)
+        if (targetObject == null || newMaterial == null)
         {
             Debug.LogError("Missing references when applying material.");
             return;
@@ -106,12 +104,54 @@ public class ColoringManager : MonoBehaviour
         Renderer renderer = targetObject.GetComponent<Renderer>();
         if (renderer == null) return;
 
+        // Case 1: If the new material is a simple color (Standard shader)
+        if (newMaterial.shader.name == "Standard")
+        {
+            // Option A: Just change the color of the existing material
+            renderer.material.color = newMaterial.color;
+
+            // OR Option B: Create a new material with custom shader but keep the color
+            // Material appliedMaterial = new Material(customShader);
+            // appliedMaterial.color = newMaterial.color;
+            // renderer.material = appliedMaterial;
+
+            return;
+        }
+
+        // Case 2: Original textured material logic
+        if (customShader == null)
+        {
+            Debug.LogError("Custom shader reference missing!");
+            return;
+        }
+
         Material appliedMaterial = new Material(customShader);
         appliedMaterial.SetFloat("_Tiling", 1f);
         appliedMaterial.SetFloat("_Blend", 1f);
+
         if (newMaterial.mainTexture != null)
             appliedMaterial.SetTexture("_MainTexture", newMaterial.mainTexture);
 
         renderer.material = appliedMaterial;
     }
+
+    /* private void ApplyCustomMaterial(GameObject targetObject, Material newMaterial)
+     {
+         if (customShader == null || newMaterial == null || targetObject == null)
+         {
+             Debug.LogError("Missing references when applying material.");
+             return;
+         }
+
+         Renderer renderer = targetObject.GetComponent<Renderer>();
+         if (renderer == null) return;
+
+         Material appliedMaterial = new Material(customShader);
+         appliedMaterial.SetFloat("_Tiling", 1f);
+         appliedMaterial.SetFloat("_Blend", 1f);
+         if (newMaterial.mainTexture != null)
+             appliedMaterial.SetTexture("_MainTexture", newMaterial.mainTexture);
+
+         renderer.material = appliedMaterial;
+     }*/
 }
