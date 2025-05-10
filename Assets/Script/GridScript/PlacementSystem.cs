@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using UnityEngine;
+using UnityEngine.XR;
 
 public class PlacementSystem : MonoBehaviour
 {
@@ -27,7 +28,7 @@ public class PlacementSystem : MonoBehaviour
 
     //[SerializeField] private HomeStructureManager homeManager;
 
-
+    private Vector2 lastThumbstickValue;
     private bool wallsInitialized = false;
 
     IBuildingState buildingState;
@@ -121,7 +122,22 @@ public class PlacementSystem : MonoBehaviour
         );
 
         inputManager.OnClicked += PlaceStructure;
-        inputManager.OnExit += StopPlacement;
+        inputManager.OnExit += StopPlacement; 
+        inputManager.OnRotateLeft += RotateLeft;
+        inputManager.OnRotateRight += RotateRight;
+    }
+    private void RotateLeft()
+    {
+        Vector3Int gridPosition = grid.WorldToCell(inputManager.GetSelectedMapPosition());
+        preview.RotateLeft();
+        buildingState.UpdateState(gridPosition);
+    }
+
+    private void RotateRight()
+    {
+        Vector3Int gridPosition = grid.WorldToCell(inputManager.GetSelectedMapPosition());
+        preview.RotateRight();
+        buildingState.UpdateState(gridPosition);
     }
     private FurnitureData FindFurnitureByID(int id)
     {
@@ -177,25 +193,25 @@ public class PlacementSystem : MonoBehaviour
 
     private void Update()
     {
-        if (buildingState == null )
-            return;
-        Vector3 mousePosition = inputManager.GetSelectedMapPosition();
-        Vector3Int gridPosition = grid.WorldToCell(mousePosition);
+        if (buildingState == null) return;
+
+        Vector3 position = inputManager.GetSelectedMapPosition();
+        Vector3Int gridPosition = grid.WorldToCell(position);
 
         if (lastDetectedPosition != gridPosition)
         {
             buildingState.UpdateState(gridPosition);
-            lastDetectedPosition= gridPosition;
+            lastDetectedPosition = gridPosition;
         }
+
+        // Optional fallback for keyboard rotation
         if (Input.GetKeyDown(KeyCode.LeftArrow))
         {
-            preview.RotateLeft();
-            buildingState.UpdateState(gridPosition);
+            RotateLeft();
         }
         if (Input.GetKeyDown(KeyCode.RightArrow))
         {
-            preview.RotateRight();
-            buildingState.UpdateState(gridPosition);
+            RotateRight();
         }
     }
 }

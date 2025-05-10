@@ -10,6 +10,7 @@ public class InputManagerVR : MonoBehaviour
     [SerializeField] private Transform controllerTransform; // VR controller transform
     [SerializeField] private LayerMask placementLayermask;
     public event Action OnClicked, OnExit;
+    public event Action OnRotateLeft, OnRotateRight;
 
     private Vector3 lastPosition;
 
@@ -17,11 +18,15 @@ public class InputManagerVR : MonoBehaviour
     private bool triggerPressedLastFrame = false;
     private bool bButtonPressedLastFrame = false;
 
+
+    private Vector2 lastThumbstickValue;
+    private float thumbstickThreshold = 1f;
+
     private void Start()
     {
         // Get Right Controller
         var inputDevices = new List<InputDevice>();
-        InputDevices.GetDevicesAtXRNode(XRNode.RightHand, inputDevices);
+        InputDevices.GetDevicesAtXRNode(XRNode.LeftHand, inputDevices);
 
         if (inputDevices.Count > 0)
         {
@@ -55,6 +60,21 @@ public class InputManagerVR : MonoBehaviour
                 OnExit?.Invoke();
             }
             bButtonPressedLastFrame = bButtonPressed;
+        }
+
+        // Thumbstick input (left/right snap rotation)
+        if (controllerDevice.TryGetFeatureValue(CommonUsages.primary2DAxis, out Vector2 thumbstickValue))
+        {
+            if (thumbstickValue.x < -thumbstickThreshold && lastThumbstickValue.x >= -thumbstickThreshold)
+            {
+                OnRotateLeft?.Invoke();
+            }
+            else if (thumbstickValue.x > thumbstickThreshold && lastThumbstickValue.x <= thumbstickThreshold)
+            {
+                OnRotateRight?.Invoke();
+            }
+
+            lastThumbstickValue = thumbstickValue;
         }
     }
 
