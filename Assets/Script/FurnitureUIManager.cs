@@ -12,17 +12,17 @@ public class FurnitureUIManager : MonoBehaviour
     [SerializeField] private PlacementSystem placementSystem; // Reference to the placement system
     [SerializeField] private Button floorButton;
     [SerializeField] private Button wallButton;
-    [SerializeField] private Button ceilingButton;
+    [SerializeField] private MenuUIEditorManager menuUIManager;
 
+    private bool isCanvasOpen = false;
     private void Start()
     {
         // Initially clear any existing buttons
         ClearFurnitureButtons();
-
+        isCanvasOpen = true;
         // Assign category button click listeners
         floorButton.onClick.AddListener(() => DisplayFurnitureByPlacement(FurniturePlacement.OnFloor));
         wallButton.onClick.AddListener(() => DisplayFurnitureByPlacement(FurniturePlacement.OnWall));
-        ceilingButton.onClick.AddListener(() => DisplayFurnitureByPlacement(FurniturePlacement.OnCeiling));
     }
 
     private void DisplayFurnitureByPlacement(FurniturePlacement placement)
@@ -36,17 +36,42 @@ public class FurnitureUIManager : MonoBehaviour
         // Generate new buttons only for this category
         foreach (var furniture in filteredFurniture)
         {
-            GameObject buttonObject = Instantiate(buttonPrefab, buttonContainer);
-            Button button = buttonObject.GetComponent<Button>();
-            TextMeshProUGUI buttonText = buttonObject.GetComponentInChildren<TextMeshProUGUI>();
+            GameObject newButton = Instantiate(buttonPrefab, buttonContainer);
 
-            buttonText.text = furniture.furnitureName; // Set button label
-            int furnitureID = GetFurnitureID(furniture); // Get the unique ID
+            RawImage rawImage = newButton.GetComponentInChildren<RawImage>();
+            if (rawImage != null && furniture.objectTexture != null)
+            {
+                rawImage.texture = furniture.objectTexture;
+            }
+            else if (rawImage == null)
+            {
+                Debug.LogWarning("RawImage component not found in button prefab!");
+            }
+            Button buttonComponent = newButton.GetComponentInChildren<Button>();
+            int furnitureID = GetFurnitureID(furniture);
 
-            button.onClick.AddListener(() => placementSystem.StartPlacement(furnitureID));
+            // Assign click behavior
+            buttonComponent.onClick.AddListener(() => {
+                placementSystem.StartPlacement(furnitureID);
+                VisibilityCanvasFurniture();
+            });
         }
     }
 
+    public void VisibilityCanvasFurniture()
+    {
+        if (isCanvasOpen)
+        {
+            menuUIManager.HideAllCanvases();
+            isCanvasOpen = false;
+        }
+        else
+        {
+            menuUIManager.ShowFurnitureCanvas();
+            isCanvasOpen = true;
+        }
+        
+    }
     private void ClearFurnitureButtons()
     {
         foreach (Transform child in buttonContainer)
@@ -66,12 +91,6 @@ public class FurnitureUIManager : MonoBehaviour
                 break;
             case FurniturePlacement.OnWall:
                 filteredFurniture = furnitureDatabase.wallFurniture;
-                break;
-            case FurniturePlacement.OnCeiling:
-                filteredFurniture = furnitureDatabase.ceilingFurniture;
-                break;
-            case FurniturePlacement.EmbeddedInWall:
-                filteredFurniture = furnitureDatabase.embeddedFurniture;
                 break;
         }
 

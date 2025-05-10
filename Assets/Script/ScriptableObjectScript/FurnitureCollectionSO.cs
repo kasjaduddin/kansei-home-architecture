@@ -21,6 +21,7 @@ public class FurnitureData
     public string furnitureName;                     // Nama furniture
     public FurnitureType furnitureType;              // Jenis furniture (kelompoknya)
     public FurniturePlacement furniturePlacement;    // Cara furniture diletakkan
+    public Texture2D objectTexture;
     public GameObject furniturePrefab;               // Prefab Unity untuk furniture
     public Vector3 defaultSize;                      // Ukuran default furniture
     public Vector2Int size;
@@ -31,8 +32,6 @@ public enum FurniturePlacement
 {
     OnFloor,        // Diletakkan di atas lantai
     OnWall,         // Menempel di dinding
-    OnCeiling,      // Menempel di langit-langit
-    EmbeddedInWall  // Berada di dinding (pintu/jendela)
 }
 
 public enum FurnitureType

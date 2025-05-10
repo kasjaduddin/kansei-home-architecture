@@ -23,8 +23,10 @@ public class ChangeObjectUIManager : MonoBehaviour
         windowsButton.onClick.AddListener(() => { UpdatePreviewButtons(EmbededObjectType.Window); });
         lampsButton.onClick.AddListener(() => { UpdatePreviewButtons(EmbededObjectType.Lamps); });
 
+
         // Display door materials by default
         UpdatePreviewButtons(EmbededObjectType.Door);
+
     }
 
     private void UpdatePreviewButtons(EmbededObjectType objectType)
@@ -42,6 +44,18 @@ public class ChangeObjectUIManager : MonoBehaviour
         {
             GameObject newButton = Instantiate(buttonPrefab, buttonContainer);
 
+            // Set the image if available
+            RawImage rawImage = newButton.GetComponentInChildren<RawImage>();
+            if (rawImage != null && prefabData.objectTexture != null)
+            {
+                rawImage.texture = prefabData.objectTexture;
+            }
+            else if (rawImage == null)
+            {
+                Debug.LogWarning("RawImage component not found in button prefab!");
+            }
+
+            // Set button click behavior
             Button buttonComponent = newButton.GetComponentInChildren<Button>();
             if (buttonComponent != null)
             {

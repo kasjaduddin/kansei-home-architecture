@@ -12,15 +12,38 @@ public class StructureColoringUIManager : MonoBehaviour
     [SerializeField] private Button floorButton;
     [SerializeField] private Button wallButton;
     [SerializeField] private Button ceilingButton;
+    [SerializeField] private Button basicColorButton;
+    [SerializeField] private Button materialButton;
 
     private ColoringManager.ObjectType currentObjectType = ColoringManager.ObjectType.Wall;
     private Material customColorMaterial; // Store the custom color material
 
+    private bool isBasicColor = true;
+    private ColoringManager.ObjectType currentType;
     private void Start()
     {
-        floorButton.onClick.AddListener(() => UpdateMaterialButtons(ColoringManager.ObjectType.Floor));
-        wallButton.onClick.AddListener(() => UpdateMaterialButtons(ColoringManager.ObjectType.Wall));
-        ceilingButton.onClick.AddListener(() => UpdateMaterialButtons(ColoringManager.ObjectType.Ceiling));
+        floorButton.onClick.AddListener(() => {
+            currentType = ColoringManager.ObjectType.Floor;
+            UpdateMaterialButtons(currentType);
+            });
+        wallButton.onClick.AddListener(() =>
+        {
+            currentType = ColoringManager.ObjectType.Wall;
+            UpdateMaterialButtons(currentType);
+        });
+        ceilingButton.onClick.AddListener(() =>
+        {
+            currentType = ColoringManager.ObjectType.Ceiling;
+            UpdateMaterialButtons(currentType);
+        });
+        basicColorButton.onClick.AddListener(() => {
+            isBasicColor = true;
+            UpdateMaterialButtons(currentType);
+        });
+        materialButton.onClick.AddListener(() => {
+            isBasicColor = false;
+            UpdateMaterialButtons(currentType);
+        });
 
         UpdateMaterialButtons(ColoringManager.ObjectType.Wall);
 
@@ -90,7 +113,11 @@ public class StructureColoringUIManager : MonoBehaviour
         };
 
         return materialsDatabase.materials
-            .Where(mat => (mat.usage & targetUsage) != 0) // bitwise match
+            .Where(mat => (mat.usage & targetUsage) != 0)
+            .Where(mat =>
+                isBasicColor ?
+                mat.category == MaterialCategory.Paint :
+                mat.category != MaterialCategory.Paint)
             .ToList();
     }
 }

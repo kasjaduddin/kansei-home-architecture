@@ -7,7 +7,7 @@ public class DisplayDesignManager : MonoBehaviour
 {
     [SerializeField] private Transform contentParent;
     [SerializeField] private GameObject designUIPrefab;
-    [SerializeField] private HomeDesignCollection homeDesignCollection;
+    [SerializeField] private HomeDesignCollectionSO homeDesignCollection;
     [SerializeField] private DisplayMiniDesign displayMiniDesign;
     private List<Button> instantiatedButtons = new List<Button>();
 

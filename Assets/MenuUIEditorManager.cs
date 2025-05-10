@@ -46,6 +46,10 @@ public class MenuUIEditorManager : MonoBehaviour
         HideAllCanvases(); // Hide other canvases
         ShowCanvasInFrontOfCamera(canvas);
     }
+    public void ShowFurnitureCanvas()
+    {
+        ShowCanvas(furnitureCanvas);
+    }
     public void HideAllCanvases()
     {
         coloringCanvas.SetActive(false);

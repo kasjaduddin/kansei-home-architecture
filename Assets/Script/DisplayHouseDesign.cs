@@ -12,7 +12,7 @@ public class DisplayHouseDesign : MonoBehaviour
     [SerializeField] private TextMeshProUGUI roomAmountText;
     [SerializeField] private TextMeshProUGUI bathroomAmountText;
     [SerializeField] private Button continueButton;
-    [SerializeField] private HomeDesignCollection homeDesignCollection;
+    [SerializeField] private HomeDesignCollectionSO homeDesignCollection;
     [SerializeField] private HomeDesignSelector homeDesignSelector;
 
 
@@ -22,11 +22,11 @@ public class DisplayHouseDesign : MonoBehaviour
         if (selectedDesign != null)
         {
             UpdateHomeDisplay(selectedDesign.homePrefab);
-            SaveDesignPrefab(selectedDesign);
             UpdateTextDisplay(selectedDesign);
         }
         continueButton.onClick.AddListener(() =>
         {
+            SaveDesignPrefab(selectedDesign);
             if (DesignSelectionManager.Instance.SelectedDesignPrefab != null)
             {
                 Loader.Load(Loader.Scene.EditDesign);

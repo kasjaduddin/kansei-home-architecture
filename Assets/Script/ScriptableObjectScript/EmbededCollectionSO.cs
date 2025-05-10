@@ -17,7 +17,8 @@ public class EmbededCollectionSO : ScriptableObject
 public class EmbededData
 {
     public string objectName;                    
-    public GameObject objectPrefab;            
+    public GameObject objectPrefab;
+    public Texture2D objectTexture;
 }
 
 public enum EmbededObjectType

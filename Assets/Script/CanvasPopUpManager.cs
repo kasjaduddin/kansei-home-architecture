@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.XR;
 
 public class CanvasPopUpManager : MonoBehaviour
 {
@@ -10,18 +11,50 @@ public class CanvasPopUpManager : MonoBehaviour
     [SerializeField] private GameObject simulationCanvas;
     [SerializeField] private GameObject mainMenuUICanvas;
     [SerializeField] private MenuUIEditorManager menuUICanvas;
+    private InputDevice rightController;
+    private bool previousButtonState = false;
+
+    private void Start()
+    {
+        TryInitializeController();
+    }
+
+    private void TryInitializeController()
+    {
+        var devices = new List<InputDevice>();
+        InputDevices.GetDevicesAtXRNode(XRNode.RightHand, devices);
+        if (devices.Count > 0)
+        {
+            rightController = devices[0];
+        }
+    }
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.G))
+        if (!rightController.isValid)
         {
-            menuUICanvas.ShowCanvas(mainMenuUICanvas);
-
+            TryInitializeController();
+            return;
         }
 
-        if (Input.GetKeyDown(KeyCode.H))
+        // Read B button (secondaryButton)
+        if (rightController.TryGetFeatureValue(CommonUsages.secondaryButton, out bool buttonPressed))
         {
-            menuUICanvas.HideAllCanvases();
+            // Detect press down (not hold)
+            if (buttonPressed && !previousButtonState)
+            {
+                // Toggle canvas visibility
+                if (mainMenuUICanvas.activeSelf)
+                {
+                    menuUICanvas.HideAllCanvases();
+                }
+                else
+                {
+                    menuUICanvas.ShowCanvas(mainMenuUICanvas);
+                }
+            }
+
+            previousButtonState = buttonPressed;
         }
     }
 }

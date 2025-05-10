@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.XR;
 
 public class HomeStructureManager : MonoBehaviour
 {
@@ -8,7 +9,8 @@ public class HomeStructureManager : MonoBehaviour
     public List<RoomReference> roomStructure;
 
     private List<Transform> cachedTransforms = new List<Transform>();
-
+    private InputDevice rightController;
+    private bool previousButtonState = false;
 
     [System.Serializable]
     public class RoomReference
@@ -78,12 +80,36 @@ public class HomeStructureManager : MonoBehaviour
 
         return nearestRoom;
     }
-
+    private void Start()
+    {
+        TryInitializeController();
+    }
+    private void TryInitializeController()
+    {
+        var devices = new List<InputDevice>();
+        InputDevices.GetDevicesAtXRNode(XRNode.RightHand, devices);
+        if (devices.Count > 0)
+        {
+            rightController = devices[0];
+        }
+    }   
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.E))
+        if (!rightController.isValid)
         {
-            OpenClosestDoor();
+            TryInitializeController();
+            return;
+        }
+
+        // Detect A button (primaryButton)
+        if (rightController.TryGetFeatureValue(CommonUsages.primaryButton, out bool buttonPressed))
+        {
+            if (buttonPressed && !previousButtonState)
+            {
+                OpenClosestDoor();
+            }
+
+            previousButtonState = buttonPressed;
         }
     }
 

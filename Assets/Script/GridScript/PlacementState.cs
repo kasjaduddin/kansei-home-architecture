@@ -84,10 +84,6 @@ public class PlacementState : IBuildingState
                 return floorData;
             case FurniturePlacement.OnWall:
                 return objectOnWallData;
-            case FurniturePlacement.OnCeiling:
-                return ceilingData;
-            case FurniturePlacement.EmbeddedInWall:
-                return furnitureData;
             default:
                 Debug.LogError($"[PlacementState] Unknown FurniturePlacement: {placement}");
                 return null;

@@ -20,7 +20,11 @@ public class WindowManager : MonoBehaviour
         {
             urpShader = Shader.Find("Universal Render Pipeline/Lit");
         }
+        
     }
+
+
+
     private void UpdateCubeReferences()
     {
         // Clear previous references

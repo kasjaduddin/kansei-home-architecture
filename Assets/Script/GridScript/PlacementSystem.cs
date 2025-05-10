@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class PlacementSystem : MonoBehaviour
 {
-    [SerializeField] private InputManagerMouse inputManager;
+    [SerializeField] private InputManagerVR inputManager;
 
     [SerializeField] private Grid grid;
 
