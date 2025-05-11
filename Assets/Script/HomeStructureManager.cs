@@ -8,7 +8,7 @@ public class HomeStructureManager : MonoBehaviour
     [Header("Room")]
     public List<RoomReference> roomStructure;
 
-    private List<Transform> cachedTransforms = new List<Transform>();
+    private List<GameObject> cachedTransforms = new List<GameObject>();
     private InputDevice rightController;
     private bool previousButtonState = false;
 
@@ -163,34 +163,34 @@ public class HomeStructureManager : MonoBehaviour
         }
     }
 
-    public List<Transform> GetRoomObjectTransforms()
+    public List<GameObject> GetRoomObjectTransforms()
     {
         foreach (var room in roomStructure)
         {
             // Wall Objects
             foreach (var wall in room.wallObject)
             {
-                if (wall != null && !cachedTransforms.Contains(wall.transform))
+                if (wall != null && !cachedTransforms.Contains(wall.gameObject))
                 {
-                    cachedTransforms.Add(wall.transform);
+                    cachedTransforms.Add(wall.gameObject);
                 }
             }
 
             // Door Objects
             foreach (var door in room.doorObject)
             {
-                if (door?.objectPrefab != null && !cachedTransforms.Contains(door.objectPrefab.transform))
+                if (door?.objectPrefab != null && !cachedTransforms.Contains(door.objectPrefab.gameObject))
                 {
-                    cachedTransforms.Add(door.objectPrefab.transform);
+                    cachedTransforms.Add(door.objectPrefab.gameObject);
                 }
             }
 
             // Window Objects
             foreach (var window in room.windowObject)
             {
-                if (window?.objectPrefab != null && !cachedTransforms.Contains(window.objectPrefab.transform))
+                if (window?.objectPrefab != null && !cachedTransforms.Contains(window.objectPrefab.gameObject))
                 {
-                    cachedTransforms.Add(window.objectPrefab.transform);
+                    cachedTransforms.Add(window.objectPrefab.gameObject);
                 }
             }
         }

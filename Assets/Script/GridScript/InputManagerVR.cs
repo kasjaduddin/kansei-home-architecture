@@ -20,7 +20,7 @@ public class InputManagerVR : MonoBehaviour
 
 
     private Vector2 lastThumbstickValue;
-    private float thumbstickThreshold = 1f;
+    private float thumbstickThreshold = 0.6f;
 
     private void Start()
     {
@@ -40,6 +40,19 @@ public class InputManagerVR : MonoBehaviour
 
     private void Update()
     {
+
+        // Keyboard input for testing or fallback
+        if (Input.GetKeyDown(KeyCode.O))
+        {
+            OnClicked?.Invoke();
+        }
+
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            OnExit?.Invoke();
+        }
+
+
         if (!controllerDevice.isValid) return;
 
         // Trigger (Primary Index Trigger)
@@ -90,6 +103,7 @@ public class InputManagerVR : MonoBehaviour
         {
             lastPosition = hit.point;
         }
+        lastPosition.y = 0;
 
         return lastPosition;
     }

@@ -66,6 +66,72 @@ public class StructureColoringUIManager : MonoBehaviour
         {
             GameObject newButton = Instantiate(buttonPrefab, buttonContainer);
 
+            RawImage buttonImage = newButton.GetComponentInChildren<RawImage>();
+            if (buttonImage != null)
+            {
+                Material mat = materialData.material;
+
+                if (mat.mainTexture != null)
+                {
+                    buttonImage.texture = mat.mainTexture;
+                    buttonImage.color = Color.white; // Reset color to ensure texture shows
+                }
+                else if (mat.HasProperty("_Color"))
+                {
+                    // Generate solid color preview if no texture
+                    Texture2D colorTexture = new Texture2D(1, 1);
+                    colorTexture.SetPixel(0, 0, mat.color);
+                    colorTexture.Apply();
+                    buttonImage.texture = colorTexture;
+                    buttonImage.color = Color.white;
+                }
+                else
+                {
+                    Debug.LogWarning("Material has no texture or color property!");
+                }
+            }
+            else
+            {
+                Debug.LogError("Image component not found in button prefab!");
+            }
+
+            Button buttonComponent = newButton.GetComponentInChildren<Button>();
+            if (buttonComponent != null)
+            {
+                buttonComponent.onClick.AddListener(() =>
+                {
+                    if (coloringSystem != null && materialData.material != null)
+                    {
+                        coloringSystem.ChangeRoomMaterial(materialData.material, currentObjectType);
+                    }
+                    else
+                    {
+                        Debug.LogError("coloringSystem or materialData is null!");
+                    }
+                });
+            }
+            else
+            {
+                Debug.LogError("Button component not found in button prefab!");
+            }
+        }
+    }
+
+    /*private void UpdateMaterialButtons(ColoringManager.ObjectType objectType)
+    {
+        currentObjectType = objectType;
+
+        foreach (Transform child in buttonContainer)
+        {
+            Destroy(child.gameObject);
+        }
+
+        List<MaterialData> materialList = GetFilteredMaterialsByUsage(objectType);
+
+        foreach (MaterialData materialData in materialList)
+        {
+            GameObject newButton = Instantiate(buttonPrefab, buttonContainer);
+
             Material uiMaterial = new Material(materialData.material)
             {
                 shader = Shader.Find("UI/Default")
@@ -101,7 +167,7 @@ public class StructureColoringUIManager : MonoBehaviour
                 Debug.LogError("Button component not found in button prefab!");
             }
         }
-    }
+    }*/
 
     private List<MaterialData> GetFilteredMaterialsByUsage(ColoringManager.ObjectType objectType)
     {

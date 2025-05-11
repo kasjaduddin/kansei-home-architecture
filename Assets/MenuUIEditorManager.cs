@@ -9,6 +9,7 @@ public class MenuUIEditorManager : MonoBehaviour
     [SerializeField] private Button furnitureButton;
     [SerializeField] private Button embededButton;
     [SerializeField] private Button simulationButton;
+    [SerializeField] private Button exitButton;
     [SerializeField] private GameObject furnitureCanvas;
     [SerializeField] private GameObject coloringCanvas;
     [SerializeField] private GameObject embededCanvas;
@@ -38,6 +39,9 @@ public class MenuUIEditorManager : MonoBehaviour
 
         simulationButton.onClick.AddListener(() => {
             ShowCanvas(simulationCanvas);
+        });
+        exitButton.onClick.AddListener(() => {
+            Loader.Load(Loader.Scene.MainMenu);
         });
     }
     public void ShowCanvas(GameObject canvas)

@@ -24,7 +24,9 @@ public class PlacementSystem : MonoBehaviour
 
     [SerializeField] private ObjectPlacer objectPlacer;
 
-    public List<Transform> wallReference;
+    [SerializeField] private HomeDesignParentManager ParentHomeDesign;
+
+    public List<GameObject> wallReference;
 
     //[SerializeField] private HomeStructureManager homeManager;
 
@@ -36,7 +38,6 @@ public class PlacementSystem : MonoBehaviour
     private void Start()
     {
         InitializeGridData();
-        //InitializeWalls();
         StopPlacement();
     }
 
@@ -54,9 +55,10 @@ public class PlacementSystem : MonoBehaviour
         if (wallsInitialized || wallReference == null) return;
 
         Debug.Log("Initializing wall data...");
-        foreach (Transform wall in wallReference)
+        foreach (GameObject wall in wallReference)
         {
-            PopulateWallObjects(wall, wallData);
+            Transform wallTrans = wall.transform;
+            PopulateWallObjects(wallTrans, wallData);
         }
         wallsInitialized = true;
 
@@ -66,13 +68,13 @@ public class PlacementSystem : MonoBehaviour
     {
         if (obj.gameObject.layer == LayerMask.NameToLayer("Wall"))
         {
-            Vector3 worldPos = obj.position;
+            Vector3 worldPos = obj.parent != null ? obj.parent.position : obj.position;
             Vector3Int gridPos = grid.WorldToCell(worldPos);
             gridPos.y = 0;
 
-            Vector2Int wallSize = new Vector2Int(
-                Mathf.RoundToInt(obj.localScale.x * 10),
-                Mathf.RoundToInt(obj.localScale.z * 10)
+            Vector2Int wallSize = new Vector2Int(   
+                Mathf.RoundToInt(obj.localScale.x * 20),
+                Mathf.RoundToInt(obj.localScale.z * 20)
             );
 
             Vector3Int bottomLeftOffset = new Vector3Int(
@@ -93,10 +95,8 @@ public class PlacementSystem : MonoBehaviour
 
     public void StartPlacement(int furnitureID)
     {
-        if (HomeDesignParentManager.Instance != null)
-        {
-            wallReference = HomeDesignParentManager.Instance.GetCurrentWallReference();
-        }
+        wallReference = ParentHomeDesign.wallReference;
+        
         InitializeWalls(); // Ensure walls are initialized
         StopPlacement();
         gridVisualization.SetActive(true);

@@ -36,6 +36,18 @@ public class CanvasPopUpManager : MonoBehaviour
             TryInitializeController();
             return;
         }
+        if (Input.GetKeyDown(KeyCode.I))
+        {
+            // Toggle canvas visibility
+            if (mainMenuUICanvas.activeSelf)
+            {
+                menuUICanvas.HideAllCanvases();
+            }
+            else
+            {
+                menuUICanvas.ShowCanvas(mainMenuUICanvas);
+            }
+        }
 
         // Read B button (secondaryButton)
         if (rightController.TryGetFeatureValue(CommonUsages.secondaryButton, out bool buttonPressed))

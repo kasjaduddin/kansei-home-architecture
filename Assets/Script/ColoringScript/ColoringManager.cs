@@ -172,6 +172,13 @@ public class ColoringManager : MonoBehaviour
 
     private void ApplyCustomShaderMaterial(Renderer renderer, Material sourceMaterial)
     {
+        if (sourceMaterial.shader == customShader)
+        {
+            // Already using the desired shader; apply directly
+            renderer.material = sourceMaterial;
+            return;
+        }
+
         Material appliedMaterial = new Material(customShader);
 
         // Set texture if available

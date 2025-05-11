@@ -14,7 +14,7 @@ public class PlacementState : IBuildingState
     GridData ceilingData;
     GridData furnitureData;
     ObjectPlacer objectPlacer;
-    List<Transform> wallReference;
+    List<GameObject> wallReference;
     private Camera mainCamera;
 
     private int currentRotationAngle = 0;
@@ -27,7 +27,7 @@ public class PlacementState : IBuildingState
                       GridData ceilingData,
                       GridData furnitureGridData,
                       ObjectPlacer objectPlacer,
-                      List<Transform> wallReference)
+                      List<GameObject> wallReference)
     {
         this.selectedFurniture = selectedFurnitureData;
         this.grid = grid;
@@ -47,11 +47,11 @@ public class PlacementState : IBuildingState
         );
     }
 
-    private void PopulateWallObjects(Transform obj, GridData selectedData)
+    /*private void PopulateWallObjects(Transform obj, GridData selectedData)
     {
         if (obj.gameObject.layer == LayerMask.NameToLayer("Wall"))
         {
-            Vector3 worldPos = obj.position;
+            Vector3 worldPos = obj.parent != null ? obj.parent.position : obj.position;
             Vector3Int gridPos = grid.WorldToCell(worldPos);
             gridPos.y = 0;
 
@@ -74,7 +74,7 @@ public class PlacementState : IBuildingState
         {
             PopulateWallObjects(child, selectedData);
         }
-    }
+    }*/
 
     private GridData GetSelectedGridData(FurniturePlacement placement)
     {
@@ -131,6 +131,7 @@ public class PlacementState : IBuildingState
             }
             if (!objectOnWallData.CanPlacedObjectAt(gridPosition, rotatedSize, rotationAngle))
             {
+                Debug.Log("Placement failed: Object cannot be placed on wall");
                 return false;
             }
         }
@@ -138,11 +139,12 @@ public class PlacementState : IBuildingState
         {
             if (IsPartiallyOnWall(gridPosition, rotatedSize, rotationAngle))
             {
-                Debug.Log("Placement failed: Object not on wall");
+                Debug.Log("Placement failed: Object overlaps with wall");
                 return false;
             }
             if (!selectedData.CanPlacedObjectAt(gridPosition, rotatedSize, rotationAngle))
             {
+                Debug.Log("Placement failed: Object cannot be placed on floor");
                 return false;
             }
         }
@@ -152,6 +154,7 @@ public class PlacementState : IBuildingState
 
     private bool IsPartiallyOnWall(Vector3Int gridPosition, Vector2Int size, int rotationAngle)
     {
+        gridPosition.y = 0;
         List<Vector3Int> positionsToCheck = wallData.CalculatePosition(gridPosition, size, rotationAngle);
 
         foreach (Vector3Int pos in positionsToCheck)

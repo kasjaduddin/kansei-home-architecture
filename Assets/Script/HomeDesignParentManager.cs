@@ -10,7 +10,7 @@ public class HomeDesignParentManager : MonoBehaviour
     private GameObject currentHouseInstance;
     private Light currentDirectionalLight;
     private HomeStructureManager currentHomeStructureManager;
-    public List<Transform> wallReference;
+    public List<GameObject> wallReference;
 
     private void Start()
     {
@@ -86,7 +86,7 @@ public class HomeDesignParentManager : MonoBehaviour
         return currentHomeStructureManager;
     }
 
-    public List<Transform> GetCurrentWallReference()
+    public List<GameObject> GetCurrentWallReference()
     {
         return wallReference;
     }

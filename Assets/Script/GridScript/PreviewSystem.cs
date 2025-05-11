@@ -45,7 +45,7 @@ public class PreviewSystem : MonoBehaviour
         rotationAngle = 0; // Reset rotation
     }
 
-    private void CalculatePivotOffset(GameObject obj)
+    /*private void CalculatePivotOffset(GameObject obj)
     {
         bottomLeftOffset = Vector3.zero;
         Renderer objectRenderer = obj.GetComponentInChildren<Renderer>();
@@ -54,6 +54,24 @@ public class PreviewSystem : MonoBehaviour
             float rotationY = obj.transform.eulerAngles.y;
             print("rotasinya bang " + rotationY);
             bottomLeftOffset = objectRenderer.bounds.min - obj.transform.position;
+        }
+    }*/
+    private void CalculatePivotOffset(GameObject obj)
+    {
+        bottomLeftOffset = Vector3.zero;
+        Renderer[] renderers = obj.GetComponentsInChildren<Renderer>();
+        if (renderers.Length > 0)
+        {
+            Bounds combinedBounds = renderers[0].bounds;
+            for (int i = 1; i < renderers.Length; i++)
+            {
+                combinedBounds.Encapsulate(renderers[i].bounds);
+            }
+
+            float rotationY = obj.transform.eulerAngles.y;
+            Debug.Log("Rotation Y: " + rotationY);
+
+            bottomLeftOffset = combinedBounds.min - obj.transform.position;
         }
     }
     private void UpdatePreviewSize()
