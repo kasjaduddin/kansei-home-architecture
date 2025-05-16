@@ -193,9 +193,15 @@ public class DoorManager : MonoBehaviour
 
         renderer.material = urpMaterial;
     }
-
     private void ApplyCustomShaderMaterial(Renderer renderer, Material sourceMaterial)
     {
+        if (sourceMaterial.shader == customShader)
+        {
+            // Already using the desired shader; apply directly
+            renderer.material = sourceMaterial;
+            return;
+        }
+
         Material appliedMaterial = new Material(customShader);
 
         // Set texture if available
@@ -216,4 +222,26 @@ public class DoorManager : MonoBehaviour
 
         renderer.material = appliedMaterial;
     }
+    /*private void ApplyCustomShaderMaterial(Renderer renderer, Material sourceMaterial)
+    {
+        Material appliedMaterial = new Material(customShader);
+
+        // Set texture if available
+        if (sourceMaterial.mainTexture != null)
+        {
+            appliedMaterial.SetTexture("_MainTexture", sourceMaterial.mainTexture);
+        }
+
+        // Set color
+        if (sourceMaterial.HasProperty("_Color"))
+        {
+            appliedMaterial.color = sourceMaterial.color;
+        }
+
+        // Set other shader properties
+        appliedMaterial.SetFloat("_Tiling", 1f);
+        appliedMaterial.SetFloat("_Blend", 1f);
+
+        renderer.material = appliedMaterial;
+    }*/
 }

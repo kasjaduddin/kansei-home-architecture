@@ -14,21 +14,48 @@ public class ChangeObjectUIManager : MonoBehaviour
     [SerializeField] private Button doorsButton;
     [SerializeField] private Button windowsButton;
     [SerializeField] private Button lampsButton;
-
+    [SerializeField] private Button backButton;
+    [SerializeField] private MenuUIEditorManager menuUICanvas;
+    [SerializeField] private ScrollRect scrollMenu;
     private string activeType;
+
 
     private void Start()
     {
+        InputManagerVR inputManager = FindObjectOfType<InputManagerVR>();
+        if (inputManager != null)
+        {
+            inputManager.OnThumbstickScroll += HandleThumbstickScroll;
+        }
+        backButton.onClick.AddListener(() => { menuUICanvas.ShowMainMenuCanvas(); });
         doorsButton.onClick.AddListener(() => { UpdatePreviewButtons(EmbededObjectType.Door); });
         windowsButton.onClick.AddListener(() => { UpdatePreviewButtons(EmbededObjectType.Window); });
         lampsButton.onClick.AddListener(() => { UpdatePreviewButtons(EmbededObjectType.Lamps); });
-
 
         // Display door materials by default
         UpdatePreviewButtons(EmbededObjectType.Door);
 
     }
+    private void HandleThumbstickScroll(float scrollDelta)
+    {
+        // Skip if the entire UI is not visible
+        if (!gameObject.activeInHierarchy) return;
 
+        // Optionally, skip if scrollMenu is not active
+        if (scrollMenu == null || !scrollMenu.gameObject.activeInHierarchy) return;
+
+        float scrollSpeed = 0.5f;
+        float newPos = scrollMenu.verticalNormalizedPosition + scrollDelta * scrollSpeed * Time.deltaTime;
+        scrollMenu.verticalNormalizedPosition = Mathf.Clamp01(newPos);
+    }
+    private void OnDestroy()
+    {
+        InputManagerVR inputManager = FindObjectOfType<InputManagerVR>();
+        if (inputManager != null)
+        {
+            inputManager.OnThumbstickScroll -= HandleThumbstickScroll;
+        }
+    }
     private void UpdatePreviewButtons(EmbededObjectType objectType)
     {
         // Clear existing buttons

@@ -12,9 +12,17 @@ public class DisplayHouseDesign : MonoBehaviour
     [SerializeField] private TextMeshProUGUI roomAmountText;
     [SerializeField] private TextMeshProUGUI bathroomAmountText;
     [SerializeField] private Button continueButton;
+    [SerializeField] private Light spotLight;
     [SerializeField] private HomeDesignCollectionSO homeDesignCollection;
     [SerializeField] private HomeDesignSelector homeDesignSelector;
+    [SerializeField] private float lightActivationDistance = 5f; // Distance threshold
 
+    private Transform instantiatedDesignTransform;
+
+    private float checkInterval = 0.5f;
+    private float nextCheckTime = 0f;
+
+    private bool isLightOn = false;
 
     private void Start()
     {
@@ -37,6 +45,24 @@ public class DisplayHouseDesign : MonoBehaviour
             }
         });
     }
+
+    private void Update()
+    {
+        if (Time.time >= nextCheckTime)
+        {
+            nextCheckTime = Time.time + checkInterval;
+
+            float distance = Vector3.Distance(Camera.main.transform.position, instantiatedDesignTransform.position);
+            bool shouldLightBeOn = distance <= lightActivationDistance;
+
+            if (shouldLightBeOn != isLightOn)
+            {
+                isLightOn = shouldLightBeOn;
+                spotLight.enabled = isLightOn;
+            }
+        }
+    }
+
     private void SaveDesignPrefab(HomeDesignData design)
     {
         if (design != null)
@@ -44,6 +70,7 @@ public class DisplayHouseDesign : MonoBehaviour
             DesignSelectionManager.Instance.SelectedDesignPrefab = design.homePrefab;
         }
     }
+
     private void UpdateTextDisplay(HomeDesignData designData)
     {
         typeText.text = homeDesignSelector.selectedHomeType.ToString();
@@ -51,6 +78,7 @@ public class DisplayHouseDesign : MonoBehaviour
         roomAmountText.text = $"Rooms: {designData.roomAmount}";
         bathroomAmountText.text = $"Bathrooms: {designData.bathroomAmount}";
     }
+
     public void UpdateHomeDisplay(GameObject prefabDesign)
     {
         foreach (Transform child in pivotDesign)
@@ -61,8 +89,10 @@ public class DisplayHouseDesign : MonoBehaviour
 
         instantiatedDesign.transform.localPosition = Vector3.zero;
         instantiatedDesign.transform.localRotation = Quaternion.identity;
-
         instantiatedDesign.transform.localScale = Vector3.one * 0.1f;
+
+        instantiatedDesignTransform = instantiatedDesign.transform;
+
         var structureManager = instantiatedDesign.GetComponent<HomeStructureManager>();
         if (structureManager != null)
         {

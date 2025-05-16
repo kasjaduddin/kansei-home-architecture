@@ -9,6 +9,7 @@ public class CanvasPopUpManager : MonoBehaviour
     [SerializeField] private GameObject coloringCanvas;
     [SerializeField] private GameObject embededCanvas;
     [SerializeField] private GameObject simulationCanvas;
+    [SerializeField] private GameObject lightCanvas;
     [SerializeField] private GameObject mainMenuUICanvas;
     [SerializeField] private MenuUIEditorManager menuUICanvas;
     private InputDevice rightController;

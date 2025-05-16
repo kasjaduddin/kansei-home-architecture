@@ -5,6 +5,7 @@ using UnityEngine;
 public class HomeDesignParentManager : MonoBehaviour
 {
     [SerializeField] private Light lightPrefabs;
+    [SerializeField] private GameObject XROrigin;
     public static HomeDesignParentManager Instance { get; private set; }
 
     private GameObject currentHouseInstance;
@@ -39,6 +40,25 @@ public class HomeDesignParentManager : MonoBehaviour
         if (currentHomeStructureManager == null)
         {
             Debug.LogError("Prefab does not contain HomeStructureManager!");
+            return;
+        }
+
+        //  Move the XROrigin to the initial position
+        if (currentHomeStructureManager.initialPosition != null && XROrigin != null)
+        {
+            // Preserve current Y position of the XR Origin
+            Vector3 targetPosition = currentHomeStructureManager.initialPosition.position;
+            Vector3 newPosition = new Vector3(targetPosition.x, XROrigin.transform.position.y, targetPosition.z);
+            XROrigin.transform.position = newPosition;
+
+            // Apply only the Y rotation (yaw)
+            Quaternion targetRotation = currentHomeStructureManager.initialPosition.rotation;
+            Vector3 currentEuler = XROrigin.transform.rotation.eulerAngles;
+            XROrigin.transform.rotation = Quaternion.Euler(currentEuler.x, targetRotation.eulerAngles.y, currentEuler.z);
+        }
+        else
+        {
+            Debug.LogWarning("InitialPosition or XROrigin is null.");
         }
 
         wallReference = currentHomeStructureManager.GetRoomObjectTransforms();

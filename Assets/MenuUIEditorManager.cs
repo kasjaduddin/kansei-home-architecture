@@ -9,12 +9,14 @@ public class MenuUIEditorManager : MonoBehaviour
     [SerializeField] private Button furnitureButton;
     [SerializeField] private Button embededButton;
     [SerializeField] private Button simulationButton;
+    [SerializeField] private Button lightButton;
     [SerializeField] private Button exitButton;
     [SerializeField] private GameObject furnitureCanvas;
     [SerializeField] private GameObject coloringCanvas;
     [SerializeField] private GameObject embededCanvas;
     [SerializeField] private GameObject simulationCanvas;
     [SerializeField] private GameObject menuUICanvas;
+    [SerializeField] private GameObject lightCanvas;
     private Transform positionSource;
     public float distance = 1.5f;
     public float verticalOffset = -0.5f;
@@ -36,19 +38,26 @@ public class MenuUIEditorManager : MonoBehaviour
         embededButton.onClick.AddListener(() => {
             ShowCanvas(embededCanvas);
         });
-
+        lightButton.onClick.AddListener(() => {
+            ShowCanvas(lightCanvas);
+        });
         simulationButton.onClick.AddListener(() => {
             ShowCanvas(simulationCanvas);
         });
         exitButton.onClick.AddListener(() => {
             Loader.Load(Loader.Scene.MainMenu);
         });
+        ShowMainMenuCanvas();
     }
     public void ShowCanvas(GameObject canvas)
     {
         currentActiveCanvas = canvas;
         HideAllCanvases(); // Hide other canvases
         ShowCanvasInFrontOfCamera(canvas);
+    }
+    public void ShowMainMenuCanvas()
+    {
+        ShowCanvas(menuUICanvas);
     }
     public void ShowFurnitureCanvas()
     {
@@ -60,6 +69,7 @@ public class MenuUIEditorManager : MonoBehaviour
         furnitureCanvas.SetActive(false);
         embededCanvas.SetActive(false);
         simulationCanvas.SetActive(false);
+        lightCanvas.SetActive(false);
         menuUICanvas.SetActive(false);
     }
     private Transform GetCameraTransform()

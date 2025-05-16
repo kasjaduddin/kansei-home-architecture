@@ -7,6 +7,7 @@ public class HomeStructureManager : MonoBehaviour
 {
     [Header("Room")]
     public List<RoomReference> roomStructure;
+    public Transform initialPosition;
 
     private List<GameObject> cachedTransforms = new List<GameObject>();
     private InputDevice rightController;
@@ -123,8 +124,46 @@ public class HomeStructureManager : MonoBehaviour
         Debug.LogError("No active camera found!");
         return null;
     }
-
     private void OpenClosestDoor()
+    {
+        Camera activeCamera = GetActiveCamera();
+        if (activeCamera == null) return;
+
+        Vector3 playerPosition = activeCamera.transform.position;
+
+        doorData closestDoor = null;
+        float minDistance = Mathf.Infinity;
+
+        foreach (var room in roomStructure)
+        {
+            foreach (var door in room.doorObject)
+            {
+                if (door == null || door.objectPrefab == null) continue;
+
+                float distance = Vector3.Distance(playerPosition, door.objectPrefab.transform.position);
+
+                if (distance < minDistance)
+                {
+                    minDistance = distance;
+                    closestDoor = door;
+                }
+            }
+        }
+
+        if (closestDoor?.objectPrefab == null) return;
+
+        DoorManager doorManager = closestDoor.objectPrefab.GetComponent<DoorManager>();
+        if (doorManager != null)
+        {
+            doorManager.OpenDoor();
+            Debug.Log("Opened closest door: " + closestDoor.objectPrefab.name);
+        }
+        else
+        {
+            Debug.LogWarning("No DoorManager found on the closest door.");
+        }
+    }
+    /*private void OpenClosestDoor()
     {
         var nearestRoom = GetNearestRoom();
         if (nearestRoom == null || nearestRoom.doorObject.Count == 0)
@@ -161,7 +200,7 @@ public class HomeStructureManager : MonoBehaviour
             doorManager.OpenDoor();
             Debug.Log("Opened door: " + closestDoor.objectPrefab.name);
         }
-    }
+    }*/
 
     public List<GameObject> GetRoomObjectTransforms()
     {

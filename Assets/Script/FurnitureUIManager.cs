@@ -13,10 +13,22 @@ public class FurnitureUIManager : MonoBehaviour
     [SerializeField] private Button floorButton;
     [SerializeField] private Button wallButton;
     [SerializeField] private MenuUIEditorManager menuUIManager;
+    [SerializeField] private Button backButton;
+    [SerializeField] private MenuUIEditorManager menuUICanvas;
+    [SerializeField] private ScrollRect scrollMenu;
 
     private bool isCanvasOpen = false;
+    
     private void Start()
     {
+        InputManagerVR inputManager = FindObjectOfType<InputManagerVR>();
+        if (inputManager != null)
+        {
+            inputManager.OnThumbstickScroll += HandleThumbstickScroll;
+        }
+        backButton.onClick.AddListener(() => {
+            menuUICanvas.ShowMainMenuCanvas();
+        });
         // Initially clear any existing buttons
         ClearFurnitureButtons();
         isCanvasOpen = true;
@@ -24,7 +36,22 @@ public class FurnitureUIManager : MonoBehaviour
         floorButton.onClick.AddListener(() => DisplayFurnitureByPlacement(FurniturePlacement.OnFloor));
         wallButton.onClick.AddListener(() => DisplayFurnitureByPlacement(FurniturePlacement.OnWall));
     }
+    private void HandleThumbstickScroll(float scrollDelta)
+    {
+        if (!isCanvasOpen || scrollMenu == null) return;
 
+        float scrollSpeed = 0.5f;
+        float newPos = scrollMenu.verticalNormalizedPosition + scrollDelta * scrollSpeed * Time.deltaTime;
+        scrollMenu.verticalNormalizedPosition = Mathf.Clamp01(newPos);
+    }
+    private void OnDestroy()
+    {
+        InputManagerVR inputManager = FindObjectOfType<InputManagerVR>();
+        if (inputManager != null)
+        {
+            inputManager.OnThumbstickScroll -= HandleThumbstickScroll;
+        }
+    }
     private void DisplayFurnitureByPlacement(FurniturePlacement placement)
     {
         // Clear existing buttons

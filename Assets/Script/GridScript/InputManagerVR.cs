@@ -22,6 +22,7 @@ public class InputManagerVR : MonoBehaviour
     private Vector2 lastThumbstickValue;
     private float thumbstickThreshold = 0.6f;
 
+    public event Action<float> OnThumbstickScroll;
     private void Start()
     {
         // Get Right Controller
@@ -78,6 +79,10 @@ public class InputManagerVR : MonoBehaviour
         // Thumbstick input (left/right snap rotation)
         if (controllerDevice.TryGetFeatureValue(CommonUsages.primary2DAxis, out Vector2 thumbstickValue))
         {
+            if (Mathf.Abs(thumbstickValue.y) > 0.2f)
+            {
+                OnThumbstickScroll?.Invoke(thumbstickValue.y);
+            }
             if (thumbstickValue.x < -thumbstickThreshold && lastThumbstickValue.x >= -thumbstickThreshold)
             {
                 OnRotateLeft?.Invoke();

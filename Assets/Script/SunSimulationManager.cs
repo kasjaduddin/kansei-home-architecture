@@ -11,9 +11,13 @@ public class SunSimulationManager : MonoBehaviour
     [SerializeField] private Slider timeSlider;
     [SerializeField] private Slider lightSlider;
     [SerializeField] private Light sunLight;
-
+    [SerializeField] private Button backButton;
+    [SerializeField] private MenuUIEditorManager menuUICanvas;
     private void Start()
     {
+        backButton.onClick.AddListener(() => {
+            menuUICanvas.ShowMainMenuCanvas();
+        });
         // Initialize dropdown
         sunDirectionDropdown.ClearOptions();
         sunDirectionDropdown.AddOptions(new List<string> { "Utara", "Timur", "Selatan", "Barat" });
@@ -30,37 +34,7 @@ public class SunSimulationManager : MonoBehaviour
     }
     private void OnIntensityChange(float lightIntensity)
     {
-        HomeDesignParentManager parentManager = FindObjectOfType<HomeDesignParentManager>();
-        if (parentManager != null)
-        {
-            HomeStructureManager homeManager = parentManager.GetCurrentHomeStructureManager();
-            if (homeManager != null)
-            {
-                var room = homeManager.GetNearestRoom(); // your own method
-
-                if (room == null)
-                {
-                    Debug.LogWarning("No nearest room found!");
-                    return;
-                }
-                foreach (GameObject light in room.lampsObjects)
-                {
-                    if (light != null)
-                    {
-                        LightManager lightManager = light.GetComponent<LightManager>();
-                        if (lightManager != null)
-                        {
-                            lightManager.ChangeLightIntensity(lightIntensity);
-                        }
-                    }
-                }
-            }
-        }
-        else
-        {
-            Debug.LogError("HomeDesignParentManager not found in the scene!");
-        }
-        
+        sunLight.intensity = lightIntensity;
     }
 
 
@@ -81,7 +55,7 @@ public class SunSimulationManager : MonoBehaviour
     private void UpdateSunRotation(int directionIndex, float hoursSince6AM)
     {
         HomeDesignParentManager parentManager = FindObjectOfType<HomeDesignParentManager>();
-        sunLight = parentManager.GetCurrentDirectionalLight();
+        //sunLight = parentManager.GetCurrentDirectionalLight();
         float xRotation = hoursSince6AM * 15f;
 
         // Get Y rotation based on the dropdown selection (0° = North, 90° = East, etc.)

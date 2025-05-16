@@ -14,14 +14,25 @@ public class StructureColoringUIManager : MonoBehaviour
     [SerializeField] private Button ceilingButton;
     [SerializeField] private Button basicColorButton;
     [SerializeField] private Button materialButton;
+    [SerializeField] private Button backButton;
+    [SerializeField] private MenuUIEditorManager menuUICanvas;
+    [SerializeField] private ScrollRect scrollMenu;
 
     private ColoringManager.ObjectType currentObjectType = ColoringManager.ObjectType.Wall;
     private Material customColorMaterial; // Store the custom color material
 
     private bool isBasicColor = true;
     private ColoringManager.ObjectType currentType;
+    
+
     private void Start()
     {
+        InputManagerVR inputManager = FindObjectOfType<InputManagerVR>();
+        if (inputManager != null)
+        {
+            inputManager.OnThumbstickScroll += HandleThumbstickScroll;
+        }
+        backButton.onClick.AddListener(() => { menuUICanvas.ShowMainMenuCanvas(); });
         floorButton.onClick.AddListener(() => {
             currentType = ColoringManager.ObjectType.Floor;
             UpdateMaterialButtons(currentType);
@@ -50,8 +61,27 @@ public class StructureColoringUIManager : MonoBehaviour
         // Initialize the custom color material once
         customColorMaterial = new Material(Shader.Find("Standard"));
     }
+    private void HandleThumbstickScroll(float scrollDelta)
+    {
+        // Skip if the entire UI is not visible
+        if (!gameObject.activeInHierarchy) return;
 
-    private void UpdateMaterialButtons(ColoringManager.ObjectType objectType)
+        // Optionally, skip if scrollMenu is not active
+        if (scrollMenu == null || !scrollMenu.gameObject.activeInHierarchy) return;
+
+        float scrollSpeed = 0.5f;
+        float newPos = scrollMenu.verticalNormalizedPosition + scrollDelta * scrollSpeed * Time.deltaTime;
+        scrollMenu.verticalNormalizedPosition = Mathf.Clamp01(newPos);
+    }
+    private void OnDestroy()
+    {
+        InputManagerVR inputManager = FindObjectOfType<InputManagerVR>();
+        if (inputManager != null)
+        {
+            inputManager.OnThumbstickScroll -= HandleThumbstickScroll;
+        }
+    }
+    /*private void UpdateMaterialButtons(ColoringManager.ObjectType objectType)
     {
         currentObjectType = objectType;
 
@@ -116,8 +146,8 @@ public class StructureColoringUIManager : MonoBehaviour
             }
         }
     }
-
-    /*private void UpdateMaterialButtons(ColoringManager.ObjectType objectType)
+*/
+    private void UpdateMaterialButtons(ColoringManager.ObjectType objectType)
     {
         currentObjectType = objectType;
 
@@ -132,19 +162,55 @@ public class StructureColoringUIManager : MonoBehaviour
         {
             GameObject newButton = Instantiate(buttonPrefab, buttonContainer);
 
-            Material uiMaterial = new Material(materialData.material)
-            {
-                shader = Shader.Find("UI/Default")
-            };
-
+            Material uiMaterial = new Material(materialData.material);
             RawImage buttonImage = newButton.GetComponentInChildren<RawImage>();
+
             if (buttonImage != null)
             {
-                buttonImage.material = uiMaterial;
+                Texture previewTexture = null;
+
+                // Try to get all known common property names
+                string[] possibleTextureProps = { "_BaseMap", "_MainTex", "_MainTexture", "_BaseTexture", "_Albedo", "_BaseColorMap" };
+
+                foreach (string prop in possibleTextureProps)
+                {
+                    if (materialData.material.HasProperty(prop))
+                    {
+                        previewTexture = materialData.material.GetTexture(prop);
+                        if (previewTexture != null)
+                            break;
+                    }
+                }
+
+                if (previewTexture != null)
+                {
+                    buttonImage.texture = previewTexture;
+                    buttonImage.color = Color.white; // reset tint
+                    buttonImage.material = null;     // don't use the custom shader for UI!
+                }
+                else
+                {
+                    // Fallback: try showing a color if it's a basic color material
+                    if (materialData.material.HasProperty("_BaseColor"))
+                    {
+                        buttonImage.color = materialData.material.GetColor("_BaseColor");
+                    }
+                    else if (materialData.material.HasProperty("_Color"))
+                    {
+                        buttonImage.color = materialData.material.GetColor("_Color");
+                    }
+                    else
+                    {
+                        buttonImage.color = Color.gray; // ultimate fallback
+                    }
+
+                    buttonImage.texture = null;
+                    buttonImage.material = null;
+                }
             }
             else
             {
-                Debug.LogError("Image component not found in button prefab!");
+                Debug.LogError("RawImage component not found in button prefab!");
             }
 
             Button buttonComponent = newButton.GetComponentInChildren<Button>();
@@ -167,7 +233,7 @@ public class StructureColoringUIManager : MonoBehaviour
                 Debug.LogError("Button component not found in button prefab!");
             }
         }
-    }*/
+    }
 
     private List<MaterialData> GetFilteredMaterialsByUsage(ColoringManager.ObjectType objectType)
     {
