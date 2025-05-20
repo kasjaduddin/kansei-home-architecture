@@ -49,8 +49,21 @@ public class PlacementSystem : MonoBehaviour
         ceilingData = new GridData();
         furnitureData = new GridData();
     }
+    private IEnumerator InitializeWallsCoroutine()
+    {
+        if (wallsInitialized || wallReference == null) yield break;
 
-    private void InitializeWalls()
+        Debug.Log("Initializing wall data...");
+        foreach (GameObject wall in wallReference)
+        {
+            Transform wallTrans = wall.transform;
+            PopulateWallObjects(wallTrans, wallData);
+            yield return null; // Wait one frame between walls
+        }
+        wallsInitialized = true;
+    }
+
+    /*private void InitializeWalls()
     {
         if (wallsInitialized || wallReference == null) return;
 
@@ -62,9 +75,51 @@ public class PlacementSystem : MonoBehaviour
         }
         wallsInitialized = true;
 
+    }*/
+
+    public GridData GetWallData()
+    {
+        return wallData;
+    }
+    public void PopulateWallObjectsStatic(Transform obj, GridData targetGrid)
+    {
+        if (obj.gameObject.layer != LayerMask.NameToLayer("Wall"))
+        {
+            return;
+        }
+
+        Vector3 worldPos = obj.parent != null ? obj.parent.position : obj.position;
+        Vector3Int gridPos = grid.WorldToCell(worldPos); // Use instance grid now
+        gridPos.y = 0;
+
+        Vector2Int wallSize = new Vector2Int(
+            Mathf.RoundToInt(obj.localScale.x * 20),
+            Mathf.RoundToInt(obj.localScale.z * 20)
+        );
+
+        Vector3Int bottomLeftOffset = new Vector3Int(
+            Mathf.FloorToInt(wallSize.x / 2f),
+            0,
+            Mathf.FloorToInt(wallSize.y / 2f)
+        );
+
+        gridPos -= bottomLeftOffset;
+        targetGrid.AddInitialObjectAt(gridPos, wallSize);
     }
 
     private void PopulateWallObjects(Transform obj, GridData targetGrid)
+    {
+        if (obj.gameObject.layer == LayerMask.NameToLayer("Wall"))
+        {
+            PopulateWallObjectsStatic(obj, targetGrid);
+        }
+
+        foreach (Transform child in obj)
+        {
+            PopulateWallObjects(child, targetGrid);
+        }
+    }
+    /*private void PopulateWallObjects(Transform obj, GridData targetGrid)
     {
         if (obj.gameObject.layer == LayerMask.NameToLayer("Wall"))
         {
@@ -91,14 +146,14 @@ public class PlacementSystem : MonoBehaviour
         {
             PopulateWallObjects(child, targetGrid);
         }
-    }
+    }*/
 
     public void StartPlacement(int furnitureID)
     {
         wallReference = ParentHomeDesign.wallReference;
-        
-        InitializeWalls(); // Ensure walls are initialized
-        StopPlacement();
+
+        StartCoroutine(InitializeWallsCoroutine()); // Ensure walls are initialized
+        //StopPlacement();
         gridVisualization.SetActive(true);
 
         FurnitureData selectedFurniture = FindFurnitureByID(furnitureID);

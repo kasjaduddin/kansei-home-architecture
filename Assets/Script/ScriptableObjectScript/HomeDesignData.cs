@@ -8,8 +8,10 @@ public class HomeDesignData : ScriptableObject
 {
     public string homeDesignName;    
     public int roomAmount;           
-    public int bathroomAmount;       
-    public GameObject homePrefab;    
+    public int bathroomAmount;
+    public homeType homeType;
+    public GameObject homePrefab;
+    public Sprite previewSprite;
 }
 
 public enum homeType

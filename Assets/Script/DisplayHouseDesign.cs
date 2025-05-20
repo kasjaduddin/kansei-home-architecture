@@ -73,10 +73,12 @@ public class DisplayHouseDesign : MonoBehaviour
 
     private void UpdateTextDisplay(HomeDesignData designData)
     {
-        typeText.text = homeDesignSelector.selectedHomeType.ToString();
-        houseNameText.text = designData.homeDesignName;
-        roomAmountText.text = $"Rooms: {designData.roomAmount}";
-        bathroomAmountText.text = $"Bathrooms: {designData.bathroomAmount}";
+        string formattedType = homeDesignSelector.selectedHomeType.ToString().Replace("Type_", "TYPE ");
+        typeText.text = formattedType;
+
+        houseNameText.text = designData.homeDesignName.ToUpper();
+        roomAmountText.text = $"ROOM: {designData.roomAmount}";
+        bathroomAmountText.text = $"BATHROOM: {designData.bathroomAmount}";
     }
 
     public void UpdateHomeDisplay(GameObject prefabDesign)

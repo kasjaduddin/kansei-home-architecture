@@ -11,6 +11,8 @@ public class CanvasPopUpManager : MonoBehaviour
     [SerializeField] private GameObject simulationCanvas;
     [SerializeField] private GameObject lightCanvas;
     [SerializeField] private GameObject mainMenuUICanvas;
+    [SerializeField] private GameObject infoCanvas;
+    [SerializeField] private GameObject exitConfirmationCanvas;
     [SerializeField] private MenuUIEditorManager menuUICanvas;
     private InputDevice rightController;
     private bool previousButtonState = false;

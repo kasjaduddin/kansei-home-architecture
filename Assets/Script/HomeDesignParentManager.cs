@@ -6,6 +6,8 @@ public class HomeDesignParentManager : MonoBehaviour
 {
     [SerializeField] private Light lightPrefabs;
     [SerializeField] private GameObject XROrigin;
+    [SerializeField] private Preview2DDesignManager preview2DDesign;
+    [SerializeField] private PlacementSystem placementSystem;
     public static HomeDesignParentManager Instance { get; private set; }
 
     private GameObject currentHouseInstance;
@@ -19,6 +21,8 @@ public class HomeDesignParentManager : MonoBehaviour
         currentDirectionalLight = lightPrefabs;
         ChangeLightIntensity(2);
     }
+
+
 
     public void InstantiateHouse(GameObject housePrefab)
     {
@@ -62,8 +66,21 @@ public class HomeDesignParentManager : MonoBehaviour
         }
 
         wallReference = currentHomeStructureManager.GetRoomObjectTransforms();
+        InitializeWallsImmediately();
 
         RefreshLightingOnInstance(currentHouseInstance);
+        preview2DDesign.Initialize();
+    }
+
+    private void InitializeWallsImmediately()
+    {
+        if (wallReference == null) return;
+
+        foreach (GameObject wall in wallReference)
+        {
+            Transform wallTrans = wall.transform;
+            placementSystem.PopulateWallObjectsStatic(wallTrans, placementSystem.GetWallData());
+        }
     }
 
     private void RefreshLightingOnInstance(GameObject house)

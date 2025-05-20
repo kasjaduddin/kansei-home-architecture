@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using static ColoringManager;
@@ -73,6 +74,7 @@ public class ChangeObjectUIManager : MonoBehaviour
 
             // Set the image if available
             RawImage rawImage = newButton.GetComponentInChildren<RawImage>();
+            TextMeshProUGUI textInfo = newButton.GetComponentInChildren<TextMeshProUGUI>();
             if (rawImage != null && prefabData.objectTexture != null)
             {
                 rawImage.texture = prefabData.objectTexture;
@@ -81,7 +83,10 @@ public class ChangeObjectUIManager : MonoBehaviour
             {
                 Debug.LogWarning("RawImage component not found in button prefab!");
             }
-
+            if (textInfo != null)
+            {
+                textInfo.text = prefabData.objectName;
+            }
             // Set button click behavior
             Button buttonComponent = newButton.GetComponentInChildren<Button>();
             if (buttonComponent != null)

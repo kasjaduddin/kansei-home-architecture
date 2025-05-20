@@ -11,19 +11,26 @@ public class MenuUIEditorManager : MonoBehaviour
     [SerializeField] private Button simulationButton;
     [SerializeField] private Button lightButton;
     [SerializeField] private Button exitButton;
+    [SerializeField] private Button infoButton;
     [SerializeField] private GameObject furnitureCanvas;
     [SerializeField] private GameObject coloringCanvas;
     [SerializeField] private GameObject embededCanvas;
     [SerializeField] private GameObject simulationCanvas;
     [SerializeField] private GameObject menuUICanvas;
     [SerializeField] private GameObject lightCanvas;
+    [SerializeField] private GameObject infoCanvas;
+    [SerializeField] private GameObject exitConfirmationCanvas;
+
+    [SerializeField] private InputManagerVR inputManager;
+
     private Transform positionSource;
     public float distance = 1.5f;
     public float verticalOffset = -0.5f;
     private GameObject currentActiveCanvas = null;
-    
+    private bool isInfoVisible = false;
     private void Start()
     {
+
         // Dynamically find a camera to use
         positionSource = GetCameraTransform();
 
@@ -44,10 +51,36 @@ public class MenuUIEditorManager : MonoBehaviour
         simulationButton.onClick.AddListener(() => {
             ShowCanvas(simulationCanvas);
         });
-        exitButton.onClick.AddListener(() => {
-            Loader.Load(Loader.Scene.MainMenu);
+        infoButton.onClick.AddListener(() => {
+            ShowCanvas(infoCanvas);
         });
+        exitButton.onClick.AddListener(() => {
+            //Loader.Load(Loader.Scene.MainMenu);
+            ShowCanvas(exitConfirmationCanvas);
+        });
+
+        if (inputManager != null)
+        {
+            inputManager.OnToggleInfoCanvas += HandleToggleInfoCanvas;
+        }
+
         ShowMainMenuCanvas();
+    }
+    public void ExitToMainMenu()
+    {
+        Loader.Load(Loader.Scene.MainMenu);
+    }
+    private void HandleToggleInfoCanvas()
+    {
+        isInfoVisible = !isInfoVisible;
+        if (isInfoVisible)
+        {
+            ShowInfoCanvas();
+        }
+        else
+        {
+            ShowMainMenuCanvas();
+        }
     }
     public void ShowCanvas(GameObject canvas)
     {
@@ -63,6 +96,10 @@ public class MenuUIEditorManager : MonoBehaviour
     {
         ShowCanvas(furnitureCanvas);
     }
+    public void ShowInfoCanvas()
+    {
+        ShowCanvas(infoCanvas);
+    }
     public void HideAllCanvases()
     {
         coloringCanvas.SetActive(false);
@@ -71,6 +108,8 @@ public class MenuUIEditorManager : MonoBehaviour
         simulationCanvas.SetActive(false);
         lightCanvas.SetActive(false);
         menuUICanvas.SetActive(false);
+        infoCanvas.SetActive(false);
+        exitConfirmationCanvas.SetActive(false);
     }
     private Transform GetCameraTransform()
     {

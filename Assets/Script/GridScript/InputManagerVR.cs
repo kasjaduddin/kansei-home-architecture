@@ -11,12 +11,15 @@ public class InputManagerVR : MonoBehaviour
     [SerializeField] private LayerMask placementLayermask;
     public event Action OnClicked, OnExit;
     public event Action OnRotateLeft, OnRotateRight;
+    public event Action OnToggleInfoCanvas;
+
 
     private Vector3 lastPosition;
 
     private InputDevice controllerDevice;
     private bool triggerPressedLastFrame = false;
     private bool bButtonPressedLastFrame = false;
+    private bool xButtonPressedLastFrame = false;
 
 
     private Vector2 lastThumbstickValue;
@@ -75,7 +78,14 @@ public class InputManagerVR : MonoBehaviour
             }
             bButtonPressedLastFrame = bButtonPressed;
         }
-
+        if (controllerDevice.TryGetFeatureValue(CommonUsages.primaryButton, out bool xButtonPressed))
+        {
+            if (xButtonPressed && !xButtonPressedLastFrame)
+            {
+                OnToggleInfoCanvas?.Invoke();
+            }
+            xButtonPressedLastFrame = xButtonPressed;
+        }
         // Thumbstick input (left/right snap rotation)
         if (controllerDevice.TryGetFeatureValue(CommonUsages.primary2DAxis, out Vector2 thumbstickValue))
         {

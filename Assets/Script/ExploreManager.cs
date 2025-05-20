@@ -44,10 +44,14 @@ public class ExploreManager : MonoBehaviour
     {
         HomeTypeDropdown.ClearOptions();
 
-        List<string> options = new List<string> { "All Designs" }; // Add this manually
+        List<string> options = new List<string> { "All Designs" }; // First option
 
-        // Add enum names
-        options.AddRange(Enum.GetNames(typeof(homeType)));
+        // Format and add enum values like "TYPE 36"
+        foreach (homeType type in Enum.GetValues(typeof(homeType)))
+        {
+            string formatted = type.ToString().Replace("Type_", "TYPE ");
+            options.Add(formatted);
+        }
 
         HomeTypeDropdown.AddOptions(options);
     }

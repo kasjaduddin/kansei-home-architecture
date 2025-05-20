@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -164,7 +165,7 @@ public class StructureColoringUIManager : MonoBehaviour
 
             Material uiMaterial = new Material(materialData.material);
             RawImage buttonImage = newButton.GetComponentInChildren<RawImage>();
-
+            TextMeshProUGUI textInfo = newButton.GetComponentInChildren<TextMeshProUGUI>();
             if (buttonImage != null)
             {
                 Texture previewTexture = null;
@@ -212,7 +213,10 @@ public class StructureColoringUIManager : MonoBehaviour
             {
                 Debug.LogError("RawImage component not found in button prefab!");
             }
-
+            if (textInfo != null)
+            {
+                textInfo.text = materialData.materialName;
+            }
             Button buttonComponent = newButton.GetComponentInChildren<Button>();
             if (buttonComponent != null)
             {

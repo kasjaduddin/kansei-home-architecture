@@ -47,10 +47,9 @@ public class DisplayDesignManager : MonoBehaviour
                 if (uiOption != null)
                 {
                     // UpdateProperty now requires a Sprite. Replace "null" with the actual sprite if available.
-                    Sprite placeholderSprite = null; // Replace this with your logic to assign a proper sprite
                     string roomCapacity = design.roomAmount.ToString();
                     string bathroomCapacity = design.bathroomAmount.ToString();
-                    uiOption.UpdateProperty(placeholderSprite, design.homeDesignName, roomCapacity, bathroomCapacity);
+                    uiOption.UpdateProperty(design.previewSprite, design.homeDesignName, roomCapacity, bathroomCapacity, design.homeType);
                 }
             }
         }
@@ -85,7 +84,7 @@ public class DisplayDesignManager : MonoBehaviour
                         Sprite placeholderSprite = null;
                         string roomCapacity = design.roomAmount.ToString();
                         string bathroomCapacity = design.bathroomAmount.ToString();
-                        uiOption.UpdateProperty(placeholderSprite, design.homeDesignName, roomCapacity, bathroomCapacity);
+                        uiOption.UpdateProperty(placeholderSprite, design.homeDesignName, roomCapacity, bathroomCapacity, design.homeType);
                     }
                 }
             }

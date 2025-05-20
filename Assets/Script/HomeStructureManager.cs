@@ -8,6 +8,7 @@ public class HomeStructureManager : MonoBehaviour
     [Header("Room")]
     public List<RoomReference> roomStructure;
     public Transform initialPosition;
+    public Sprite previewSprite;
 
     private List<GameObject> cachedTransforms = new List<GameObject>();
     private InputDevice rightController;

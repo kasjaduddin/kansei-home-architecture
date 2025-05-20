@@ -38,6 +38,7 @@ public class FurnitureUIManager : MonoBehaviour
     }
     private void HandleThumbstickScroll(float scrollDelta)
     {
+        isCanvasOpen = gameObject.activeInHierarchy;
         if (!isCanvasOpen || scrollMenu == null) return;
 
         float scrollSpeed = 0.5f;
@@ -66,6 +67,7 @@ public class FurnitureUIManager : MonoBehaviour
             GameObject newButton = Instantiate(buttonPrefab, buttonContainer);
 
             RawImage rawImage = newButton.GetComponentInChildren<RawImage>();
+            TextMeshProUGUI textInfo = newButton.GetComponentInChildren<TextMeshProUGUI>();
             if (rawImage != null && furniture.objectTexture != null)
             {
                 rawImage.texture = furniture.objectTexture;
@@ -73,6 +75,10 @@ public class FurnitureUIManager : MonoBehaviour
             else if (rawImage == null)
             {
                 Debug.LogWarning("RawImage component not found in button prefab!");
+            }
+            if (textInfo != null)
+            {
+                textInfo.text = furniture.furnitureName;
             }
             Button buttonComponent = newButton.GetComponentInChildren<Button>();
             int furnitureID = GetFurnitureID(furniture);
@@ -87,15 +93,10 @@ public class FurnitureUIManager : MonoBehaviour
 
     public void VisibilityCanvasFurniture()
     {
+        isCanvasOpen = gameObject.activeInHierarchy;
         if (isCanvasOpen)
         {
             menuUIManager.HideAllCanvases();
-            isCanvasOpen = false;
-        }
-        else
-        {
-            menuUIManager.ShowFurnitureCanvas();
-            isCanvasOpen = true;
         }
         
     }

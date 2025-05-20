@@ -10,6 +10,7 @@ public class HomeDesignUIOption : MonoBehaviour
     [SerializeField] private TextMeshProUGUI HomeDesignNameText;
     [SerializeField] private TextMeshProUGUI RoomCapacityText;
     [SerializeField] private TextMeshProUGUI BathroomCapacityText;
+    [SerializeField] private TextMeshProUGUI HomeTypeText;
 
     private HomeDesignData homeDesignData;
     private DisplayMiniDesign displayMiniDesign;
@@ -20,7 +21,8 @@ public class HomeDesignUIOption : MonoBehaviour
         displayMiniDesign = displayManager;
 
         // Update UI elements
-        UpdateProperty(null, data.homeDesignName, data.roomAmount.ToString(), data.bathroomAmount.ToString());
+        UpdateProperty(null, data.homeDesignName, data.roomAmount.ToString(), data.bathroomAmount.ToString(), data.homeType);
+        
     }
 
     public void OnButtonClick()
@@ -32,7 +34,7 @@ public class HomeDesignUIOption : MonoBehaviour
         }
     }
 
-    public void UpdateProperty(Sprite image, string designName, string roomCapacity, string bathroomCapacity)
+    public void UpdateProperty(Sprite image, string designName, string roomCapacity, string bathroomCapacity, homeType type)
     {
         if (image != null)
         {
@@ -40,15 +42,23 @@ public class HomeDesignUIOption : MonoBehaviour
         }
         if (!string.IsNullOrEmpty(designName))
         {
-            HomeDesignNameText.text = designName;
+            HomeDesignNameText.text = designName.ToUpper();
         }
         if (!string.IsNullOrEmpty(roomCapacity))
         {
-            RoomCapacityText.text = "Room: " + roomCapacity;
+            RoomCapacityText.text = "ROOM: " + roomCapacity;
         }
         if (!string.IsNullOrEmpty(bathroomCapacity))
         {
-            BathroomCapacityText.text = "Bathroom: " + bathroomCapacity;
+            BathroomCapacityText.text = "BATHROOM: " + bathroomCapacity;
         }
+        HomeTypeText.text = FormatHomeTypeText(type);
     }
+    private string FormatHomeTypeText(homeType type)
+    {
+        // Convert enum to string and format it as uppercase with space
+        string typeStr = type.ToString().Replace("Type_", "TYPE ");
+        return typeStr.ToUpper(); // Ensure it's all caps
+    }
+
 }
