@@ -1,0 +1,149 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &8244964698885417689
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6951657701083307798}
+  m_Layer: 0
+  m_Name: Sink_Vanity_Mirror
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6951657701083307798
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8244964698885417689}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 3512958583689277176}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &3984049894712674579
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 6951657701083307798}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: de3f1ad16134b194da62eaea77d8e698,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: de3f1ad16134b194da62eaea77d8e698,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.132
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: de3f1ad16134b194da62eaea77d8e698,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: de3f1ad16134b194da62eaea77d8e698,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: de3f1ad16134b194da62eaea77d8e698,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: de3f1ad16134b194da62eaea77d8e698,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: de3f1ad16134b194da62eaea77d8e698,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: de3f1ad16134b194da62eaea77d8e698,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: de3f1ad16134b194da62eaea77d8e698,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: de3f1ad16134b194da62eaea77d8e698,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8564127398380820565, guid: de3f1ad16134b194da62eaea77d8e698,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: b0096b9147846b5449d51ff1221f5b9d, type: 2}
+    - target: {fileID: -6512049902558742289, guid: de3f1ad16134b194da62eaea77d8e698,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: f024307a456928e4bbe62bbf5a11608c, type: 2}
+    - target: {fileID: -6035698249471340833, guid: de3f1ad16134b194da62eaea77d8e698,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: f024307a456928e4bbe62bbf5a11608c, type: 2}
+    - target: {fileID: -3989686026646274528, guid: de3f1ad16134b194da62eaea77d8e698,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: f024307a456928e4bbe62bbf5a11608c, type: 2}
+    - target: {fileID: 919132149155446097, guid: de3f1ad16134b194da62eaea77d8e698,
+        type: 3}
+      propertyPath: m_Name
+      value: Vanity Mirror
+      objectReference: {fileID: 0}
+    - target: {fileID: 937542351418891457, guid: de3f1ad16134b194da62eaea77d8e698,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: f024307a456928e4bbe62bbf5a11608c, type: 2}
+    - target: {fileID: 4330062469384878768, guid: de3f1ad16134b194da62eaea77d8e698,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 7589782889c14fb47bb1a6e9e3296306, type: 2}
+    - target: {fileID: 4695771588443220531, guid: de3f1ad16134b194da62eaea77d8e698,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: f024307a456928e4bbe62bbf5a11608c, type: 2}
+    - target: {fileID: 6859978205837706844, guid: de3f1ad16134b194da62eaea77d8e698,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: f024307a456928e4bbe62bbf5a11608c, type: 2}
+    m_RemovedComponents: []
+    m_RemovedGameObjects:
+    - {fileID: -3225959511443494117, guid: de3f1ad16134b194da62eaea77d8e698, type: 3}
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: de3f1ad16134b194da62eaea77d8e698, type: 3}
+--- !u!4 &3512958583689277176 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: de3f1ad16134b194da62eaea77d8e698,
+    type: 3}
+  m_PrefabInstance: {fileID: 3984049894712674579}
+  m_PrefabAsset: {fileID: 0}
