@@ -5,13 +5,18 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/MainMenu.unity
     guid: b4f581e65cbed4a469cda76e79848523
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/EditDesign.unity
     guid: a3e6cb3ff3d52384ba6e430cf317eab6
+  - enabled: 1
+    path: Assets/Scenes/Sandbox.unity
+    guid: 98b0339a12cf7a6439750b752c41060c
   m_configObjects:
+    Unity.XR.PXR.Settings: {fileID: 11400000, guid: 81d206f127bfe8a41a33c57981377270,
+      type: 2}
     com.unity.xr.management.loader_settings: {fileID: 11400000, guid: 6802878c74d1d534bb3ec31be6cea953,
       type: 2}
     com.unity.xr.openxr.settings4: {fileID: 11400000, guid: 7e87bde71a91c0548bfc43382864913e,
