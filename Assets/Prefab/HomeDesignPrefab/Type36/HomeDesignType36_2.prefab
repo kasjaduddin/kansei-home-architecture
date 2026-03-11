@@ -14745,6 +14745,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2702660860390935450}
   - component: {fileID: 3997750653085914411}
+  - component: {fileID: 7128260938420690626}
   m_Layer: 0
   m_Name: HomeDesignType36_2
   m_TagString: Untagged
@@ -14883,6 +14884,48 @@ MonoBehaviour:
     roomPosition: {fileID: 0}
   initialPosition: {fileID: 0}
   previewSprite: {fileID: 21300000, guid: ae4733a01520d3d41a0c3cdf982ff7e2, type: 3}
+--- !u!114 &7128260938420690626
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9160166229909503778}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8f5dcc1b0134ad439bc82fa96ec518f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _floorRenderers:
+  - {fileID: 1412814886702657984}
+  - {fileID: 5198065133344666560}
+  - {fileID: 3792649972080128197}
+  - {fileID: 9093821023411023521}
+  - {fileID: 6475304810885646275}
+  _wallRenderers:
+  - {fileID: 1537574580520510506}
+  - {fileID: 7451562258315172947}
+  - {fileID: 8208065679305372215}
+  - {fileID: 3244187206520124995}
+  - {fileID: 2325718312710389327}
+  - {fileID: 8055957158212068176}
+  - {fileID: 657986136804660635}
+  - {fileID: 3354594493036324824}
+  - {fileID: 1616620823604357792}
+  - {fileID: 7752886793252464395}
+  - {fileID: 1197254994735065567}
+  - {fileID: 8282389452948872515}
+  - {fileID: 6064215025900487414}
+  - {fileID: 5003149762192070931}
+  - {fileID: 7923504762791079043}
+  - {fileID: 1487763039903646203}
+  - {fileID: 1402457977896284511}
+  _ceilingRenderers:
+  - {fileID: 3183570230323114067}
+  - {fileID: 5700922765264305187}
+  - {fileID: 8803869134759677750}
+  - {fileID: 2244576305477947796}
+  - {fileID: 4321590476309284412}
 --- !u!1 &9168099893418880658
 GameObject:
   m_ObjectHideFlags: 0
