@@ -1334,7 +1334,7 @@ GameObject:
   - component: {fileID: 5673638416954024707}
   - component: {fileID: 2144259022157988114}
   m_Layer: 6
-  m_Name: VerticalWallParent
+  m_Name: Wall_LivingRoom
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -15143,6 +15143,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8745115361224704399}
   - component: {fileID: 5135627657574428785}
+  - component: {fileID: 7744448199294660899}
   m_Layer: 0
   m_Name: HomeDesignType36_4
   m_TagString: Untagged
@@ -15282,6 +15283,49 @@ MonoBehaviour:
     roomPosition: {fileID: 0}
   initialPosition: {fileID: 0}
   previewSprite: {fileID: 21300000, guid: c4293c3581cc359498224f51cb8ecf8c, type: 3}
+--- !u!114 &7744448199294660899
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5223560123317733789}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8f5dcc1b0134ad439bc82fa96ec518f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _floorRenderers:
+  - {fileID: 3254310609977751433}
+  - {fileID: 44193786988191010}
+  - {fileID: 6757118568616830309}
+  - {fileID: 5609793020074774710}
+  - {fileID: 2306610032670097256}
+  _wallRenderers:
+  - {fileID: 1430101912146942837}
+  - {fileID: 5276601043193753281}
+  - {fileID: 5983639786049776348}
+  - {fileID: 7354303314743758424}
+  - {fileID: 3076704469039098238}
+  - {fileID: 4533672401558875813}
+  - {fileID: 7322861449987769704}
+  - {fileID: 6528828264353617558}
+  - {fileID: 1780677982422422323}
+  - {fileID: 4840252592183825494}
+  - {fileID: 2007165462167729292}
+  - {fileID: 3957046517882674949}
+  - {fileID: 8739798648338487411}
+  - {fileID: 2196460381362573477}
+  - {fileID: 8117916014754411632}
+  - {fileID: 5673638416954024707}
+  - {fileID: 4280771325209658605}
+  - {fileID: 4238945696568190620}
+  _ceilingRenderers:
+  - {fileID: 8041031374140775485}
+  - {fileID: 5421483591231830449}
+  - {fileID: 11731417868618313}
+  - {fileID: 6204236102951160860}
+  - {fileID: 6439313478368966932}
 --- !u!1 &5226133200145792690
 GameObject:
   m_ObjectHideFlags: 0
@@ -25711,7 +25755,7 @@ PrefabInstance:
     - target: {fileID: 5711203535967961303, guid: 0fe80d7c867369d47a5c5af8c982c2b8,
         type: 3}
       propertyPath: m_Name
-      value: WallTile_Bathroom (3)
+      value: WallTile_Bathroom
       objectReference: {fileID: 0}
     - target: {fileID: 7058542891875659185, guid: 0fe80d7c867369d47a5c5af8c982c2b8,
         type: 3}
@@ -25904,7 +25948,7 @@ PrefabInstance:
     - target: {fileID: 5711203535967961303, guid: 0fe80d7c867369d47a5c5af8c982c2b8,
         type: 3}
       propertyPath: m_Name
-      value: WallTile_Bathroom (1)
+      value: WallTile_Bathroom
       objectReference: {fileID: 0}
     - target: {fileID: 7058542891875659185, guid: 0fe80d7c867369d47a5c5af8c982c2b8,
         type: 3}
@@ -26166,7 +26210,7 @@ PrefabInstance:
     - target: {fileID: 5711203535967961303, guid: 0fe80d7c867369d47a5c5af8c982c2b8,
         type: 3}
       propertyPath: m_Name
-      value: WallTile_Bathroom (2)
+      value: WallTile_Bathroom
       objectReference: {fileID: 0}
     - target: {fileID: 7058542891875659185, guid: 0fe80d7c867369d47a5c5af8c982c2b8,
         type: 3}
