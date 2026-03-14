@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.XR.CoreUtils;
 using UnityEngine;
 
 namespace VRHomeArch.DataCollection
@@ -60,7 +61,8 @@ namespace VRHomeArch.DataCollection
         [SerializeField] private Material _neutralSkyboxMaterial;
         [SerializeField] private Material _defaultSkyboxMaterial;
 
-        // -- Inspector: Root transform of the XR Rig (used for teleportation)
+        // -- Inspector: Root transform of the XR Rig — assign the XR Origin (XR Rig) child,
+        //    NOT the XR Interaction Setup root. XROrigin component lives on XR Origin (XR Rig).
         [Header("XR Rig")]
         [SerializeField] private Transform _xrRigRoot;
 
@@ -71,6 +73,10 @@ namespace VRHomeArch.DataCollection
         // Black room geometry is only active during Baseline — kept inactive the rest of the session
         // to avoid visual overlap with the house or training area.
         [SerializeField] private GameObject _blackRoom;
+        // The Move GameObject under XR Origin (XR Rig)/Locomotion System/Move.
+        // Disabled during WaitingForBaseline so the respondent cannot walk while the UI is shown.
+        // Re-enabled when HouseExploration begins.
+        [SerializeField] private GameObject _moveProvider;
 
         // -- Runtime state
         private SessionPhase _phase = SessionPhase.Idle;
@@ -158,8 +164,22 @@ namespace VRHomeArch.DataCollection
         {
             switch (_phase)
             {
-                case SessionPhase.Training:
-                    TransitionTo(SessionPhase.WaitingForBaseline);
+                case SessionPhase.WaitingForBaseline:
+                    // Headset is off — safe window to swap scene state invisibly.
+                    // Activate black room and deactivate training area before the respondent
+                    // puts the headset back on so the transition is seamless.
+                    if (_blackRoom != null)
+                        _blackRoom.SetActive(true);
+
+                    if (_trainingArea != null)
+                        _trainingArea.SetActive(false);
+
+                    // Teleport to baseline spawn point while headset is off so the
+                    // respondent is already inside the black room when they put it back on.
+                    TeleportTo(_baselineSpawnPoint);
+
+                    Debug.Log("[SessionManager] Headset removed in WAITING_FOR_BASELINE — " +
+                              "scene swapped to black room, awaiting headset put-on to start baseline timer");
                     break;
 
                 case SessionPhase.HouseExploration:
@@ -208,40 +228,47 @@ namespace VRHomeArch.DataCollection
         {
             Debug.Log($"[SessionManager] Phase: TRAINING — respondent {_activeRespondent.respondentId}, " +
                       $"layout {_activeRespondent.layoutPrefabName}");
+
+            // Restore training area in case a previous session deactivated it
+            if (_trainingArea != null)
+                _trainingArea.SetActive(true);
+
+            // Restore locomotion in case it was disabled at end of previous session
+            if (_moveProvider != null)
+                _moveProvider.SetActive(true);
+
             SetSkybox(_defaultSkyboxMaterial);
             TeleportTo(_trainingSpawnPoint);
         }
 
         private void OnEnterWaitingForBaseline()
         {
-            Debug.Log("[SessionManager] Phase: WAITING_FOR_BASELINE — headset removed, awaiting respondent to put it back on");
+            Debug.Log("[SessionManager] Phase: WAITING_FOR_BASELINE — respondent has exited training area, " +
+                      "waiting for headset removal before baseline begins");
 
-            // Training area is no longer needed once the respondent exits it
-            if (_trainingArea != null)
-                _trainingArea.SetActive(false);
+            // Prevent the respondent from walking around while the removal UI is shown
+            if (_moveProvider != null)
+                _moveProvider.SetActive(false);
 
             // Prompt respondent to remove the headset so they can fill the pre-study form
             if (_removeHeadsetUI != null)
                 _removeHeadsetUI.SetActive(true);
 
-            // No timer — presence sensor drives the next transition
+            // TrainingArea and BlackRoom are toggled in HandleHeadsetRemoved, not here,
+            // because the respondent is still wearing the headset at this point.
         }
 
         private void OnEnterBaseline()
         {
             Debug.Log($"[SessionManager] Phase: BASELINE — fixed {BaselineDurationSeconds}s timer started");
 
-            // Respondent has put the headset back on — dismiss the removal prompt
+            // Respondent has put the headset back on — dismiss the removal prompt.
+            // BlackRoom was already activated and teleport already happened in HandleHeadsetRemoved
+            // while the headset was off, so the scene transition is invisible to the respondent.
             if (_removeHeadsetUI != null)
                 _removeHeadsetUI.SetActive(false);
 
-            // Black room provides a dark, stimulus-free environment for baseline measurement,
-            // distinct from the neutral white used between combinations.
-            if (_blackRoom != null)
-                _blackRoom.SetActive(true);
-
             SetSkybox(_neutralSkyboxMaterial);
-            TeleportTo(_baselineSpawnPoint);
             _activeTimer = StartCoroutine(RunTimer(BaselineDurationSeconds, () =>
             {
                 TransitionTo(SessionPhase.HouseExploration);
@@ -265,6 +292,10 @@ namespace VRHomeArch.DataCollection
             if (_houseInstance != null)
                 _houseInstance.SetActive(true);
 
+            // Respondent needs to walk freely inside the house
+            if (_moveProvider != null)
+                _moveProvider.SetActive(true);
+
             ApplyCombinationToHouse(_activeRespondent.combinationId);
             SetSkybox(_defaultSkyboxMaterial);
             TeleportTo(_houseSpawnPoint);
@@ -283,6 +314,10 @@ namespace VRHomeArch.DataCollection
             // before the neutral timer has run. It will be re-activated in OnEnterHouseExploration.
             if (_houseInstance != null)
                 _houseInstance.SetActive(false);
+
+            // Disable locomotion — respondent is not supposed to walk during standby
+            if (_moveProvider != null)
+                _moveProvider.SetActive(false);
 
             // Prompt respondent to remove the headset to fill the per-combination questionnaire
             if (_removeHeadsetUI != null)
@@ -497,6 +532,9 @@ namespace VRHomeArch.DataCollection
                 return;
             }
 
+            // Direct position assignment works correctly for standing VR experiences
+            // where the rig origin represents the player's floor-level position.
+            // _xrRigRoot must be assigned to XR Origin (XR Rig), not XR Interaction Setup.
             _xrRigRoot.position = target.position;
             _xrRigRoot.rotation = target.rotation;
         }
