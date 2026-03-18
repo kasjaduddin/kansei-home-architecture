@@ -47,7 +47,8 @@ public class MaterialApplicator : MonoBehaviour
             string n = r.gameObject.name.ToLower();
 
             // Bathroom surfaces and exterior wall are fixed - excluded from combination apply
-            if (n.EndsWith("_bathroom") || n == "wall_outside")
+            // WallTile is a decorative tile surface (e.g. kitchen backsplash) - excluded separately
+            if (n.EndsWith("_bathroom") || n == "wall_outside" || n.StartsWith("walltile"))
                 continue;
 
             if (n.StartsWith("floor_"))
