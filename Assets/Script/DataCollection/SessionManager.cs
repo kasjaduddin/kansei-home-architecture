@@ -182,6 +182,19 @@ namespace VRHomeArch.DataCollection
                               "scene swapped to black room, awaiting headset put-on to start baseline timer");
                     break;
 
+                case SessionPhase.Standby:
+                    // Headset is off — safe window to deactivate the house invisibly.
+                    // The respondent will not see the house disappear when they put
+                    // the headset back on for the neutral phase.
+                    if (_houseInstance != null)
+                        _houseInstance.SetActive(false);
+
+                    TeleportTo(_neutralSpawnPoint);
+
+                    Debug.Log("[SessionManager] Headset removed in STANDBY — " +
+                              "house deactivated, awaiting headset put-on to start neutral timer");
+                    break;
+
                 case SessionPhase.HouseExploration:
                     // The 2-min timer should end and POST before the respondent removes the headset.
                     // This is a safeguard for unexpected early removal.
@@ -310,12 +323,11 @@ namespace VRHomeArch.DataCollection
         {
             Debug.Log("[SessionManager] Phase: STANDBY — respondent filling questionnaire, awaiting headset put-on");
 
-            // Hide the house so the respondent does not see it when they put the headset back on
-            // before the neutral timer has run. It will be re-activated in OnEnterHouseExploration.
-            if (_houseInstance != null)
-                _houseInstance.SetActive(false);
+            // House stays visible so the respondent sees it while the UI prompt is shown.
+            // It will be deactivated in HandleHeadsetRemoved while the headset is off,
+            // so the scene swap is invisible when they put it back on.
 
-            // Disable locomotion — respondent is not supposed to walk during standby
+            // Disable locomotion — respondent should not walk while prompt is shown
             if (_moveProvider != null)
                 _moveProvider.SetActive(false);
 

@@ -7015,34 +7015,31 @@ MonoBehaviour:
   - {fileID: 7923504762791079043}
   - {fileID: 1487763039903646203}
   - {fileID: 1402457977896284511}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 59137080665647663}
+  - {fileID: 7096340740687303303}
+  - {fileID: 7444852599824389310}
+  - {fileID: 8670140180656699234}
+  - {fileID: 1913769801647613904}
+  - {fileID: 3653818993603392865}
+  - {fileID: 5604893339067916780}
+  - {fileID: 7686661586673412287}
+  - {fileID: 608289469325277197}
+  - {fileID: 2326951940281543356}
+  - {fileID: 6860833508038131249}
+  - {fileID: 8827026892228929458}
+  - {fileID: 1775108474625160960}
+  - {fileID: 3501999209828853169}
+  - {fileID: 5757276485062406460}
+  - {fileID: 51713149442839076}
+  - {fileID: 7091530203191607958}
+  - {fileID: 5355280643182678055}
+  - {fileID: 3831906396454732970}
+  - {fileID: 3053731651943626939}
+  - {fileID: 5862144929001129512}
+  - {fileID: 1456116911464787889}
+  - {fileID: 8862170551881836659}
+  - {fileID: 4581126696810070506}
+  - {fileID: 7812697848800941838}
   _ceilingRenderers:
   - {fileID: 3183570230323114067}
   - {fileID: 5700922765264305187}
@@ -7266,6 +7263,12 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7b4a6f8fec977a647a3070bde797d69b, type: 3}
+--- !u!23 &3053731651943626939 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 2842645613891569857, guid: 7b4a6f8fec977a647a3070bde797d69b,
+    type: 3}
+  m_PrefabInstance: {fileID: 941837115860398202}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &8218691339977127528 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 9159402344231290386, guid: 7b4a6f8fec977a647a3070bde797d69b,
@@ -7280,10 +7283,70 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 4686987157906862212}
     m_Modifications:
+    - target: {fileID: 433202525358697359, guid: 2798782009255544bad7467179e80890,
+        type: 3}
+      propertyPath: m_Name
+      value: Wall_Bedroom_1
+      objectReference: {fileID: 0}
+    - target: {fileID: 433202525358697359, guid: 2798782009255544bad7467179e80890,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1068741925706120190, guid: 2798782009255544bad7467179e80890,
         type: 3}
       propertyPath: m_Name
       value: WindowPrefab
+      objectReference: {fileID: 0}
+    - target: {fileID: 1477018751994157707, guid: 2798782009255544bad7467179e80890,
+        type: 3}
+      propertyPath: m_Name
+      value: Wall_Outside
+      objectReference: {fileID: 0}
+    - target: {fileID: 2208087028590360580, guid: 2798782009255544bad7467179e80890,
+        type: 3}
+      propertyPath: m_Name
+      value: Wall_Outside
+      objectReference: {fileID: 0}
+    - target: {fileID: 4885082817191611159, guid: 2798782009255544bad7467179e80890,
+        type: 3}
+      propertyPath: m_Name
+      value: Wall_Bedroom_1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4885082817191611159, guid: 2798782009255544bad7467179e80890,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6580565670671728838, guid: 2798782009255544bad7467179e80890,
+        type: 3}
+      propertyPath: m_Name
+      value: Wall_Bedroom_1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6580565670671728838, guid: 2798782009255544bad7467179e80890,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7008754688983735052, guid: 2798782009255544bad7467179e80890,
+        type: 3}
+      propertyPath: m_Name
+      value: Wall_Outside
+      objectReference: {fileID: 0}
+    - target: {fileID: 7788335225112589089, guid: 2798782009255544bad7467179e80890,
+        type: 3}
+      propertyPath: m_Name
+      value: Wall_Outside
+      objectReference: {fileID: 0}
+    - target: {fileID: 8297657917989534166, guid: 2798782009255544bad7467179e80890,
+        type: 3}
+      propertyPath: m_Name
+      value: Wall_Bedroom_1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8297657917989534166, guid: 2798782009255544bad7467179e80890,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9210669555578183290, guid: 2798782009255544bad7467179e80890,
         type: 3}
@@ -7340,6 +7403,30 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2798782009255544bad7467179e80890, type: 3}
+--- !u!23 &608289469325277197 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 466319509652890618, guid: 2798782009255544bad7467179e80890,
+    type: 3}
+  m_PrefabInstance: {fileID: 1011523292425591799}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &2326951940281543356 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 3333606440566567243, guid: 2798782009255544bad7467179e80890,
+    type: 3}
+  m_PrefabInstance: {fileID: 1011523292425591799}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &6860833508038131249 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 5854455947815691718, guid: 2798782009255544bad7467179e80890,
+    type: 3}
+  m_PrefabInstance: {fileID: 1011523292425591799}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &7686661586673412287 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 7252245587070858056, guid: 2798782009255544bad7467179e80890,
+    type: 3}
+  m_PrefabInstance: {fileID: 1011523292425591799}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &8204283337304540557 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 9210669555578183290, guid: 2798782009255544bad7467179e80890,
@@ -7464,6 +7551,12 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7b4a6f8fec977a647a3070bde797d69b, type: 3}
+--- !u!23 &7812697848800941838 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 7069723716260733272, guid: 7b4a6f8fec977a647a3070bde797d69b,
+    type: 3}
+  m_PrefabInstance: {fileID: 1040598761834624598}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &8172987588430557252 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 9159402344231290386, guid: 7b4a6f8fec977a647a3070bde797d69b,
@@ -7731,9 +7824,21 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7b4a6f8fec977a647a3070bde797d69b, type: 3}
+--- !u!23 &4581126696810070506 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 2842645613891569857, guid: 7b4a6f8fec977a647a3070bde797d69b,
+    type: 3}
+  m_PrefabInstance: {fileID: 1792561752172923179}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &7493090988361076537 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 9159402344231290386, guid: 7b4a6f8fec977a647a3070bde797d69b,
+    type: 3}
+  m_PrefabInstance: {fileID: 1792561752172923179}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &8862170551881836659 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 7069723716260733272, guid: 7b4a6f8fec977a647a3070bde797d69b,
     type: 3}
   m_PrefabInstance: {fileID: 1792561752172923179}
   m_PrefabAsset: {fileID: 0}
@@ -7849,10 +7954,90 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 4686987157906862212}
     m_Modifications:
+    - target: {fileID: 433202525358697359, guid: 2798782009255544bad7467179e80890,
+        type: 3}
+      propertyPath: m_Name
+      value: Wall_LivingRoom
+      objectReference: {fileID: 0}
+    - target: {fileID: 433202525358697359, guid: 2798782009255544bad7467179e80890,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1068741925706120190, guid: 2798782009255544bad7467179e80890,
         type: 3}
       propertyPath: m_Name
       value: WindowPrefab
+      objectReference: {fileID: 0}
+    - target: {fileID: 1477018751994157707, guid: 2798782009255544bad7467179e80890,
+        type: 3}
+      propertyPath: m_Name
+      value: Wall_Outside
+      objectReference: {fileID: 0}
+    - target: {fileID: 1477018751994157707, guid: 2798782009255544bad7467179e80890,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2208087028590360580, guid: 2798782009255544bad7467179e80890,
+        type: 3}
+      propertyPath: m_Name
+      value: Wall_Outside
+      objectReference: {fileID: 0}
+    - target: {fileID: 2208087028590360580, guid: 2798782009255544bad7467179e80890,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4885082817191611159, guid: 2798782009255544bad7467179e80890,
+        type: 3}
+      propertyPath: m_Name
+      value: Wall_LivingRoom
+      objectReference: {fileID: 0}
+    - target: {fileID: 4885082817191611159, guid: 2798782009255544bad7467179e80890,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6580565670671728838, guid: 2798782009255544bad7467179e80890,
+        type: 3}
+      propertyPath: m_Name
+      value: Wall_LivingRoom
+      objectReference: {fileID: 0}
+    - target: {fileID: 6580565670671728838, guid: 2798782009255544bad7467179e80890,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7008754688983735052, guid: 2798782009255544bad7467179e80890,
+        type: 3}
+      propertyPath: m_Name
+      value: Wall_Outside
+      objectReference: {fileID: 0}
+    - target: {fileID: 7008754688983735052, guid: 2798782009255544bad7467179e80890,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7788335225112589089, guid: 2798782009255544bad7467179e80890,
+        type: 3}
+      propertyPath: m_Name
+      value: Wall_Outside
+      objectReference: {fileID: 0}
+    - target: {fileID: 7788335225112589089, guid: 2798782009255544bad7467179e80890,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8297657917989534166, guid: 2798782009255544bad7467179e80890,
+        type: 3}
+      propertyPath: m_Name
+      value: Wall_LivingRoom
+      objectReference: {fileID: 0}
+    - target: {fileID: 8297657917989534166, guid: 2798782009255544bad7467179e80890,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9210669555578183290, guid: 2798782009255544bad7467179e80890,
         type: 3}
@@ -7909,9 +8094,33 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2798782009255544bad7467179e80890, type: 3}
+--- !u!23 &1913769801647613904 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 466319509652890618, guid: 2798782009255544bad7467179e80890,
+    type: 3}
+  m_PrefabInstance: {fileID: 2087313291547411498}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &3653818993603392865 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 3333606440566567243, guid: 2798782009255544bad7467179e80890,
+    type: 3}
+  m_PrefabInstance: {fileID: 2087313291547411498}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &5604893339067916780 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 5854455947815691718, guid: 2798782009255544bad7467179e80890,
+    type: 3}
+  m_PrefabInstance: {fileID: 2087313291547411498}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &7144256332015376976 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 9210669555578183290, guid: 2798782009255544bad7467179e80890,
+    type: 3}
+  m_PrefabInstance: {fileID: 2087313291547411498}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &8670140180656699234 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 7252245587070858056, guid: 2798782009255544bad7467179e80890,
     type: 3}
   m_PrefabInstance: {fileID: 2087313291547411498}
   m_PrefabAsset: {fileID: 0}
@@ -7923,10 +8132,90 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 4686987157906862212}
     m_Modifications:
+    - target: {fileID: 433202525358697359, guid: 2798782009255544bad7467179e80890,
+        type: 3}
+      propertyPath: m_Name
+      value: Wall_LivingRoom
+      objectReference: {fileID: 0}
+    - target: {fileID: 433202525358697359, guid: 2798782009255544bad7467179e80890,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1068741925706120190, guid: 2798782009255544bad7467179e80890,
         type: 3}
       propertyPath: m_Name
       value: WindowPrefab
+      objectReference: {fileID: 0}
+    - target: {fileID: 1477018751994157707, guid: 2798782009255544bad7467179e80890,
+        type: 3}
+      propertyPath: m_Name
+      value: Wall_Outside
+      objectReference: {fileID: 0}
+    - target: {fileID: 1477018751994157707, guid: 2798782009255544bad7467179e80890,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2208087028590360580, guid: 2798782009255544bad7467179e80890,
+        type: 3}
+      propertyPath: m_Name
+      value: Wall_Outside
+      objectReference: {fileID: 0}
+    - target: {fileID: 2208087028590360580, guid: 2798782009255544bad7467179e80890,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4885082817191611159, guid: 2798782009255544bad7467179e80890,
+        type: 3}
+      propertyPath: m_Name
+      value: Wall_LivingRoom
+      objectReference: {fileID: 0}
+    - target: {fileID: 4885082817191611159, guid: 2798782009255544bad7467179e80890,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6580565670671728838, guid: 2798782009255544bad7467179e80890,
+        type: 3}
+      propertyPath: m_Name
+      value: Wall_LivingRoom
+      objectReference: {fileID: 0}
+    - target: {fileID: 6580565670671728838, guid: 2798782009255544bad7467179e80890,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7008754688983735052, guid: 2798782009255544bad7467179e80890,
+        type: 3}
+      propertyPath: m_Name
+      value: Wall_Outside
+      objectReference: {fileID: 0}
+    - target: {fileID: 7008754688983735052, guid: 2798782009255544bad7467179e80890,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7788335225112589089, guid: 2798782009255544bad7467179e80890,
+        type: 3}
+      propertyPath: m_Name
+      value: Wall_Outside
+      objectReference: {fileID: 0}
+    - target: {fileID: 7788335225112589089, guid: 2798782009255544bad7467179e80890,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8297657917989534166, guid: 2798782009255544bad7467179e80890,
+        type: 3}
+      propertyPath: m_Name
+      value: Wall_LivingRoom
+      objectReference: {fileID: 0}
+    - target: {fileID: 8297657917989534166, guid: 2798782009255544bad7467179e80890,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9210669555578183290, guid: 2798782009255544bad7467179e80890,
         type: 3}
@@ -7983,9 +8272,33 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2798782009255544bad7467179e80890, type: 3}
+--- !u!23 &1775108474625160960 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 466319509652890618, guid: 2798782009255544bad7467179e80890,
+    type: 3}
+  m_PrefabInstance: {fileID: 2223301430731642106}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &3501999209828853169 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 3333606440566567243, guid: 2798782009255544bad7467179e80890,
+    type: 3}
+  m_PrefabInstance: {fileID: 2223301430731642106}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &5757276485062406460 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 5854455947815691718, guid: 2798782009255544bad7467179e80890,
+    type: 3}
+  m_PrefabInstance: {fileID: 2223301430731642106}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &6991873563936328320 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 9210669555578183290, guid: 2798782009255544bad7467179e80890,
+    type: 3}
+  m_PrefabInstance: {fileID: 2223301430731642106}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &8827026892228929458 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 7252245587070858056, guid: 2798782009255544bad7467179e80890,
     type: 3}
   m_PrefabInstance: {fileID: 2223301430731642106}
   m_PrefabAsset: {fileID: 0}
@@ -8191,9 +8504,21 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7b4a6f8fec977a647a3070bde797d69b, type: 3}
+--- !u!23 &1456116911464787889 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 2842645613891569857, guid: 7b4a6f8fec977a647a3070bde797d69b,
+    type: 3}
+  m_PrefabInstance: {fileID: 3694694980013025136}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &5501862061313958242 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 9159402344231290386, guid: 7b4a6f8fec977a647a3070bde797d69b,
+    type: 3}
+  m_PrefabInstance: {fileID: 3694694980013025136}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &5862144929001129512 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 7069723716260733272, guid: 7b4a6f8fec977a647a3070bde797d69b,
     type: 3}
   m_PrefabInstance: {fileID: 3694694980013025136}
   m_PrefabAsset: {fileID: 0}
@@ -8589,6 +8914,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 4686987157906862212}
     m_Modifications:
+    - target: {fileID: 433202525358697359, guid: 2798782009255544bad7467179e80890,
+        type: 3}
+      propertyPath: m_Name
+      value: Wall_Bedroom_0
+      objectReference: {fileID: 0}
     - target: {fileID: 919498184810322735, guid: 2798782009255544bad7467179e80890,
         type: 3}
       propertyPath: m_IsActive
@@ -8598,6 +8928,46 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: WindowPrefab
+      objectReference: {fileID: 0}
+    - target: {fileID: 1477018751994157707, guid: 2798782009255544bad7467179e80890,
+        type: 3}
+      propertyPath: m_Name
+      value: Wall_Outside
+      objectReference: {fileID: 0}
+    - target: {fileID: 2208087028590360580, guid: 2798782009255544bad7467179e80890,
+        type: 3}
+      propertyPath: m_Name
+      value: Wall_Outside
+      objectReference: {fileID: 0}
+    - target: {fileID: 4885082817191611159, guid: 2798782009255544bad7467179e80890,
+        type: 3}
+      propertyPath: m_Name
+      value: Wall_Bedroom_0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4885082817191611159, guid: 2798782009255544bad7467179e80890,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6580565670671728838, guid: 2798782009255544bad7467179e80890,
+        type: 3}
+      propertyPath: m_Name
+      value: Wall_Bedroom_0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7008754688983735052, guid: 2798782009255544bad7467179e80890,
+        type: 3}
+      propertyPath: m_Name
+      value: Wall_Outside
+      objectReference: {fileID: 0}
+    - target: {fileID: 7788335225112589089, guid: 2798782009255544bad7467179e80890,
+        type: 3}
+      propertyPath: m_Name
+      value: Wall_Outside
+      objectReference: {fileID: 0}
+    - target: {fileID: 8297657917989534166, guid: 2798782009255544bad7467179e80890,
+        type: 3}
+      propertyPath: m_Name
+      value: Wall_Bedroom_0
       objectReference: {fileID: 0}
     - target: {fileID: 8330082916736714686, guid: 2798782009255544bad7467179e80890,
         type: 3}
@@ -8659,9 +9029,33 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2798782009255544bad7467179e80890, type: 3}
+--- !u!23 &51713149442839076 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 7252245587070858056, guid: 2798782009255544bad7467179e80890,
+    type: 3}
+  m_PrefabInstance: {fileID: 7210999925981667692}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1999669785423478550 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 9210669555578183290, guid: 2798782009255544bad7467179e80890,
+    type: 3}
+  m_PrefabInstance: {fileID: 7210999925981667692}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &3831906396454732970 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 5854455947815691718, guid: 2798782009255544bad7467179e80890,
+    type: 3}
+  m_PrefabInstance: {fileID: 7210999925981667692}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &5355280643182678055 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 3333606440566567243, guid: 2798782009255544bad7467179e80890,
+    type: 3}
+  m_PrefabInstance: {fileID: 7210999925981667692}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &7091530203191607958 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 466319509652890618, guid: 2798782009255544bad7467179e80890,
     type: 3}
   m_PrefabInstance: {fileID: 7210999925981667692}
   m_PrefabAsset: {fileID: 0}

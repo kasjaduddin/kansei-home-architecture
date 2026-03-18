@@ -1273,7 +1273,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6049565033087431666}
   - component: {fileID: 418460889913737366}
-  - component: {fileID: 3244970780803420234}
+  - component: {fileID: 360290619988920504}
   m_Layer: 0
   m_Name: HomeDesignType36_1
   m_TagString: Untagged
@@ -1436,7 +1436,7 @@ MonoBehaviour:
     roomPosition: {fileID: 1958701504872903610}
   initialPosition: {fileID: 7653190855614610114}
   previewSprite: {fileID: 21300000, guid: 72861965af4a6a84b909e470d0062a5b, type: 3}
---- !u!114 &3244970780803420234
+--- !u!114 &360290619988920504
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1483,17 +1483,16 @@ MonoBehaviour:
   - {fileID: 4114059506490545766}
   - {fileID: 7757701797715317569}
   - {fileID: 3370746350735948504}
-  - {fileID: 1261246906347657618}
   - {fileID: 6120240426128371723}
   - {fileID: 4644673360888992101}
   - {fileID: 5130850987477576286}
   - {fileID: 2731965584687332076}
   - {fileID: 995874149328758877}
   - {fileID: 8263651821431209168}
-  - {fileID: 2765504225331098530}
-  - {fileID: 2592199508157957073}
-  - {fileID: 6793386953881270896}
-  - {fileID: 333820917949289180}
+  - {fileID: 8710676362440150218}
+  - {fileID: 1891265485468753016}
+  - {fileID: 3604275578734055113}
+  - {fileID: 5582379161510058564}
   - {fileID: 1497390870200051588}
   - {fileID: 8510212166876313398}
   - {fileID: 6782898891974239623}
@@ -1502,7 +1501,6 @@ MonoBehaviour:
   - {fileID: 6996211316348696815}
   - {fileID: 5272698550375246430}
   - {fileID: 3913644203426709203}
-  - {fileID: 8459503851229770405}
   _ceilingRenderers:
   - {fileID: 9142500046835408989}
   - {fileID: 422827018566313602}
@@ -3624,7 +3622,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 7b7599b423c10994995803e4bc37a2f6, type: 2}
+  - {fileID: 2100000, guid: eca1e92b0596ab04db03c368021e888a, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -4652,7 +4650,7 @@ GameObject:
   - component: {fileID: 8014496272585921033}
   - component: {fileID: 4536245850595327348}
   m_Layer: 6
-  m_Name: HorizontalWall (6)
+  m_Name: Wall_LivingRoom
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5292,7 +5290,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 7b7599b423c10994995803e4bc37a2f6, type: 2}
+  - {fileID: 2100000, guid: eca1e92b0596ab04db03c368021e888a, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -7846,7 +7844,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 7b7599b423c10994995803e4bc37a2f6, type: 2}
+  - {fileID: 2100000, guid: eca1e92b0596ab04db03c368021e888a, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -8664,7 +8662,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 7b7599b423c10994995803e4bc37a2f6, type: 2}
+  - {fileID: 2100000, guid: eca1e92b0596ab04db03c368021e888a, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -13045,10 +13043,15 @@ PrefabInstance:
       propertyPath: m_Name
       value: Kitchenset
       objectReference: {fileID: 0}
+    - target: {fileID: 5822499969274509932, guid: f27562b71ff23e2449ff4291ee965a2e,
+        type: 3}
+      propertyPath: m_Name
+      value: WallTile
+      objectReference: {fileID: 0}
     - target: {fileID: 8290252546983262887, guid: f27562b71ff23e2449ff4291ee965a2e,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 2.26
+      value: 2.255
       objectReference: {fileID: 0}
     - target: {fileID: 8290252546983262887, guid: f27562b71ff23e2449ff4291ee965a2e,
         type: 3}
@@ -13058,7 +13061,7 @@ PrefabInstance:
     - target: {fileID: 8290252546983262887, guid: f27562b71ff23e2449ff4291ee965a2e,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 1.855
+      value: 1.86
       objectReference: {fileID: 0}
     - target: {fileID: 8290252546983262887, guid: f27562b71ff23e2449ff4291ee965a2e,
         type: 3}
@@ -13100,12 +13103,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f27562b71ff23e2449ff4291ee965a2e, type: 3}
---- !u!23 &8459503851229770405 stripped
-MeshRenderer:
-  m_CorrespondingSourceObject: {fileID: 8897128547486147927, guid: f27562b71ff23e2449ff4291ee965a2e,
-    type: 3}
-  m_PrefabInstance: {fileID: 1017464596090279922}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &9012308051168439637 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8290252546983262887, guid: f27562b71ff23e2449ff4291ee965a2e,
@@ -13301,7 +13298,17 @@ PrefabInstance:
     - target: {fileID: 433202525358697359, guid: 2798782009255544bad7467179e80890,
         type: 3}
       propertyPath: m_Name
-      value: Wall_Outside
+      value: Wall_Bedroom_1
+      objectReference: {fileID: 0}
+    - target: {fileID: 433202525358697359, guid: 2798782009255544bad7467179e80890,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 919498184810322735, guid: 2798782009255544bad7467179e80890,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1068741925706120190, guid: 2798782009255544bad7467179e80890,
         type: 3}
@@ -13311,7 +13318,7 @@ PrefabInstance:
     - target: {fileID: 1477018751994157707, guid: 2798782009255544bad7467179e80890,
         type: 3}
       propertyPath: m_Name
-      value: Wall_Bedroom_0
+      value: Wall_Outside
       objectReference: {fileID: 0}
     - target: {fileID: 1477018751994157707, guid: 2798782009255544bad7467179e80890,
         type: 3}
@@ -13321,7 +13328,7 @@ PrefabInstance:
     - target: {fileID: 2208087028590360580, guid: 2798782009255544bad7467179e80890,
         type: 3}
       propertyPath: m_Name
-      value: Wall_Bedroom_0
+      value: Wall_Outside
       objectReference: {fileID: 0}
     - target: {fileID: 2208087028590360580, guid: 2798782009255544bad7467179e80890,
         type: 3}
@@ -13331,17 +13338,27 @@ PrefabInstance:
     - target: {fileID: 4885082817191611159, guid: 2798782009255544bad7467179e80890,
         type: 3}
       propertyPath: m_Name
-      value: Wall_Outside
+      value: Wall_Bedroom_1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4885082817191611159, guid: 2798782009255544bad7467179e80890,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6580565670671728838, guid: 2798782009255544bad7467179e80890,
         type: 3}
       propertyPath: m_Name
-      value: Wall_Outside
+      value: Wall_Bedroom_1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6580565670671728838, guid: 2798782009255544bad7467179e80890,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7008754688983735052, guid: 2798782009255544bad7467179e80890,
         type: 3}
       propertyPath: m_Name
-      value: Wall_Bedroom_0
+      value: Wall_Outside
       objectReference: {fileID: 0}
     - target: {fileID: 7008754688983735052, guid: 2798782009255544bad7467179e80890,
         type: 3}
@@ -13351,7 +13368,7 @@ PrefabInstance:
     - target: {fileID: 7788335225112589089, guid: 2798782009255544bad7467179e80890,
         type: 3}
       propertyPath: m_Name
-      value: Wall_Bedroom_0
+      value: Wall_Outside
       objectReference: {fileID: 0}
     - target: {fileID: 7788335225112589089, guid: 2798782009255544bad7467179e80890,
         type: 3}
@@ -13361,7 +13378,17 @@ PrefabInstance:
     - target: {fileID: 8297657917989534166, guid: 2798782009255544bad7467179e80890,
         type: 3}
       propertyPath: m_Name
-      value: Wall_Outside
+      value: Wall_Bedroom_1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8297657917989534166, guid: 2798782009255544bad7467179e80890,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8330082916736714686, guid: 2798782009255544bad7467179e80890,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9210669555578183290, guid: 2798782009255544bad7467179e80890,
         type: 3}
@@ -13418,39 +13445,39 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2798782009255544bad7467179e80890, type: 3}
---- !u!23 &333820917949289180 stripped
-MeshRenderer:
-  m_CorrespondingSourceObject: {fileID: 1794214637535096158, guid: 2798782009255544bad7467179e80890,
-    type: 3}
-  m_PrefabInstance: {fileID: 2037787502561181570}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1338488219572110460 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1068741925706120190, guid: 2798782009255544bad7467179e80890,
     type: 3}
   m_PrefabInstance: {fileID: 2037787502561181570}
   m_PrefabAsset: {fileID: 0}
---- !u!23 &2592199508157957073 stripped
+--- !u!23 &1891265485468753016 stripped
 MeshRenderer:
-  m_CorrespondingSourceObject: {fileID: 4593385026134031443, guid: 2798782009255544bad7467179e80890,
+  m_CorrespondingSourceObject: {fileID: 466319509652890618, guid: 2798782009255544bad7467179e80890,
     type: 3}
   m_PrefabInstance: {fileID: 2037787502561181570}
   m_PrefabAsset: {fileID: 0}
---- !u!23 &2765504225331098530 stripped
+--- !u!23 &3604275578734055113 stripped
 MeshRenderer:
-  m_CorrespondingSourceObject: {fileID: 4190220805030808608, guid: 2798782009255544bad7467179e80890,
+  m_CorrespondingSourceObject: {fileID: 3333606440566567243, guid: 2798782009255544bad7467179e80890,
     type: 3}
   m_PrefabInstance: {fileID: 2037787502561181570}
   m_PrefabAsset: {fileID: 0}
---- !u!23 &6793386953881270896 stripped
+--- !u!23 &5582379161510058564 stripped
 MeshRenderer:
-  m_CorrespondingSourceObject: {fileID: 4756181220214048242, guid: 2798782009255544bad7467179e80890,
+  m_CorrespondingSourceObject: {fileID: 5854455947815691718, guid: 2798782009255544bad7467179e80890,
     type: 3}
   m_PrefabInstance: {fileID: 2037787502561181570}
   m_PrefabAsset: {fileID: 0}
 --- !u!4 &7175768878786388472 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 9210669555578183290, guid: 2798782009255544bad7467179e80890,
+    type: 3}
+  m_PrefabInstance: {fileID: 2037787502561181570}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &8710676362440150218 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 7252245587070858056, guid: 2798782009255544bad7467179e80890,
     type: 3}
   m_PrefabInstance: {fileID: 2037787502561181570}
   m_PrefabAsset: {fileID: 0}
@@ -14641,6 +14668,16 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 5223721082864321155}
     m_Modifications:
+    - target: {fileID: 734740444509678728, guid: 7b4a6f8fec977a647a3070bde797d69b,
+        type: 3}
+      propertyPath: m_Name
+      value: Wall_Bathroom
+      objectReference: {fileID: 0}
+    - target: {fileID: 734740444509678728, guid: 7b4a6f8fec977a647a3070bde797d69b,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2054228620772484311, guid: 7b4a6f8fec977a647a3070bde797d69b,
         type: 3}
       propertyPath: m_Name
@@ -14660,6 +14697,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalScale.x
       value: 0.08
+      objectReference: {fileID: 0}
+    - target: {fileID: 7069723716260733272, guid: 7b4a6f8fec977a647a3070bde797d69b,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: eca1e92b0596ab04db03c368021e888a, type: 2}
+    - target: {fileID: 8466318142475923816, guid: 7b4a6f8fec977a647a3070bde797d69b,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9159402344231290386, guid: 7b4a6f8fec977a647a3070bde797d69b,
         type: 3}
@@ -14719,12 +14766,6 @@ PrefabInstance:
 --- !u!4 &900956067201089240 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 9159402344231290386, guid: 7b4a6f8fec977a647a3070bde797d69b,
-    type: 3}
-  m_PrefabInstance: {fileID: 8330653404817373386}
-  m_PrefabAsset: {fileID: 0}
---- !u!23 &1261246906347657618 stripped
-MeshRenderer:
-  m_CorrespondingSourceObject: {fileID: 7069723716260733272, guid: 7b4a6f8fec977a647a3070bde797d69b,
     type: 3}
   m_PrefabInstance: {fileID: 8330653404817373386}
   m_PrefabAsset: {fileID: 0}
