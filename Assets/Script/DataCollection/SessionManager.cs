@@ -70,13 +70,19 @@ namespace VRHomeArch.DataCollection
         [Header("Scene Objects")]
         [SerializeField] private GameObject _trainingArea;
         [SerializeField] private GameObject _removeHeadsetUI;
-        // Black room geometry is only active during Baseline — kept inactive the rest of the session
+        // Gray room geometry is only active during Baseline — kept inactive the rest of the session
         // to avoid visual overlap with the house or training area.
-        [SerializeField] private GameObject _blackRoom;
+        [SerializeField] private GameObject _grayRoom;
         // The Move GameObject under XR Origin (XR Rig)/Locomotion System/Move.
         // Disabled during WaitingForBaseline so the respondent cannot walk while the UI is shown.
         // Re-enabled when HouseExploration begins.
         [SerializeField] private GameObject _moveProvider;
+        // Controller visuals — hidden during Baseline and Neutral so the respondent
+        // is not distracted by controller models in stimulus-free phases.
+        // Assign: XR Origin (XR Rig)/Camera Offset/Left Controller/XR Controller Left (Clone)
+        [SerializeField] private GameObject _leftController;
+        // Assign: XR Origin (XR Rig)/Camera Offset/Right Controller/XR Controller Right (Clone)
+        [SerializeField] private GameObject _rightController;
 
         // -- Runtime state
         private SessionPhase _phase = SessionPhase.Idle;
@@ -166,10 +172,10 @@ namespace VRHomeArch.DataCollection
             {
                 case SessionPhase.WaitingForBaseline:
                     // Headset is off — safe window to swap scene state invisibly.
-                    // Activate black room and deactivate training area before the respondent
+                    // Activate gray room and deactivate training area before the respondent
                     // puts the headset back on so the transition is seamless.
-                    if (_blackRoom != null)
-                        _blackRoom.SetActive(true);
+                    if (_grayRoom != null)
+                        _grayRoom.SetActive(true);
 
                     if (_trainingArea != null)
                         _trainingArea.SetActive(false);
@@ -276,15 +282,20 @@ namespace VRHomeArch.DataCollection
             Debug.Log($"[SessionManager] Phase: BASELINE — fixed {BaselineDurationSeconds}s timer started");
 
             // Respondent has put the headset back on — dismiss the removal prompt.
-            // BlackRoom was already activated and teleport already happened in HandleHeadsetRemoved
+            // GrayRoom was already activated and teleport already happened in HandleHeadsetRemoved
             // while the headset was off, so the scene transition is invisible to the respondent.
             if (_removeHeadsetUI != null)
                 _removeHeadsetUI.SetActive(false);
 
+            // Hide controller visuals — no interaction needed during baseline measurement
+            SetControllersActive(false);
+
             SetSkybox(_neutralSkyboxMaterial);
             _activeTimer = StartCoroutine(RunTimer(BaselineDurationSeconds, () =>
             {
-                TransitionTo(SessionPhase.HouseExploration);
+                // Baseline ends with a neutral phase to clear residual stimulus
+                // before the first combination is shown, consistent with inter-combination flow.
+                TransitionTo(SessionPhase.Neutral);
             }));
         }
 
@@ -296,9 +307,9 @@ namespace VRHomeArch.DataCollection
                 return;
             }
 
-            // Black room is only needed during Baseline — dismiss it before showing the house.
-            if (_blackRoom != null)
-                _blackRoom.SetActive(false);
+            // Gray room is only needed during Baseline — dismiss it before showing the house.
+            if (_grayRoom != null)
+                _grayRoom.SetActive(false);
 
             // House instance is instantiated inactive during IDLE so it does not appear
             // before the session starts. Activate it now that the respondent is ready.
@@ -308,6 +319,9 @@ namespace VRHomeArch.DataCollection
             // Respondent needs to walk freely inside the house
             if (_moveProvider != null)
                 _moveProvider.SetActive(true);
+
+            // Restore controller visuals now that the respondent is inside the house
+            SetControllersActive(true);
 
             ApplyCombinationToHouse(_activeRespondent.combinationId);
             SetSkybox(_defaultSkyboxMaterial);
@@ -345,6 +359,14 @@ namespace VRHomeArch.DataCollection
             // Respondent has put the headset back on — dismiss the removal prompt
             if (_removeHeadsetUI != null)
                 _removeHeadsetUI.SetActive(false);
+
+            // Gray room must be deactivated here — when transitioning from Baseline,
+            // it is still active and needs to be cleared before showing the neutral skybox.
+            if (_grayRoom != null)
+                _grayRoom.SetActive(false);
+
+            // Hide controller visuals — no interaction needed during neutral phase
+            SetControllersActive(false);
 
             SetSkybox(_neutralSkyboxMaterial);
             TeleportTo(_neutralSpawnPoint);
@@ -576,6 +598,14 @@ namespace VRHomeArch.DataCollection
         {
             yield return new WaitForSeconds(delay);
             TransitionTo(target);
+        }
+        private void SetControllersActive(bool active)
+        {
+            if (_leftController != null)
+                _leftController.SetActive(active);
+
+            if (_rightController != null)
+                _rightController.SetActive(active);
         }
     }
 
