@@ -64,7 +64,7 @@ namespace VRHomeArch.DataCollection
         // -- Inspector: Scene objects toggled during phase transitions
         [Header("Scene Objects")]
         [SerializeField] private GameObject _trainingArea;
-        [SerializeField] private GameObject _removeHeadsetUI;
+        [SerializeField] private GameObject _removeHeadsetPrompt;
         // Gray room geometry is only active during Baseline — kept inactive the rest of the session
         // to avoid visual overlap with the house or training area.
         [SerializeField] private GameObject _grayRoom;
@@ -266,8 +266,8 @@ namespace VRHomeArch.DataCollection
                 _moveProvider.SetActive(false);
 
             // Prompt respondent to remove the headset so they can fill the pre-study form
-            if (_removeHeadsetUI != null)
-                _removeHeadsetUI.SetActive(true);
+            if (_removeHeadsetPrompt != null)
+                _removeHeadsetPrompt.SetActive(true);
         }
 
         private void OnEnterBaseline()
@@ -277,8 +277,8 @@ namespace VRHomeArch.DataCollection
             // Respondent has put the headset back on — dismiss the removal prompt.
             // GrayRoom was already activated and teleport already happened in HandleHeadsetRemoved
             // while the headset was off, so the scene transition is invisible to the respondent.
-            if (_removeHeadsetUI != null)
-                _removeHeadsetUI.SetActive(false);
+            if (_removeHeadsetPrompt != null)
+                _removeHeadsetPrompt.SetActive(false);
 
             // Hide controller visuals — no interaction needed during baseline measurement
             SetControllersActive(false);
@@ -346,8 +346,8 @@ namespace VRHomeArch.DataCollection
                 _moveProvider.SetActive(false);
 
             // Prompt respondent to remove the headset to fill the per-combination questionnaire
-            if (_removeHeadsetUI != null)
-                _removeHeadsetUI.SetActive(true);
+            if (_removeHeadsetPrompt != null)
+                _removeHeadsetPrompt.SetActive(true);
 
             // No timer — presence sensor drives the next transition
         }
@@ -357,8 +357,8 @@ namespace VRHomeArch.DataCollection
             Debug.Log($"[SessionManager] Phase: NEUTRAL — {NeutralDurationSeconds}s timer started");
 
             // Respondent has put the headset back on — dismiss the removal prompt
-            if (_removeHeadsetUI != null)
-                _removeHeadsetUI.SetActive(false);
+            if (_removeHeadsetPrompt != null)
+                _removeHeadsetPrompt.SetActive(false);
 
             // Gray room must be deactivated here — when transitioning from Baseline,
             // it is still active and needs to be cleared before showing the neutral skybox.
