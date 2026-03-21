@@ -11,23 +11,25 @@ namespace VRHomeArch.DataCollection
     // State flow:
     //   IDLE
     //     -> [server has active respondent] -> TRAINING
-    //   TRAINING
-    //     -> [headset removed] -> WAITING_FOR_BASELINE
-    //   WAITING_FOR_BASELINE
-    //     -> [headset put on] -> BASELINE (3 min fixed timer)
-    //   BASELINE
+    //   TRAINING  (training area visible, default skybox, locomotion on)
+    //     -> [all training steps done + exit trigger] -> WAITING_FOR_BASELINE
+    //   WAITING_FOR_BASELINE  (neutral skybox, no 3D objects, locomotion off, remove-headset UI shown)
+    //     -> [headset removed] : gray room activated, teleport to origin
+    //     -> [headset put on]  -> BASELINE (2 min fixed timer)
+    //   BASELINE  (gray room, neutral skybox, controllers hidden)
+    //     -> [timer ends] -> NEUTRAL
+    //   NEUTRAL  (neutral skybox, no 3D objects, controllers hidden, 30 sec timer)
     //     -> [timer ends] -> HOUSE_EXPLORATION
-    //   HOUSE_EXPLORATION
-    //     -> [2 min timer ends] -> POST combination-done to server
-    //                           -> GET next combination from server
-    //                           -> if all done: SESSION_COMPLETE
-    //                           -> else: STANDBY
-    //   STANDBY  (respondent has removed headset, filling questionnaire)
-    //     -> [headset put on] -> NEUTRAL (30 sec fixed timer)
-    //   NEUTRAL
-    //     -> [timer ends] -> HOUSE_EXPLORATION (next combination)
+    //   HOUSE_EXPLORATION  (house active, default skybox, locomotion on, controllers visible, 2 min timer)
+    //     -> [timer ends] -> POST combination-done to server
+    //                     -> GET next combination from server
+    //                     -> if all done: SESSION_COMPLETE
+    //                     -> else: WAITING_FOR_BREAK
+    //   WAITING_FOR_BREAK  (neutral skybox, no 3D objects, locomotion off, remove-headset UI shown)
+    //     -> [headset removed] : teleport to origin
+    //     -> [headset put on]  -> NEUTRAL
     //   SESSION_COMPLETE
-    //     -> teleport to training area, return to IDLE to await next respondent
+    //     -> teleport to origin, return to IDLE to await next respondent
     public class SessionManager : MonoBehaviour
     {
         // -- Phase durations
@@ -48,13 +50,6 @@ namespace VRHomeArch.DataCollection
         // -- Inspector: All 12 MaterialCombination ScriptableObjects (C01-C12)
         [Header("Material Combinations")]
         [SerializeField] private List<MaterialCombination> _materialCombinations;
-
-        // -- Inspector: Spawn points for each phase area
-        [Header("Spawn Points")]
-        [SerializeField] private Transform _trainingSpawnPoint;
-        [SerializeField] private Transform _baselineSpawnPoint;
-        [SerializeField] private Transform _neutralSpawnPoint;
-        [SerializeField] private Transform _houseSpawnPoint;
 
         // -- Inspector: Skybox materials for neutralization
         [Header("Skybox")]
@@ -160,7 +155,7 @@ namespace VRHomeArch.DataCollection
                     TransitionTo(SessionPhase.Baseline);
                     break;
 
-                case SessionPhase.Standby:
+                case SessionPhase.WaitingForBreak:
                     TransitionTo(SessionPhase.Neutral);
                     break;
             }
@@ -171,34 +166,26 @@ namespace VRHomeArch.DataCollection
             switch (_phase)
             {
                 case SessionPhase.WaitingForBaseline:
-                    // Headset is off — safe window to swap scene state invisibly.
-                    // Activate gray room and deactivate training area before the respondent
-                    // puts the headset back on so the transition is seamless.
+                    // Headset is off — safe window to activate gray room invisibly.
+                    // Training area was already deactivated in OnEnterWaitingForBaseline.
+                    // Teleport happens here so the respondent is already inside the gray room
+                    // when they put the headset back on.
                     if (_grayRoom != null)
                         _grayRoom.SetActive(true);
 
-                    if (_trainingArea != null)
-                        _trainingArea.SetActive(false);
-
-                    // Teleport to baseline spawn point while headset is off so the
-                    // respondent is already inside the black room when they put it back on.
-                    TeleportTo(_baselineSpawnPoint);
+                    TeleportToOrigin();
 
                     Debug.Log("[SessionManager] Headset removed in WAITING_FOR_BASELINE — " +
-                              "scene swapped to black room, awaiting headset put-on to start baseline timer");
+                              "gray room activated, awaiting headset put-on to start baseline timer");
                     break;
 
-                case SessionPhase.Standby:
-                    // Headset is off — safe window to deactivate the house invisibly.
-                    // The respondent will not see the house disappear when they put
-                    // the headset back on for the neutral phase.
-                    if (_houseInstance != null)
-                        _houseInstance.SetActive(false);
+                case SessionPhase.WaitingForBreak:
+                    // House was already deactivated in OnEnterWaitingForBreak. Teleport here while
+                    // the headset is off so the respondent wakes up at the origin position.
+                    TeleportToOrigin();
 
-                    TeleportTo(_neutralSpawnPoint);
-
-                    Debug.Log("[SessionManager] Headset removed in STANDBY — " +
-                              "house deactivated, awaiting headset put-on to start neutral timer");
+                    Debug.Log("[SessionManager] Headset removed in WAITING_FOR_BREAK — " +
+                              "awaiting headset put-on to start neutral timer");
                     break;
 
                 case SessionPhase.HouseExploration:
@@ -226,7 +213,7 @@ namespace VRHomeArch.DataCollection
                 case SessionPhase.WaitingForBaseline: OnEnterWaitingForBaseline(); break;
                 case SessionPhase.Baseline: OnEnterBaseline(); break;
                 case SessionPhase.HouseExploration: OnEnterHouseExploration(); break;
-                case SessionPhase.Standby: OnEnterStandby(); break;
+                case SessionPhase.WaitingForBreak: OnEnterWaitingForBreak(); break;
                 case SessionPhase.Neutral: OnEnterNeutral(); break;
                 case SessionPhase.SessionComplete: OnEnterSessionComplete(); break;
             }
@@ -257,13 +244,22 @@ namespace VRHomeArch.DataCollection
                 _moveProvider.SetActive(true);
 
             SetSkybox(_defaultSkyboxMaterial);
-            TeleportTo(_trainingSpawnPoint);
+            TeleportToOrigin();
         }
 
         private void OnEnterWaitingForBaseline()
         {
-            Debug.Log("[SessionManager] Phase: WAITING_FOR_BASELINE — respondent has exited training area, " +
-                      "waiting for headset removal before baseline begins");
+            Debug.Log("[SessionManager] Phase: WAITING_FOR_BASELINE — training complete, " +
+                      "showing neutral environment and prompting headset removal");
+
+            // Switch to neutral environment immediately so the respondent sees a clean
+            // white skybox with no 3D objects while the remove-headset prompt is shown.
+            SetSkybox(_neutralSkyboxMaterial);
+
+            // Training area is no longer needed — deactivate it now while the respondent
+            // is still wearing the headset. The neutral skybox replaces it visually.
+            if (_trainingArea != null)
+                _trainingArea.SetActive(false);
 
             // Prevent the respondent from walking around while the removal UI is shown
             if (_moveProvider != null)
@@ -272,9 +268,6 @@ namespace VRHomeArch.DataCollection
             // Prompt respondent to remove the headset so they can fill the pre-study form
             if (_removeHeadsetUI != null)
                 _removeHeadsetUI.SetActive(true);
-
-            // TrainingArea and BlackRoom are toggled in HandleHeadsetRemoved, not here,
-            // because the respondent is still wearing the headset at this point.
         }
 
         private void OnEnterBaseline()
@@ -325,7 +318,7 @@ namespace VRHomeArch.DataCollection
 
             ApplyCombinationToHouse(_activeRespondent.combinationId);
             SetSkybox(_defaultSkyboxMaterial);
-            TeleportTo(_houseSpawnPoint);
+            TeleportToOrigin();
 
             Debug.Log($"[SessionManager] Phase: HOUSE_EXPLORATION — combination {_activeRespondent.combinationId}, " +
                       $"index {_activeRespondent.nextCombinationIndex} — {ExplorationDurationSeconds}s timer started");
@@ -333,13 +326,20 @@ namespace VRHomeArch.DataCollection
             _activeTimer = StartCoroutine(RunTimer(ExplorationDurationSeconds, OnExplorationTimerEnded));
         }
 
-        private void OnEnterStandby()
+        private void OnEnterWaitingForBreak()
         {
-            Debug.Log("[SessionManager] Phase: STANDBY — respondent filling questionnaire, awaiting headset put-on");
+            Debug.Log("[SessionManager] Phase: WAITING_FOR_BREAK — exploration complete, " +
+                      "showing neutral environment and prompting headset removal");
 
-            // House stays visible so the respondent sees it while the UI prompt is shown.
-            // It will be deactivated in HandleHeadsetRemoved while the headset is off,
-            // so the scene swap is invisible when they put it back on.
+            // Switch to neutral environment immediately — the exploration timer has ended
+            // so there is no longer a reason to keep the house or default skybox visible.
+            SetSkybox(_neutralSkyboxMaterial);
+
+            // Deactivate the house now while the respondent is still wearing the headset.
+            // The neutral skybox replaces it visually — the respondent sees a clean white
+            // environment rather than the house disappearing without context.
+            if (_houseInstance != null)
+                _houseInstance.SetActive(false);
 
             // Disable locomotion — respondent should not walk while prompt is shown
             if (_moveProvider != null)
@@ -369,7 +369,7 @@ namespace VRHomeArch.DataCollection
             SetControllersActive(false);
 
             SetSkybox(_neutralSkyboxMaterial);
-            TeleportTo(_neutralSpawnPoint);
+            TeleportToOrigin();
             _activeTimer = StartCoroutine(RunTimer(NeutralDurationSeconds, () =>
             {
                 TransitionTo(SessionPhase.HouseExploration);
@@ -381,7 +381,7 @@ namespace VRHomeArch.DataCollection
             Debug.Log($"[SessionManager] Phase: SESSION_COMPLETE — {_activeRespondent?.respondentId ?? "unknown"} " +
                       "has viewed all combinations. Returning to idle.");
             SetSkybox(_defaultSkyboxMaterial);
-            TeleportTo(_trainingSpawnPoint);
+            TeleportToOrigin();
 
             // Clear respondent so IDLE polls for the next one
             _activeRespondent = null;
@@ -432,17 +432,17 @@ namespace VRHomeArch.DataCollection
                     else
                     {
                         Debug.Log($"[SessionManager] Next combination will be: {updatedResponse.combinationId}");
-                        TransitionTo(SessionPhase.Standby);
+                        TransitionTo(SessionPhase.WaitingForBreak);
                     }
                 },
                 onError: err =>
                 {
-                    // Cannot determine if there are more combinations — fail safe to Standby
+                    // Cannot determine if there are more combinations — fail safe to WaitingForBreak
                     // and let the next GET on the next session attempt resolve it.
                     Debug.LogWarning($"[SessionManager] Could not refresh respondent state after exploration: {err}. " +
-                                     "Defaulting to STANDBY. If this was the last combination, " +
+                                     "Defaulting to WAITING_FOR_BREAK. If this was the last combination, " +
                                      "the next session start will detect isComplete.");
-                    TransitionTo(SessionPhase.Standby);
+                    TransitionTo(SessionPhase.WaitingForBreak);
                 }
             );
         }
@@ -552,25 +552,19 @@ namespace VRHomeArch.DataCollection
         // Utilities
         // -----------------------------------------------------------------------
 
-        private void TeleportTo(Transform target)
+        private void TeleportToOrigin()
         {
-            if (target == null)
-            {
-                Debug.LogWarning("[SessionManager] Teleport target is null — skipping");
-                return;
-            }
-
             if (_xrRigRoot == null)
             {
                 Debug.LogWarning("[SessionManager] XR Rig Root is not assigned — cannot teleport");
                 return;
             }
 
-            // Direct position assignment works correctly for standing VR experiences
-            // where the rig origin represents the player's floor-level position.
-            // _xrRigRoot must be assigned to XR Origin (XR Rig), not XR Interaction Setup.
-            _xrRigRoot.position = target.position;
-            _xrRigRoot.rotation = target.rotation;
+            // All phase transitions land at world origin (0, 0, 0).
+            // SpawnPoints are not used — the scene is designed so that all relevant areas
+            // (training, gray room, house) are centered at or near the world origin.
+            _xrRigRoot.position = Vector3.zero;
+            _xrRigRoot.rotation = Quaternion.identity;
         }
 
         private void SetSkybox(Material skybox)
@@ -616,7 +610,7 @@ namespace VRHomeArch.DataCollection
         WaitingForBaseline,
         Baseline,
         HouseExploration,
-        Standby,
+        WaitingForBreak,
         Neutral,
         SessionComplete
     }
