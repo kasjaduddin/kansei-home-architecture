@@ -6,7 +6,7 @@ namespace VRHomeArch.DataCollection
 {
     // Polls the XR headset proximity sensor to detect when the respondent
     // puts on or removes the headset. These transitions are the primary driver
-    // for phase changes (Training->Baseline, HouseExploration->Standby->Neutral).
+    // for phase changes (Training->Baseline, HouseExploration->WaitingForBreak->Neutral).
     //
     // Uses CommonUsages.userPresence which is supported on Meta Quest 3 via OpenXR.
     // Falls back to "always present" on devices that do not report this feature,
