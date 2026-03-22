@@ -5792,6 +5792,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _apiClient: {fileID: 1688768461}
   _presenceSensor: {fileID: 1688768460}
+  _transitionFader: {fileID: 2124738213}
   _layoutRegistry:
   - layoutName: HomeDesignType36_1
     prefab: {fileID: 859785618929724573, guid: b860448738ab2bd48ae002c6bad20d89, type: 3}
@@ -5848,7 +5849,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8105074a04a9a1e42b62e1812ca879b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _serverBaseUrl: http://192.168.1.12:8080
+  _serverBaseUrl: http://192.168.1.81:8080
   _timeoutSeconds: 5
 --- !u!4 &1688768462
 Transform:
@@ -7378,6 +7379,18 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 2124738210}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &2124738213 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2687915820808520966, guid: 895f6f3c2d334633b5800312285058d2,
+    type: 3}
+  m_PrefabInstance: {fileID: 2124738210}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9deaad98917f54142a8fb257632d49ed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &2140082441
 PrefabInstance:
   m_ObjectHideFlags: 0
