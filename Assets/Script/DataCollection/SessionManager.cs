@@ -42,6 +42,7 @@ namespace VRHomeArch.DataCollection
         [Header("Dependencies")]
         [SerializeField] private ApiClient _apiClient;
         [SerializeField] private PresenceSensor _presenceSensor;
+        [SerializeField] private TransitionFader _transitionFader;
 
         // -- Inspector: Layout registry (assign prefabs from Assets/Prefab/HomeDesignPrefab/Type36/)
         [Header("Layout Registry")]
@@ -85,6 +86,7 @@ namespace VRHomeArch.DataCollection
         private GameObject _houseInstance;
         private Coroutine _activeTimer;
         private Coroutine _idlePollCoroutine;
+        private Coroutine _fadeCoroutine;
 
         // Exposed read-only for debug UI or future researcher display
         public SessionPhase CurrentPhase => _phase;
@@ -140,7 +142,7 @@ namespace VRHomeArch.DataCollection
                 return;
             }
 
-            TransitionTo(SessionPhase.WaitingForBaseline);
+            FadeAndTransition(SessionPhase.WaitingForBaseline);
         }
 
         // -----------------------------------------------------------------------
@@ -201,7 +203,10 @@ namespace VRHomeArch.DataCollection
         // State machine transitions
         // -----------------------------------------------------------------------
 
-        private void TransitionTo(SessionPhase newPhase)
+        // startTimer controls whether phase timers are started immediately after scene setup.
+        // Pass false when entering via a fade — FadeTransitionCoroutine calls StartTimerForPhase
+        // after fade-out completes so the timer begins only when the new environment is visible.
+        private void TransitionTo(SessionPhase newPhase, bool startTimer = true)
         {
             StopActiveTimer();
             _phase = newPhase;
@@ -217,6 +222,9 @@ namespace VRHomeArch.DataCollection
                 case SessionPhase.Neutral: OnEnterNeutral(); break;
                 case SessionPhase.SessionComplete: OnEnterSessionComplete(); break;
             }
+
+            if (startTimer)
+                StartTimerForPhase(newPhase);
         }
 
         // -----------------------------------------------------------------------
@@ -272,7 +280,7 @@ namespace VRHomeArch.DataCollection
 
         private void OnEnterBaseline()
         {
-            Debug.Log($"[SessionManager] Phase: BASELINE — fixed {BaselineDurationSeconds}s timer started");
+            Debug.Log($"[SessionManager] Phase: BASELINE — {BaselineDurationSeconds}s timer will start after setup");
 
             // Respondent has put the headset back on — dismiss the removal prompt.
             // GrayRoom was already activated and teleport already happened in HandleHeadsetRemoved
@@ -284,12 +292,6 @@ namespace VRHomeArch.DataCollection
             SetControllersActive(false);
 
             SetSkybox(_neutralSkyboxMaterial);
-            _activeTimer = StartCoroutine(RunTimer(BaselineDurationSeconds, () =>
-            {
-                // Baseline ends with a neutral phase to clear residual stimulus
-                // before the first combination is shown, consistent with inter-combination flow.
-                TransitionTo(SessionPhase.Neutral);
-            }));
         }
 
         private void OnEnterHouseExploration()
@@ -321,9 +323,7 @@ namespace VRHomeArch.DataCollection
             TeleportToOrigin();
 
             Debug.Log($"[SessionManager] Phase: HOUSE_EXPLORATION — combination {_activeRespondent.combinationId}, " +
-                      $"index {_activeRespondent.nextCombinationIndex} — {ExplorationDurationSeconds}s timer started");
-
-            _activeTimer = StartCoroutine(RunTimer(ExplorationDurationSeconds, OnExplorationTimerEnded));
+                      $"index {_activeRespondent.nextCombinationIndex} — timer will start after fade-out");
         }
 
         private void OnEnterWaitingForBreak()
@@ -354,7 +354,7 @@ namespace VRHomeArch.DataCollection
 
         private void OnEnterNeutral()
         {
-            Debug.Log($"[SessionManager] Phase: NEUTRAL — {NeutralDurationSeconds}s timer started");
+            Debug.Log($"[SessionManager] Phase: NEUTRAL — {NeutralDurationSeconds}s timer will start after fade-out");
 
             // Respondent has put the headset back on — dismiss the removal prompt
             if (_removeHeadsetPrompt != null)
@@ -370,10 +370,6 @@ namespace VRHomeArch.DataCollection
 
             SetSkybox(_neutralSkyboxMaterial);
             TeleportToOrigin();
-            _activeTimer = StartCoroutine(RunTimer(NeutralDurationSeconds, () =>
-            {
-                TransitionTo(SessionPhase.HouseExploration);
-            }));
         }
 
         private void OnEnterSessionComplete()
@@ -432,7 +428,7 @@ namespace VRHomeArch.DataCollection
                     else
                     {
                         Debug.Log($"[SessionManager] Next combination will be: {updatedResponse.combinationId}");
-                        TransitionTo(SessionPhase.WaitingForBreak);
+                        FadeAndTransition(SessionPhase.WaitingForBreak);
                     }
                 },
                 onError: err =>
@@ -442,7 +438,7 @@ namespace VRHomeArch.DataCollection
                     Debug.LogWarning($"[SessionManager] Could not refresh respondent state after exploration: {err}. " +
                                      "Defaulting to WAITING_FOR_BREAK. If this was the last combination, " +
                                      "the next session start will detect isComplete.");
-                    TransitionTo(SessionPhase.WaitingForBreak);
+                    FadeAndTransition(SessionPhase.WaitingForBreak);
                 }
             );
         }
@@ -565,6 +561,76 @@ namespace VRHomeArch.DataCollection
             // (training, gray room, house) are centered at or near the world origin.
             _xrRigRoot.position = Vector3.zero;
             _xrRigRoot.rotation = Quaternion.identity;
+        }
+
+        // Runs a fade-in → TransitionTo → fade-out sequence.
+        // Falls back to a direct transition if TransitionFader is not assigned.
+        // Used for the 4 timed phase transitions where abrupt scene changes would be jarring.
+        private void FadeAndTransition(SessionPhase nextPhase)
+        {
+            if (_transitionFader == null)
+            {
+                Debug.LogWarning("[SessionManager] TransitionFader is not assigned — transitioning without fade.");
+                TransitionTo(nextPhase);
+                return;
+            }
+
+            if (_fadeCoroutine != null)
+                StopCoroutine(_fadeCoroutine);
+
+            _fadeCoroutine = StartCoroutine(FadeTransitionCoroutine(nextPhase));
+        }
+
+        private IEnumerator FadeTransitionCoroutine(SessionPhase nextPhase)
+        {
+            // Fade to white — scene state swap happens while the overlay is at peak opacity
+            yield return StartCoroutine(_transitionFader.FadeIn());
+
+            // Scene objects, skybox, locomotion toggled here while the view is obscured.
+            // startTimer: false — timer must not begin until the new environment is visible.
+            TransitionTo(nextPhase, startTimer: false);
+
+            // Reveal the new environment gradually
+            yield return StartCoroutine(_transitionFader.FadeOut());
+
+            // Timer starts here — the respondent can now see the new environment fully.
+            // This ensures phase duration accuracy is not eroded by fade duration.
+            StartTimerForPhase(nextPhase);
+
+            _fadeCoroutine = null;
+        }
+
+        // Starts the timer for phases that have a fixed duration.
+        // Called either by TransitionTo (for instant transitions) or by FadeTransitionCoroutine
+        // (after fade-out completes) to ensure timer accuracy is not reduced by fade duration.
+        private void StartTimerForPhase(SessionPhase phase)
+        {
+            switch (phase)
+            {
+                case SessionPhase.Baseline:
+                    Debug.Log($"[SessionManager] BASELINE timer started — {BaselineDurationSeconds}s");
+                    _activeTimer = StartCoroutine(RunTimer(BaselineDurationSeconds, () =>
+                    {
+                        FadeAndTransition(SessionPhase.Neutral);
+                    }));
+                    break;
+
+                case SessionPhase.Neutral:
+                    Debug.Log($"[SessionManager] NEUTRAL timer started — {NeutralDurationSeconds}s");
+                    _activeTimer = StartCoroutine(RunTimer(NeutralDurationSeconds, () =>
+                    {
+                        FadeAndTransition(SessionPhase.HouseExploration);
+                    }));
+                    break;
+
+                case SessionPhase.HouseExploration:
+                    Debug.Log($"[SessionManager] HOUSE_EXPLORATION timer started — {ExplorationDurationSeconds}s");
+                    _activeTimer = StartCoroutine(RunTimer(ExplorationDurationSeconds, OnExplorationTimerEnded));
+                    break;
+
+                    // Other phases have no fixed-duration timer — presence sensor or server
+                    // response drives the next transition.
+            }
         }
 
         private void SetSkybox(Material skybox)
