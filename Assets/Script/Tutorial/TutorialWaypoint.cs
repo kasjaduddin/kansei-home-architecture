@@ -1,17 +1,18 @@
 using UnityEngine;
 
-namespace VRHomeArch.DataCollection
+namespace VRHomeArch.Tutorial
 {
-    // A training step that completes when the respondent walks within proximity
+    // A tutorial step that completes when the respondent walks within proximity
     // of a marked world-space location.
     //
     // A world-space arrow image (IndicatorCanvas) sits above the target position
-    // and is visible to the respondent as a navigation cue. The SphereCollider
-    // defines the arrival radius and is used as the proximity trigger.
+    // as a navigation cue. The SphereCollider defines the arrival radius.
     //
-    // Used for the "walk here", "pass the gate", and "reach the exit zone" steps.
+    // Used for "walk here", "pass the gate", and "reach the exit zone" steps.
+    // The exit zone step in data collection is simply the last TutorialWaypoint
+    // in the array — no separate exit trigger script is needed.
     [RequireComponent(typeof(SphereCollider))]
-    public class TrainingWaypoint : TrainingStep
+    public class TutorialWaypoint : TutorialStep
     {
         // Root of the world-space Canvas that holds the arrow image.
         // Shown when the waypoint is active, hidden otherwise.
@@ -30,7 +31,7 @@ namespace VRHomeArch.DataCollection
             _sphereCollider.isTrigger = true;
             _sphereCollider.radius = _proximityRadius;
 
-            // Start inactive — TrainingGuide activates waypoints in sequence
+            // Start inactive — the guide script activates waypoints in sequence
             SetVisuals(false);
             _sphereCollider.enabled = false;
         }
@@ -55,7 +56,7 @@ namespace VRHomeArch.DataCollection
             if (!other.CompareTag("Player")) return;
 
             Deactivate();
-            Debug.Log($"[TrainingWaypoint] '{name}' reached — step complete");
+            Debug.Log($"[TutorialWaypoint] '{name}' reached — step complete");
             CompleteStep();
         }
 

@@ -2,19 +2,18 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR;
 
-namespace VRHomeArch.DataCollection
+namespace VRHomeArch.Tutorial
 {
-    // A training step that completes when the respondent pushes the right thumbstick
+    // A tutorial step that completes when the respondent pushes the right thumbstick
     // in the required direction (left or right).
     //
-    // Used for the "look left" and "look right" steps at the start of training —
-    // the respondent must deliberately use the right thumbstick to rotate the camera,
-    // proving they understand the snap-turn interaction before proceeding.
+    // Used to teach snap-turn before the respondent navigates the environment.
+    // A single deliberate push past the threshold counts as completion —
+    // the respondent does not need to hold the stick.
     //
-    // Detection reads the right controller's primary 2D axis each frame.
-    // The step completes on the first frame the axis magnitude exceeds the threshold
-    // in the configured direction — a single intentional push is sufficient.
-    public class TrainingInputStep : TrainingStep
+    // Detection reads the right controller's primary 2D axis each frame while active.
+    // The input threshold matches the default XRI snap-turn deadzone (0.5).
+    public class TutorialInputStep : TutorialStep
     {
         public enum TurnDirection { Right, Left }
 
@@ -65,7 +64,7 @@ namespace VRHomeArch.DataCollection
             if (conditionMet)
             {
                 _isActive = false;
-                Debug.Log($"[TrainingInputStep] {_requiredDirection} turn input detected — step complete");
+                Debug.Log($"[TutorialInputStep] {_requiredDirection} turn input detected — step complete");
                 CompleteStep();
             }
         }
