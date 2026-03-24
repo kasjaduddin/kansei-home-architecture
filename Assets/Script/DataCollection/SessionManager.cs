@@ -64,6 +64,7 @@ namespace VRHomeArch.DataCollection
 
         // -- Inspector: Scene objects toggled during phase transitions
         [Header("Scene Objects")]
+        [SerializeField] private TrainingGuide _trainingGuide;
         [SerializeField] private GameObject _trainingArea;
         [SerializeField] private GameObject _removeHeadsetPrompt;
         // Gray room geometry is only active during Baseline — kept inactive the rest of the session
@@ -114,12 +115,22 @@ namespace VRHomeArch.DataCollection
 
             _presenceSensor.OnHeadsetPutOn += HandleHeadsetPutOn;
             _presenceSensor.OnHeadsetRemoved += HandleHeadsetRemoved;
+
+            // TrainingGuide fires this when the last training step is completed.
+            // SessionManager responds by triggering the transition to WaitingForBaseline.
+            if (_trainingGuide != null)
+                _trainingGuide.OnTrainingCompleted += NotifyTrainingExitTriggered;
+            else
+                Debug.LogWarning("[SessionManager] TrainingGuide is not assigned — training will never complete.");
         }
 
         private void OnDestroy()
         {
             _presenceSensor.OnHeadsetPutOn -= HandleHeadsetPutOn;
             _presenceSensor.OnHeadsetRemoved -= HandleHeadsetRemoved;
+
+            if (_trainingGuide != null)
+                _trainingGuide.OnTrainingCompleted -= NotifyTrainingExitTriggered;
         }
 
         private void Start()
@@ -235,6 +246,10 @@ namespace VRHomeArch.DataCollection
         {
             Debug.Log("[SessionManager] Phase: IDLE — polling server for active respondent");
             SetSkybox(_defaultSkyboxMaterial);
+
+            // Reset training guide so the next respondent starts from step 0.
+            _trainingGuide?.ResetTraining();
+
             _idlePollCoroutine = StartCoroutine(PollServerForRespondent());
         }
 
@@ -253,6 +268,10 @@ namespace VRHomeArch.DataCollection
 
             SetSkybox(_defaultSkyboxMaterial);
             TeleportToOrigin();
+
+            // Begin the guided training sequence — activates steps one by one.
+            // The exit trigger fires via OnTrainingCompleted when all steps are done.
+            _trainingGuide?.BeginTraining();
         }
 
         private void OnEnterWaitingForBaseline()
