@@ -9,9 +9,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7917286353745224550}
-  - component: {fileID: 6708967130312295392}
+  - component: {fileID: 2771698517073301182}
   m_Layer: 0
-  m_Name: Tutorial_StepLook
+  m_Name: Tutorial_SnapLook
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -32,7 +32,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6708967130312295392
+--- !u!114 &2771698517073301182
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -41,9 +41,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 9120893313710330229}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e1fa2229cc9f4f142a4b65dd8d010992, type: 3}
+  m_Script: {fileID: 11500000, guid: bb84e035d7b632b4ab7d59d9c2c48970, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _instructionText: Dorong joystick kanan untuk menoleh
+  _instructionText: 
   _requiredDirection: 0
+  _requiredSnapCount: 1
   _inputThreshold: 0.5
+  _snapCooldown: 0.3
