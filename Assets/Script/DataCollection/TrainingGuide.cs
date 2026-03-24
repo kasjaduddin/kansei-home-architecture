@@ -1,28 +1,28 @@
 using System;
 using TMPro;
 using UnityEngine;
+using VRHomeArch.Tutorial;
 
 namespace VRHomeArch.DataCollection
 {
-    // Orchestrates the guided training sequence.
+    // Orchestrates the data collection training sequence using TutorialStep components.
     //
-    // Steps are activated one at a time in the order defined in the Inspector.
-    // When all steps are complete, OnTrainingCompleted is fired and SessionManager
-    // transitions to WaitingForBaseline.
+    // Steps are activated one at a time in Inspector order. When all steps complete,
+    // OnTrainingCompleted fires and SessionManager transitions to WaitingForBaseline.
     //
-    // The instruction panel is a world-space Canvas that floats in front of the
-    // respondent throughout training, using yaw-only rotation to stay upright.
+    // This class is intentionally specific to the data collection flow — it owns
+    // the 5-step sequence (look right, look left, walk, pass gate, reach exit).
+    // The production app will have its own guide script using the same TutorialStep
+    // components with a different step arrangement.
     //
-    // Two step types are supported:
-    //   - TrainingInputStep  (look left / look right via thumbstick)
-    //   - TrainingWaypoint   (walk to a marked location)
-    // Both extend TrainingStep — this class treats them identically.
+    // The instruction panel floats in front of the respondent throughout training
+    // using yaw-only rotation so the panel stays upright regardless of head pitch.
     public class TrainingGuide : MonoBehaviour
     {
-        // Ordered training steps — assign in Inspector.
-        // Mix TrainingInputStep and TrainingWaypoint GameObjects freely.
+        // Ordered tutorial steps — assign in Inspector.
+        // Mix TutorialInputStep and TutorialWaypoint GameObjects freely.
         [Header("Steps")]
-        [SerializeField] private TrainingStep[] _steps;
+        [SerializeField] private TutorialStep[] _steps;
 
         // World-space Canvas that shows the current instruction text.
         [Header("Instruction Panel")]
@@ -33,13 +33,13 @@ namespace VRHomeArch.DataCollection
         // Assign: XR Origin (XR Rig) / Camera Offset / Main Camera
         [SerializeField] private Transform _cameraTransform;
 
-        // Distance in front of camera the panel floats (metres).
+        // Distance in front of the camera the panel floats (metres).
         [SerializeField] private float _panelDistance = 1.8f;
 
         // Vertical offset from camera position. Negative = slightly below eye level.
         [SerializeField] private float _panelVerticalOffset = -0.1f;
 
-        // SessionManager subscribes to this to trigger WaitingForBaseline.
+        // SessionManager subscribes to this to trigger the transition to WaitingForBaseline.
         public event Action OnTrainingCompleted;
 
         private int _currentStepIndex;
@@ -71,7 +71,7 @@ namespace VRHomeArch.DataCollection
 
             if (_steps != null)
             {
-                foreach (TrainingStep step in _steps)
+                foreach (TutorialStep step in _steps)
                 {
                     if (step != null)
                         step.Deactivate();
@@ -120,7 +120,7 @@ namespace VRHomeArch.DataCollection
                 return;
             }
 
-            TrainingStep step = _steps[index];
+            TutorialStep step = _steps[index];
             if (step == null)
             {
                 Debug.LogWarning($"[TrainingGuide] Step at index {index} is null — skipping");
@@ -140,7 +140,7 @@ namespace VRHomeArch.DataCollection
             // Unsubscribe from the just-completed step before advancing
             if (_steps != null && _currentStepIndex < _steps.Length)
             {
-                TrainingStep current = _steps[_currentStepIndex];
+                TutorialStep current = _steps[_currentStepIndex];
                 if (current != null)
                     current.OnCompleted -= HandleStepCompleted;
             }
