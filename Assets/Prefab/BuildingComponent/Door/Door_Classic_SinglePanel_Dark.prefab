@@ -252,7 +252,6 @@ GameObject:
   - component: {fileID: 175791633943522776}
   - component: {fileID: 7596086910426096711}
   - component: {fileID: 2075027375112952459}
-  - component: {fileID: 6160091877076062029}
   m_Layer: 0
   m_Name: Jamb
   m_TagString: Untagged
@@ -325,25 +324,3 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &6160091877076062029
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9041664322406842719}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: -5752006304656613290, guid: 74b10015b8d02384b87eb09372393c51, type: 3}
