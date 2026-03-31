@@ -43,14 +43,16 @@ namespace VRHomeArch.DataCollection
             StartCoroutine(PostCoroutine($"{_serverBaseUrl}/combination-done", json, onSuccess, onError));
         }
 
-        private IEnumerator GetCoroutine(
-            string url,
-            Action<RespondentApiResponse> onSuccess,
-            Action<string> onError)
+        private IEnumerator GetCoroutine(string url, Action<RespondentApiResponse> onSuccess, Action<string> onError)
         {
+            Debug.Log($"[ApiClient] Sending GET to: {url}");
+
             using UnityWebRequest request = UnityWebRequest.Get(url);
             request.timeout = _timeoutSeconds;
+
             yield return request.SendWebRequest();
+
+            Debug.Log($"[ApiClient] Result: {request.result} | ResponseCode: {request.responseCode} | Error: {request.error}");
 
             if (request.result != UnityWebRequest.Result.Success)
             {
