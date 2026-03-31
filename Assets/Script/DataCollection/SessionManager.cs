@@ -14,8 +14,8 @@ namespace VRHomeArch.DataCollection
     //   TRAINING  (training area visible, default skybox, locomotion on)
     //     -> [all training steps done + exit trigger] -> WAITING_FOR_BASELINE
     //   WAITING_FOR_BASELINE  (neutral skybox, no 3D objects, locomotion off, remove-headset UI shown)
-    //     -> [headset removed] : gray room activated, teleport to origin
-    //     -> [headset put on]  -> BASELINE (2 min fixed timer)
+    //     -> [POST /session-break received]      : gray room activated, teleport to origin
+    //     -> [POST /start-timer baseline received] -> BASELINE (2 min fixed timer)
     //   BASELINE  (gray room, neutral skybox, controllers hidden)
     //     -> [timer ends] -> NEUTRAL
     //   NEUTRAL  (neutral skybox, no 3D objects, controllers hidden, 30 sec timer)
@@ -26,10 +26,16 @@ namespace VRHomeArch.DataCollection
     //                     -> if all done: SESSION_COMPLETE
     //                     -> else: WAITING_FOR_BREAK
     //   WAITING_FOR_BREAK  (neutral skybox, no 3D objects, locomotion off, remove-headset UI shown)
-    //     -> [headset removed] : teleport to origin
-    //     -> [headset put on]  -> NEUTRAL
+    //     -> [POST /session-break received]     : teleport to origin
+    //     -> [POST /start-timer neutral received] -> NEUTRAL
     //   SESSION_COMPLETE
     //     -> teleport to origin, return to IDLE to await next respondent
+    //
+    // Phase transitions driven by headset presence sensor have been replaced by
+    // explicit REST API signals from the researcher. This allows the researcher
+    // to confirm the respondent is comfortable before starting a timed phase,
+    // rather than relying on the proximity sensor which fires the moment the
+    // headset is placed on the head regardless of fit adjustment.
     public class SessionManager : MonoBehaviour
     {
         // -- Phase durations
@@ -38,10 +44,13 @@ namespace VRHomeArch.DataCollection
         private const float NeutralDurationSeconds = 30f;
         private const float IdlePollIntervalSeconds = 5f;
 
+        // How often to poll GET /session-signal while waiting for a researcher action.
+        // 2 seconds is responsive enough for a human-triggered event without hammering the server.
+        private const float SignalPollIntervalSeconds = 2f;
+
         // -- Inspector: Dependencies
         [Header("Dependencies")]
         [SerializeField] private ApiClient _apiClient;
-        [SerializeField] private PresenceSensor _presenceSensor;
         [SerializeField] private TransitionFader _transitionFader;
 
         // -- Inspector: Layout registry (assign prefabs from Assets/Prefab/HomeDesignPrefab/Type36/)
@@ -88,6 +97,12 @@ namespace VRHomeArch.DataCollection
         private Coroutine _activeTimer;
         private Coroutine _idlePollCoroutine;
         private Coroutine _fadeCoroutine;
+        private Coroutine _signalPollCoroutine;
+
+        // Tracks whether the "break" signal has been received in the current waiting phase.
+        // This guards against a start-timer signal arriving before the break signal,
+        // or being replayed unexpectedly by the researcher.
+        private bool _breakSignalReceived;
 
         // Exposed read-only for debug UI or future researcher display
         public SessionPhase CurrentPhase => _phase;
@@ -110,12 +125,6 @@ namespace VRHomeArch.DataCollection
             if (_apiClient == null)
                 Debug.LogError("[SessionManager] ApiClient reference is not assigned.");
 
-            if (_presenceSensor == null)
-                Debug.LogError("[SessionManager] PresenceSensor reference is not assigned.");
-
-            _presenceSensor.OnHeadsetPutOn += HandleHeadsetPutOn;
-            _presenceSensor.OnHeadsetRemoved += HandleHeadsetRemoved;
-
             // TrainingGuide fires this when the last training step is completed.
             // SessionManager responds by triggering the transition to WaitingForBaseline.
             if (_trainingGuide != null)
@@ -126,9 +135,6 @@ namespace VRHomeArch.DataCollection
 
         private void OnDestroy()
         {
-            _presenceSensor.OnHeadsetPutOn -= HandleHeadsetPutOn;
-            _presenceSensor.OnHeadsetRemoved -= HandleHeadsetRemoved;
-
             if (_trainingGuide != null)
                 _trainingGuide.OnTrainingCompleted -= NotifyTrainingExitTriggered;
         }
@@ -139,12 +145,11 @@ namespace VRHomeArch.DataCollection
         }
 
         // -----------------------------------------------------------------------
-        // External trigger entry points (called by scene objects, not presence sensor)
+        // External trigger entry points
         // -----------------------------------------------------------------------
 
-        // Called by TrainingExitTrigger when the respondent physically walks out of the training area.
-        // Removing the headset is the signal to transition to WaitingForBaseline —
-        // the trigger zone confirms they are done with training and ready for the break.
+        // Called by TrainingGuide when all training steps are completed.
+        // Fade transition begins immediately — no researcher intervention required here.
         public void NotifyTrainingExitTriggered()
         {
             if (_phase != SessionPhase.Training)
@@ -157,60 +162,6 @@ namespace VRHomeArch.DataCollection
         }
 
         // -----------------------------------------------------------------------
-        // Presence sensor event handlers
-        // -----------------------------------------------------------------------
-
-        private void HandleHeadsetPutOn()
-        {
-            switch (_phase)
-            {
-                case SessionPhase.WaitingForBaseline:
-                    TransitionTo(SessionPhase.Baseline);
-                    break;
-
-                case SessionPhase.WaitingForBreak:
-                    TransitionTo(SessionPhase.Neutral);
-                    break;
-            }
-        }
-
-        private void HandleHeadsetRemoved()
-        {
-            switch (_phase)
-            {
-                case SessionPhase.WaitingForBaseline:
-                    // Headset is off — safe window to activate gray room invisibly.
-                    // Training area was already deactivated in OnEnterWaitingForBaseline.
-                    // Teleport happens here so the respondent is already inside the gray room
-                    // when they put the headset back on.
-                    if (_grayRoom != null)
-                        _grayRoom.SetActive(true);
-
-                    TeleportToOrigin();
-
-                    Debug.Log("[SessionManager] Headset removed in WAITING_FOR_BASELINE — " +
-                              "gray room activated, awaiting headset put-on to start baseline timer");
-                    break;
-
-                case SessionPhase.WaitingForBreak:
-                    // House was already deactivated in OnEnterWaitingForBreak. Teleport here while
-                    // the headset is off so the respondent wakes up at the origin position.
-                    TeleportToOrigin();
-
-                    Debug.Log("[SessionManager] Headset removed in WAITING_FOR_BREAK — " +
-                              "awaiting headset put-on to start neutral timer");
-                    break;
-
-                case SessionPhase.HouseExploration:
-                    // The 2-min timer should end and POST before the respondent removes the headset.
-                    // This is a safeguard for unexpected early removal.
-                    Debug.LogWarning("[SessionManager] Headset removed during exploration before timer ended. " +
-                                     "This may indicate the respondent removed the headset early.");
-                    break;
-            }
-        }
-
-        // -----------------------------------------------------------------------
         // State machine transitions
         // -----------------------------------------------------------------------
 
@@ -220,6 +171,8 @@ namespace VRHomeArch.DataCollection
         private void TransitionTo(SessionPhase newPhase, bool startTimer = true)
         {
             StopActiveTimer();
+            StopSignalPolling();
+
             _phase = newPhase;
 
             switch (newPhase)
@@ -276,8 +229,8 @@ namespace VRHomeArch.DataCollection
 
         private void OnEnterWaitingForBaseline()
         {
-            Debug.Log("[SessionManager] Phase: WAITING_FOR_BASELINE — training complete, " +
-                      "showing neutral environment and prompting headset removal");
+            Debug.Log("[SessionManager] Phase: WAITING_FOR_BASELINE — showing neutral environment, " +
+                      "awaiting researcher POST /session-break then POST /start-timer baseline");
 
             // Switch to neutral environment immediately so the respondent sees a clean
             // white skybox with no 3D objects while the remove-headset prompt is shown.
@@ -295,15 +248,17 @@ namespace VRHomeArch.DataCollection
             // Prompt respondent to remove the headset so they can fill the pre-study form
             if (_removeHeadsetPrompt != null)
                 _removeHeadsetPrompt.SetActive(true);
+
+            _breakSignalReceived = false;
+            StartSignalPolling(expectedTimerType: "baseline");
         }
 
         private void OnEnterBaseline()
         {
             Debug.Log($"[SessionManager] Phase: BASELINE — {BaselineDurationSeconds}s timer will start after setup");
 
-            // Respondent has put the headset back on — dismiss the removal prompt.
-            // GrayRoom was already activated and teleport already happened in HandleHeadsetRemoved
-            // while the headset was off, so the scene transition is invisible to the respondent.
+            // Gray room was activated and teleport happened when the "break" signal was received,
+            // so the scene swap is already invisible. Just dismiss the removal prompt.
             if (_removeHeadsetPrompt != null)
                 _removeHeadsetPrompt.SetActive(false);
 
@@ -348,7 +303,7 @@ namespace VRHomeArch.DataCollection
         private void OnEnterWaitingForBreak()
         {
             Debug.Log("[SessionManager] Phase: WAITING_FOR_BREAK — exploration complete, " +
-                      "showing neutral environment and prompting headset removal");
+                      "awaiting researcher POST /session-break then POST /start-timer neutral");
 
             // Switch to neutral environment immediately — the exploration timer has ended
             // so there is no longer a reason to keep the house or default skybox visible.
@@ -368,21 +323,22 @@ namespace VRHomeArch.DataCollection
             if (_removeHeadsetPrompt != null)
                 _removeHeadsetPrompt.SetActive(true);
 
-            // No timer — presence sensor drives the next transition
+            _breakSignalReceived = false;
+            StartSignalPolling(expectedTimerType: "neutral");
         }
 
         private void OnEnterNeutral()
         {
             Debug.Log($"[SessionManager] Phase: NEUTRAL — {NeutralDurationSeconds}s timer will start after fade-out");
 
-            // Respondent has put the headset back on — dismiss the removal prompt
-            if (_removeHeadsetPrompt != null)
-                _removeHeadsetPrompt.SetActive(false);
-
-            // Gray room must be deactivated here — when transitioning from Baseline,
-            // it is still active and needs to be cleared before showing the neutral skybox.
+            // Gray room was used during Baseline — clear it before the neutral phase.
+            // When coming from WaitingForBreak, gray room is already inactive.
             if (_grayRoom != null)
                 _grayRoom.SetActive(false);
+
+            // Dismiss the removal prompt — teleport already happened on "break" signal
+            if (_removeHeadsetPrompt != null)
+                _removeHeadsetPrompt.SetActive(false);
 
             // Hide controller visuals — no interaction needed during neutral phase
             SetControllersActive(false);
@@ -463,7 +419,7 @@ namespace VRHomeArch.DataCollection
         }
 
         // -----------------------------------------------------------------------
-        // Server polling (IDLE phase)
+        // Server polling — IDLE phase
         // -----------------------------------------------------------------------
 
         private IEnumerator PollServerForRespondent()
@@ -505,6 +461,138 @@ namespace VRHomeArch.DataCollection
                 if (_phase == SessionPhase.Idle)
                     yield return new WaitForSeconds(IdlePollIntervalSeconds);
             }
+        }
+
+        // -----------------------------------------------------------------------
+        // Signal polling — WAITING_FOR_BASELINE and WAITING_FOR_BREAK phases
+        // -----------------------------------------------------------------------
+
+        // Begins polling GET /session-signal. The expectedTimerType determines which
+        // start-timer signal to act on: "baseline" for WaitingForBaseline,
+        // "neutral" for WaitingForBreak.
+        private void StartSignalPolling(string expectedTimerType)
+        {
+            _signalPollCoroutine = StartCoroutine(PollSessionSignal(expectedTimerType));
+        }
+
+        private void StopSignalPolling()
+        {
+            if (_signalPollCoroutine != null)
+            {
+                StopCoroutine(_signalPollCoroutine);
+                _signalPollCoroutine = null;
+            }
+        }
+
+        private IEnumerator PollSessionSignal(string expectedTimerType)
+        {
+            Debug.Log($"[SessionManager] Signal polling started — expecting 'break' then 'start_{expectedTimerType}'");
+
+            while (true)
+            {
+                bool responseReceived = false;
+
+                _apiClient.GetSessionSignal(
+                    onSuccess: signal =>
+                    {
+                        if (!string.IsNullOrEmpty(signal))
+                            HandleSessionSignal(signal, expectedTimerType);
+
+                        responseReceived = true;
+                    },
+                    onError: err =>
+                    {
+                        Debug.LogWarning($"[SessionManager] Signal poll failed: {err} — retrying in {SignalPollIntervalSeconds}s");
+                        responseReceived = true;
+                    }
+                );
+
+                yield return new WaitUntil(() => responseReceived);
+                yield return new WaitForSeconds(SignalPollIntervalSeconds);
+            }
+        }
+
+        private void HandleSessionSignal(string signal, string expectedTimerType)
+        {
+            Debug.Log($"[SessionManager] Signal received: '{signal}' (phase: {_phase})");
+
+            switch (signal)
+            {
+                case "break":
+                    HandleBreakSignal();
+                    break;
+
+                case "start_baseline":
+                    if (expectedTimerType == "baseline")
+                        HandleStartTimerSignal(SessionPhase.Baseline);
+                    else
+                        Debug.LogWarning($"[SessionManager] Received 'start_baseline' but expected 'start_{expectedTimerType}' — ignored.");
+                    break;
+
+                case "start_neutral":
+                    if (expectedTimerType == "neutral")
+                        HandleStartTimerSignal(SessionPhase.Neutral);
+                    else
+                        Debug.LogWarning($"[SessionManager] Received 'start_neutral' but expected 'start_{expectedTimerType}' — ignored.");
+                    break;
+
+                default:
+                    Debug.LogWarning($"[SessionManager] Unrecognized signal: '{signal}' — ignored.");
+                    break;
+            }
+        }
+
+        // Researcher confirmed the respondent has removed the headset.
+        // Activate gray room and teleport while the headset is off so the
+        // scene swap is invisible when the respondent puts it back on.
+        private void HandleBreakSignal()
+        {
+            if (_breakSignalReceived)
+            {
+                Debug.LogWarning("[SessionManager] Duplicate 'break' signal received — ignored.");
+                return;
+            }
+
+            _breakSignalReceived = true;
+
+            switch (_phase)
+            {
+                case SessionPhase.WaitingForBaseline:
+                    // Training area was already deactivated in OnEnterWaitingForBaseline.
+                    if (_grayRoom != null)
+                        _grayRoom.SetActive(true);
+
+                    TeleportToOrigin();
+                    Debug.Log("[SessionManager] Break signal in WAITING_FOR_BASELINE — gray room activated, " +
+                              "awaiting start-timer baseline signal to begin measurement");
+                    break;
+
+                case SessionPhase.WaitingForBreak:
+                    // House was already deactivated in OnEnterWaitingForBreak.
+                    TeleportToOrigin();
+                    Debug.Log("[SessionManager] Break signal in WAITING_FOR_BREAK — teleported to origin, " +
+                              "awaiting start-timer neutral signal");
+                    break;
+
+                default:
+                    Debug.LogWarning($"[SessionManager] 'break' signal received in unexpected phase {_phase} — teleport skipped.");
+                    break;
+            }
+        }
+
+        // Researcher confirmed the respondent has the headset on and is comfortable.
+        // Transition to the next timed phase.
+        private void HandleStartTimerSignal(SessionPhase targetPhase)
+        {
+            if (!_breakSignalReceived)
+            {
+                // Defensive: if break was never signalled, gray room / teleport may not have
+                // happened yet. Log a warning but proceed — the researcher knows the state.
+                Debug.LogWarning($"[SessionManager] start-timer signal received before break signal. " +
+                                 "Gray room activation and teleport may be missing. Proceeding anyway.");
+            }
+
+            TransitionTo(targetPhase);
         }
 
         // -----------------------------------------------------------------------
@@ -582,7 +670,7 @@ namespace VRHomeArch.DataCollection
             _xrRigRoot.rotation = Quaternion.identity;
         }
 
-        // Runs a fade-in → TransitionTo → fade-out sequence.
+        // Runs a fade-in -> TransitionTo -> fade-out sequence.
         // Falls back to a direct transition if TransitionFader is not assigned.
         // Used for the 4 timed phase transitions where abrupt scene changes would be jarring.
         private void FadeAndTransition(SessionPhase nextPhase)
@@ -647,8 +735,8 @@ namespace VRHomeArch.DataCollection
                     _activeTimer = StartCoroutine(RunTimer(ExplorationDurationSeconds, OnExplorationTimerEnded));
                     break;
 
-                    // Other phases have no fixed-duration timer — presence sensor or server
-                    // response drives the next transition.
+                    // Waiting phases have no fixed-duration timer — REST API signal drives the next transition.
+                    // Idle has no timer — server poll drives the next transition.
             }
         }
 
@@ -678,6 +766,7 @@ namespace VRHomeArch.DataCollection
             yield return new WaitForSeconds(delay);
             TransitionTo(target);
         }
+
         private void SetControllersActive(bool active)
         {
             if (_leftController != null)

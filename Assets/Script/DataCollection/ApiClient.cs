@@ -23,7 +23,18 @@ namespace VRHomeArch.DataCollection
             Action<RespondentApiResponse> onSuccess,
             Action<string> onError)
         {
-            StartCoroutine(GetCoroutine($"{_serverBaseUrl}/active-respondent", onSuccess, onError));
+            StartCoroutine(GetRespondentCoroutine($"{_serverBaseUrl}/active-respondent", onSuccess, onError));
+        }
+
+        // Polls for the current pending session signal from the researcher.
+        // The server clears the signal after this call — each signal is consumed exactly once.
+        // onSuccess is called with the signal string ("break", "start_baseline", "start_neutral")
+        // or null if no signal is pending.
+        public void GetSessionSignal(
+            Action<string> onSuccess,
+            Action<string> onError)
+        {
+            StartCoroutine(GetSignalCoroutine($"{_serverBaseUrl}/session-signal", onSuccess, onError));
         }
 
         // Records that the respondent has finished viewing a combination.
@@ -43,16 +54,21 @@ namespace VRHomeArch.DataCollection
             StartCoroutine(PostCoroutine($"{_serverBaseUrl}/combination-done", json, onSuccess, onError));
         }
 
-        private IEnumerator GetCoroutine(string url, Action<RespondentApiResponse> onSuccess, Action<string> onError)
+        // -----------------------------------------------------------------------
+        // Coroutines
+        // -----------------------------------------------------------------------
+
+        private IEnumerator GetRespondentCoroutine(
+            string url,
+            Action<RespondentApiResponse> onSuccess,
+            Action<string> onError)
         {
-            Debug.Log($"[ApiClient] Sending GET to: {url}");
+            Debug.Log($"[ApiClient] GET {url}");
 
             using UnityWebRequest request = UnityWebRequest.Get(url);
             request.timeout = _timeoutSeconds;
 
             yield return request.SendWebRequest();
-
-            Debug.Log($"[ApiClient] Result: {request.result} | ResponseCode: {request.responseCode} | Error: {request.error}");
 
             if (request.result != UnityWebRequest.Result.Success)
             {
@@ -68,6 +84,33 @@ namespace VRHomeArch.DataCollection
             }
 
             onSuccess?.Invoke(response);
+        }
+
+        private IEnumerator GetSignalCoroutine(
+            string url,
+            Action<string> onSuccess,
+            Action<string> onError)
+        {
+            using UnityWebRequest request = UnityWebRequest.Get(url);
+            request.timeout = _timeoutSeconds;
+
+            yield return request.SendWebRequest();
+
+            if (request.result != UnityWebRequest.Result.Success)
+            {
+                onError?.Invoke($"GET {url} failed: {request.error}");
+                yield break;
+            }
+
+            SessionSignalResponse response = JsonUtility.FromJson<SessionSignalResponse>(request.downloadHandler.text);
+            if (response == null)
+            {
+                onError?.Invoke($"GET {url} returned unparseable JSON: {request.downloadHandler.text}");
+                yield break;
+            }
+
+            // signal field is null when nothing is pending — pass null through to the caller
+            onSuccess?.Invoke(response.signal);
         }
 
         private IEnumerator PostCoroutine(
