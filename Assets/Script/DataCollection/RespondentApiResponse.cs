@@ -14,6 +14,15 @@ namespace VRHomeArch.DataCollection
         public bool isComplete;
     }
 
+    // Matches GET /session-signal response shape.
+    // signal is null when no researcher action is pending.
+    // Valid non-null values: "break" | "start_baseline" | "start_neutral"
+    [System.Serializable]
+    public class SessionSignalResponse
+    {
+        public string signal;
+    }
+
     // Matches the JSON body sent to POST /combination-done.
     [Serializable]
     public class CombinationDoneRequest
