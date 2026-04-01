@@ -104,6 +104,11 @@ namespace VRHomeArch.DataCollection
         // or being replayed unexpectedly by the researcher.
         private bool _breakSignalReceived;
 
+        // Set when the last combination has been completed. Causes WaitingForBreak to route
+        // to SessionComplete instead of Neutral when the start-timer signal is received,
+        // while still showing the remove-headset prompt after the final exploration phase.
+        private bool _pendingSessionComplete;
+
         // Exposed read-only for debug UI or future researcher display
         public SessionPhase CurrentPhase => _phase;
         public string ActiveRespondentId => _activeRespondent?.respondentId;
@@ -324,6 +329,7 @@ namespace VRHomeArch.DataCollection
                 _removeHeadsetPrompt.SetActive(true);
 
             _breakSignalReceived = false;
+            _pendingSessionComplete = false;  // Will be set by OnExplorationTimerEnded if this is the final break
             StartSignalPolling(expectedTimerType: "neutral");
         }
 
@@ -372,48 +378,72 @@ namespace VRHomeArch.DataCollection
 
             Debug.Log($"[SessionManager] Exploration ended — posting completion for index {completedIndex}");
 
-            // POST immediately so progress is recorded before headset removal.
-            // Non-fatal: session continues even if the POST fails — researcher can
-            // verify server logs after the session and correct manually if needed.
+            // POST first, GET inside the callback — guarantees server progress is updated
+            // before we ask for the next combinationId, preventing the race condition where
+            // GET returns the stale (just-completed) combinationId.
             _apiClient.PostCombinationDone(
                 respondentId,
                 completedIndex,
                 onSuccess: () =>
                 {
                     Debug.Log($"[SessionManager] Combination index {completedIndex} recorded on server");
+
+                    _apiClient.GetActiveRespondent(
+                        onSuccess: updatedResponse =>
+                        {
+                            _activeRespondent = updatedResponse;
+
+                            if (updatedResponse.isComplete)
+                            {
+                                // All combinations done — flag for SessionComplete but still show
+                                // the remove-headset prompt via WaitingForBreak so the respondent
+                                // can hand back the headset before the session is closed.
+                                _pendingSessionComplete = true;
+                                Debug.Log("[SessionManager] All combinations complete — routing through WAITING_FOR_BREAK before SESSION_COMPLETE");
+                            }
+                            else
+                            {
+                                Debug.Log($"[SessionManager] Next combination will be: {updatedResponse.combinationId}");
+                            }
+
+                            FadeAndTransition(SessionPhase.WaitingForBreak);
+                        },
+                        onError: err =>
+                        {
+                            // Cannot determine if there are more combinations — fail safe to WaitingForBreak.
+                            // The next start-timer signal will resolve the correct next phase.
+                            Debug.LogWarning($"[SessionManager] Could not refresh respondent state after exploration: {err}. " +
+                                             "Defaulting to WAITING_FOR_BREAK.");
+                            FadeAndTransition(SessionPhase.WaitingForBreak);
+                        }
+                    );
                 },
                 onError: err =>
                 {
                     Debug.LogWarning($"[SessionManager] Failed to record combination on server: {err}. " +
-                                     "Progress may need manual correction.");
-                }
-            );
+                                     "Progress may need manual correction. Attempting GET anyway.");
 
-            // Fetch the updated respondent state to get the next combinationId.
-            // Also determines whether the session is complete.
-            _apiClient.GetActiveRespondent(
-                onSuccess: updatedResponse =>
-                {
-                    _activeRespondent = updatedResponse;
-
-                    if (updatedResponse.isComplete)
-                    {
-                        TransitionTo(SessionPhase.SessionComplete);
-                    }
-                    else
-                    {
-                        Debug.Log($"[SessionManager] Next combination will be: {updatedResponse.combinationId}");
-                        FadeAndTransition(SessionPhase.WaitingForBreak);
-                    }
-                },
-                onError: err =>
-                {
-                    // Cannot determine if there are more combinations — fail safe to WaitingForBreak
-                    // and let the next GET on the next session attempt resolve it.
-                    Debug.LogWarning($"[SessionManager] Could not refresh respondent state after exploration: {err}. " +
-                                     "Defaulting to WAITING_FOR_BREAK. If this was the last combination, " +
-                                     "the next session start will detect isComplete.");
-                    FadeAndTransition(SessionPhase.WaitingForBreak);
+                    // POST failed — still GET so the session can continue.
+                    // The duplicate-index guard on the server means re-POSTing the same index
+                    // on the next timer end is safe and will not double-count.
+                    _apiClient.GetActiveRespondent(
+                        onSuccess: updatedResponse =>
+                        {
+                            _activeRespondent = updatedResponse;
+                            if (updatedResponse.isComplete)
+                            {
+                                _pendingSessionComplete = true;
+                                Debug.Log("[SessionManager] All combinations complete (after POST failure) — routing through WAITING_FOR_BREAK");
+                            }
+                            FadeAndTransition(SessionPhase.WaitingForBreak);
+                        },
+                        onError: getErr =>
+                        {
+                            Debug.LogWarning($"[SessionManager] GET also failed after POST failure: {getErr}. " +
+                                             "Defaulting to WAITING_FOR_BREAK.");
+                            FadeAndTransition(SessionPhase.WaitingForBreak);
+                        }
+                    );
                 }
             );
         }
@@ -590,6 +620,16 @@ namespace VRHomeArch.DataCollection
                 // happened yet. Log a warning but proceed — the researcher knows the state.
                 Debug.LogWarning($"[SessionManager] start-timer signal received before break signal. " +
                                  "Gray room activation and teleport may be missing. Proceeding anyway.");
+            }
+
+            // If all combinations were completed in the previous exploration phase,
+            // skip Neutral and go directly to SessionComplete.
+            if (_pendingSessionComplete)
+            {
+                _pendingSessionComplete = false;
+                Debug.Log("[SessionManager] Session complete flag detected — transitioning to SESSION_COMPLETE");
+                TransitionTo(SessionPhase.SessionComplete);
+                return;
             }
 
             TransitionTo(targetPhase);
