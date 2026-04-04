@@ -109,6 +109,13 @@ namespace VRHomeArch.DataCollection
         // while still showing the remove-headset prompt after the final exploration phase.
         private bool _pendingSessionComplete;
 
+        // Set to true when a /retry-combination signal is received.
+        // Causes HouseExploration to load _retryCombinationId and skip progress update on timer end.
+        private bool _isRetryMode;
+
+        // The combinationId to load during a retry exploration, parsed from the "retry_X" signal.
+        private string _retryCombinationId;
+
         // Exposed read-only for debug UI or future researcher display
         public SessionPhase CurrentPhase => _phase;
         public string ActiveRespondentId => _activeRespondent?.respondentId;
@@ -297,12 +304,15 @@ namespace VRHomeArch.DataCollection
             // Restore controller visuals now that the respondent is inside the house
             SetControllersActive(true);
 
-            ApplyCombinationToHouse(_activeRespondent.combinationId);
+            // Retry mode uses combinationId from signal, not from responder progress.
+            string combinationId = _isRetryMode ? _retryCombinationId : _activeRespondent.combinationId;
+            ApplyCombinationToHouse(combinationId);
             SetSkybox(_defaultSkyboxMaterial);
             TeleportToOrigin();
 
-            Debug.Log($"[SessionManager] Phase: HOUSE_EXPLORATION — combination {_activeRespondent.combinationId}, " +
-                      $"index {_activeRespondent.nextCombinationIndex} — timer will start after fade-out");
+            string retryLabel = _isRetryMode ? " [RETRY — progress not updated]" : string.Empty;
+            Debug.Log($"[SessionManager] Phase: HOUSE_EXPLORATION — combination {combinationId}, " +
+                      $"index {_activeRespondent.nextCombinationIndex}{retryLabel} — timer will start after fade-out");
         }
 
         private void OnEnterWaitingForBreak()
@@ -373,6 +383,18 @@ namespace VRHomeArch.DataCollection
 
         private void OnExplorationTimerEnded()
         {
+            // Retry mode: this combination is not part of the normal sequence — ignores progress updates.
+            // HeadsetRemovalPrompt still appears via WaitingForBreak as in the normal flow.
+            if (_isRetryMode)
+            {
+                _isRetryMode = false;
+                _retryCombinationId = null;
+                Debug.Log("[SessionManager] Retry exploration completed — progress not updated, " +
+                          "back to WAITING_FOR_BREAK.");
+                FadeAndTransition(SessionPhase.WaitingForBreak);
+                return;
+            }
+
             int completedIndex = _activeRespondent.nextCombinationIndex;
             string respondentId = _activeRespondent.respondentId;
 
@@ -567,7 +589,10 @@ namespace VRHomeArch.DataCollection
                     break;
 
                 default:
-                    Debug.LogWarning($"[SessionManager] Unrecognized signal: '{signal}' — ignored.");
+                    if (signal.StartsWith("retry_"))
+                        HandleRetrySignal(signal);
+                    else
+                        Debug.LogWarning($"[SessionManager] Unrecognized signal: '{signal}' — ignored.");
                     break;
             }
         }
@@ -633,6 +658,40 @@ namespace VRHomeArch.DataCollection
             }
 
             TransitionTo(targetPhase);
+        }
+
+        // The researcher requests a repeat of a specific combination without changing progress.
+        // Signal format: "retry_C07" — the combinationId is taken after the "retry_" prefix.
+        // Only valid in the WAITING_FOR_BREAK phase after the break signal has been received.
+        private void HandleRetrySignal(string signal)
+        {
+            if (_phase != SessionPhase.WaitingForBreak)
+            {
+                Debug.LogWarning($"[SessionManager] Retry signal received in phase {_phase} — ignored." +
+                                 "Only valid in WAITING_FOR_BREAK.");
+                return;
+            }
+
+            if (!_breakSignalReceived)
+            {
+                Debug.LogWarning("[SessionManager] Retry signal received before break signal — ignored.");
+                return;
+            }
+
+            const string retryPrefix = "retry_";
+            string combinationId = signal.Substring(retryPrefix.Length);
+            if (string.IsNullOrEmpty(combinationId))
+            {
+                Debug.LogError($"[SessionManager] Failed to parse combinationId from signal: '{signal}'");
+                return;
+            }
+
+            _isRetryMode = true;
+            _retryCombinationId = combinationId;
+
+            Debug.Log($"[SessionManager] Retry mode active — will explore {combinationId} " +
+                      "without progress updates. Transition to NEUTRAL.");
+            FadeAndTransition(SessionPhase.Neutral);
         }
 
         // -----------------------------------------------------------------------
