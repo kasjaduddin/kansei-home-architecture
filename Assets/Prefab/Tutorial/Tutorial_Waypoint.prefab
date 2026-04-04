@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 1416600621664014005}
   - component: {fileID: 6164704401026022179}
   - component: {fileID: 8447107180932930317}
+  - component: {fileID: 6017519775260612250}
   m_Layer: 0
   m_Name: ArrowImage
   m_TagString: Untagged
@@ -75,6 +76,25 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &6017519775260612250
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3782295626736653802}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9253993b1fbf79d47a0ff10152f460b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _cameraTransform: {fileID: 0}
+  _rotateX: 0
+  _rotateY: 1
+  _rotateZ: 0
+  _enableBobbing: 1
+  _bobbingAmplitude: 0.08
+  _bobbingFrequency: 0.8
 --- !u!1 &4330190909878784776
 GameObject:
   m_ObjectHideFlags: 0
@@ -87,7 +107,6 @@ GameObject:
   - component: {fileID: 4142292640005426689}
   - component: {fileID: 3134657413531678390}
   - component: {fileID: 6932743009142327816}
-  - component: {fileID: 8920164088102446161}
   m_Layer: 0
   m_Name: UI
   m_TagString: Untagged
@@ -179,25 +198,6 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
---- !u!114 &8920164088102446161
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4330190909878784776}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9253993b1fbf79d47a0ff10152f460b7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _cameraTransform: {fileID: 0}
-  _rotateX: 0
-  _rotateY: 1
-  _rotateZ: 0
-  _enableBobbing: 1
-  _bobbingAmplitude: 0.08
-  _bobbingFrequency: 0.8
 --- !u!1 &6893394853204462670
 GameObject:
   m_ObjectHideFlags: 0
